@@ -84,7 +84,7 @@ snapwp-helper/
 
 ## Local Development
 
-To test or build the plugin locally, you must [clone the plugin from GitHub](https://github.com/rtcamp/snapwp-helper). Downloading from `Composer`, `WordPress.org`, or `Packagist` will not include the necessary development files.
+To test or build the plugin locally, you must [clone the plugin from GitHub](https://github.com/rtCamp/snapwp-helper). Downloading from `Composer`, `WordPress.org`, or `Packagist` will not include the necessary development files.
 
 ### Prerequisites
 

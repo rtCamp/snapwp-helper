@@ -1,5 +1,5 @@
 {
-	"name": "rtcamp/snapwp-helper",
+	"name": "rtCamp/snapwp-helper",
 	"description": "WordPress helper plugin used to power SnapWP's Headless WordPress framework.",
 	"type": "wordpress-plugin",
 	"license": "GPL-3.0-or-later",

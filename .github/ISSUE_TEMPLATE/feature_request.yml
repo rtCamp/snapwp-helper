@@ -8,7 +8,7 @@ body:
 
 
         Please make sure to search the repo for [existing feature
-        requests](https://github.com/rtcamp/snapwp-helper/issues?q=is%3Aopen+is%3Aissue)
+        requests](https://github.com/rtCamp/snapwp-helper/issues?q=is%3Aopen+is%3Aissue)
         before creating a new one.
   - type: textarea
     attributes:
