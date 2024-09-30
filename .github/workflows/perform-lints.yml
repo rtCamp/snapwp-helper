@@ -358,7 +358,7 @@ jobs:
 
       - name: Setup WordPress
         run: |
-          cp env.dist .env
+          cp .env.dist .env
           npm run install-test-env
           cp -R . /tmp/wordpress/wp-content/plugins/snapwp-helper
 
