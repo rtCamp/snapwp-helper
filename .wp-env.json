@@ -1,0 +1,6 @@
+{
+	"plugins": [
+		"https://downloads.wordpress.org/plugin/wp-graphql.1.26.0.zip",
+		"."
+	]
+}

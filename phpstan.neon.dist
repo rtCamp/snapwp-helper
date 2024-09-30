@@ -1,0 +1,38 @@
+parameters:
+	level: 8
+	treatPhpDocTypesAsCertain: false
+	inferPrivatePropertyTypeFromConstructor: true
+	checkAlwaysTrueCheckTypeFunctionCall: true
+	checkAlwaysTrueInstanceof: true
+	checkAlwaysTrueStrictComparison: true
+	checkExplicitMixedMissingReturn: true
+	checkFunctionNameCase: true
+	checkInternalClassCaseSensitivity: true
+	checkMissingIterableValueType: true
+	checkTooWideReturnTypesInProtectedAndPublicMethods: true
+	polluteScopeWithAlwaysIterableForeach: false
+	polluteScopeWithLoopInitialAssignments: false
+	reportAlwaysTrueInLastCondition: true
+	reportStaticMethodSignatures: true
+	reportWrongPhpDocTypeInVarTag: true
+	stubFiles:
+		# Simulate added properties
+	bootstrapFiles:
+		# - phpstan/constants.php
+		- snapwp-helper.php
+		- activation.php
+		- access-functions.php
+	paths:
+		- snapwp-helper.php
+		- activation.php
+		- access-functions.php
+		- src/
+	scanFiles:
+		- vendor/axepress/wp-graphql-stubs/wp-graphql-stubs.php
+	excludePaths:
+		analyseAndScan:
+			- */node_modules/*
+			- */vendor/*
+			- */tests/*
+			- */build/*
+	ignoreErrors:

@@ -1,0 +1,54 @@
+# Hidden files
+.DS_Store
+Thumbs.db
+
+# IDE Files
+.devcontainer/*
+.devcontainer.json
+.vscode
+.idea
+
+# Environment variables for testing
+.env
+.env.*
+!.env.dist
+!.env.ci
+
+# Ruleset Overrides
+.wp-env.override.json
+phpcs.xml
+phpunit.xml
+phpstan.neon
+rector.php
+
+# The generated plugin by `npm run plugin-zip`
+snapwp-helper.zip
+
+# Composer auth
+auth.json
+
+# Composer deps
+vendor
+
+# NPM deps
+node_modules
+
+# Build files
+build
+
+# WP CLI config overrides
+wp-cli.local.yml
+
+# config
+codeception.yml
+
+# Tests
+*.sql
+*.tar.gz
+!tests
+tests/*.suite.yml
+tests/_output/*
+tests/_wordpress
+!tests/_output/.gitkeep
+coverage/*
+.log/

@@ -1,0 +1,81 @@
+{
+	"name": "rtcamp/snapwp-helper",
+	"description": "WordPress helper plugin used to power SnapWP's Headless WordPress framework.",
+	"type": "wordpress-plugin",
+	"license": "GPL-3.0-or-later",
+	"authors": [
+		{
+			"name": "rtCamp",
+			"email": "contact@rtcamp.com",
+			"homepage": "https://rtcamp.com/"
+		},
+		{
+			"name": "David Levine",
+			"role": "Developer",
+			"email": "david.levine@rtcamp.com"
+		}
+	],
+	"require": {
+		"php": ">=7.4",
+		"yahnis-elsts/plugin-update-checker": "^5.4"
+	},
+	"require-dev": {
+		"axepress/wp-graphql-cs": "^2.0.0-beta",
+		"axepress/wp-graphql-stubs": "^1.27",
+		"codeception/codeception": "^4.2",
+		"codeception/module-asserts": "^1.0",
+		"codeception/module-cli": "^1.0",
+		"codeception/module-db": "^1.0",
+		"codeception/module-filesystem": "^1.0",
+		"codeception/module-phpbrowser": "^1.0",
+		"codeception/module-webdriver": "^1.0",
+		"codeception/util-universalframework": "^1.0",
+		"lucatume/wp-browser": "^3.1",
+		"phpcompatibility/php-compatibility": "dev-develop as 9.99.99",
+		"phpstan/extension-installer": "^1.1",
+		"phpstan/phpstan": "^1.2",
+		"szepeviktor/phpstan-wordpress": "^1.1.5",
+		"wp-cli/wp-cli-bundle": "^2.8.1",
+		"wp-graphql/wp-graphql-testcase": "^3.3"
+	},
+	"config": {
+		"allow-plugins": {
+			"dealerdirect/phpcodesniffer-composer-installer": true,
+			"phpstan/extension-installer": true
+		},
+		"platform": {
+			"php": "7.4"
+		},
+		"preferred-install": "dist",
+		"process-timeout": 0,
+		"sort-packages": true,
+		"optimize-autoloader": true
+	},
+	"autoload": {
+		"files": [
+			"access-functions.php"
+		],
+		"psr-4": {
+			"SnapWP\\Helper\\": "src/"
+		}
+	},
+	"autoload-dev": {
+		"psr-4": {
+			"SnapWP\\Helper\\Tests\\Helper\\": "tests/_support/Helper/"
+		}
+	},
+	"scripts": {
+		"phpcs-i": [
+			"php ./vendor/bin/phpcs -i"
+		],
+		"phpcs": [
+			"php ./vendor/bin/phpcs"
+		],
+		"phpcs:fix": [
+			"php ./vendor/bin/phpcbf"
+		],
+		"phpstan": [
+			"vendor/bin/phpstan analyze --ansi --memory-limit=1G"
+		]
+	}
+}
