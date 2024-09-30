@@ -15,7 +15,7 @@ jobs:
         ports:
           - 3306:3306
         env:
-          MYSQL_ROOT_PASSWORD: root
+          MYSQL_ROOT_PASSWORD: password
         # Ensure docker waits for mariadb to start
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
 
@@ -49,13 +49,13 @@ jobs:
 
       - name: Setup WordPress
         run: |
-          cp .docker/.env.ci .env
+          cp .env.dist .env
           npm run install-test-env
-          cp -R . /var/www/html/wp-content/plugins/snapwp-helper
+          cp -R . /tmp/wordpress/wp-content/plugins/snapwp-helper
 
       - name: Generate the Static Schema
         run: |
-          cd /var/www/html/
+          cd /tmp/wordpress/
           # Output: /tmp/schema.graphql
           wp graphql generate-static-schema
 

@@ -123,6 +123,14 @@ jobs:
     if: needs.pre-run.outputs.changed-php == 'true' || needs.pre-run.outputs.changed-workflow == 'true'
     name: "PHP Static Analysis"
     runs-on: ubuntu-latest
+    services:
+      mariadb:
+        image: mariadb:10
+        ports:
+          - 3306:3306
+        env:
+          MYSQL_ROOT_PASSWORD: password
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -143,12 +151,12 @@ jobs:
 
       - name: Setup WordPress
         run: |
-          cp .docker/.env.ci .env
+          cp .env.dist .env
           npm run install-test-env
-          cp -R . /var/www/html/wp-content/plugins/snapwp-helper
+          cp -R . /tmp/wordpress/wp-content/plugins/snapwp-helper
 
       - name: Run PHPStan
-        working-directory: /var/www/html/wp-content/plugins/snapwp-helper
+        working-directory: /tmp/wordpress/wp-content/plugins/snapwp-helper
         run: composer run-script phpstan -- --error-format=github
 
   lint-js:
@@ -318,7 +326,7 @@ jobs:
         ports:
           - 3306:3306
         env:
-          MYSQL_ROOT_PASSWORD: root
+          MYSQL_ROOT_PASSWORD: password
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
     steps:
       - name: Checkout
@@ -350,13 +358,13 @@ jobs:
 
       - name: Setup WordPress
         run: |
-          cp .docker/.env.ci .env
-          npm run run install-test-env
-          cp -R . /var/www/html/wp-content/plugins/snapwp-helper
+          cp env.dist .env
+          npm run install-test-env
+          cp -R . /tmp/wordpress/wp-content/plugins/snapwp-helper
 
       - name: Generate the Static Schema
         run: |
-          cd /var/www/html/
+          cd /tmp/wordpress/
           # Output: /tmp/schema.graphql
           wp graphql get-schema --allow-root > /tmp/schema.graphql
 
