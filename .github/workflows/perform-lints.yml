@@ -116,7 +116,7 @@ jobs:
           composer-options: "--no-progress"
 
       - name: Run PHP_CodeSniffer
-        run: composer run-script lint -- --report-full --report-checkstyle=./phpcs-report.xml
+        run: composer run-script phpcs -- --report-full --report-checkstyle=./phpcs-report.xml
 
   phpstan:
     needs: pre-run
@@ -144,7 +144,7 @@ jobs:
       - name: Setup WordPress
         run: |
           cp .docker/.env.ci .env
-          composer run install-test-env
+          npm run install-test-env
           cp -R . /var/www/html/wp-content/plugins/snapwp-helper
 
       - name: Run PHPStan
@@ -351,7 +351,7 @@ jobs:
       - name: Setup WordPress
         run: |
           cp .docker/.env.ci .env
-          composer run install-test-env
+          npm run run install-test-env
           cp -R . /var/www/html/wp-content/plugins/snapwp-helper
 
       - name: Generate the Static Schema
