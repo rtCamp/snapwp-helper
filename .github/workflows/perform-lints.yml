@@ -389,10 +389,19 @@ jobs:
 
       - name: Get Previous Released Schema
         run: |
-          curl -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" -L -o /tmp/${{ steps.get-latest-tag.outputs.tag }}.graphql "https://github.com/rtCamp/snapwp-helper/releases/download/${{ steps.get-latest-tag.outputs.tag }}/schema.graphql"
+          URL="https://github.com/rtCamp/snapwp-helper/releases/download/${{ steps.get-latest-tag.outputs.tag }}/schema.graphql"
 
-      - name: Debug schemas
-        run: |
+          echo "Fetching schema from: $URL"
+
+          STATUS_CODE=$(curl -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" -L -o /tmp/${{ steps.get-latest-tag.outputs.tag }}.graphql -w "%{http_code}" "$URL")
+
+          if [ "$STATUS_CODE" -ne 200 ]; then
+            echo "Failed to fetch schema. HTTP Status Code: $STATUS_CODE"
+            cat /tmp/${{ steps.get-latest-tag.outputs.tag }}.graphql
+            exit 1
+          fi
+
+          # Additional debug info
           if [ ! -f /tmp/${{ steps.get-latest-tag.outputs.tag }}.graphql ]; then
             echo "File not found!"
             exit 1
