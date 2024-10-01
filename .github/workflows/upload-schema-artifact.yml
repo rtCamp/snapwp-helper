@@ -1,0 +1,69 @@
+name: Upload Schema Artifact
+
+on:
+  release:
+    types: [ published ]
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    name: Generate and Upload WPGraphQL Schema Artifact
+    services:
+      mariadb:
+        image: mariadb:10
+        ports:
+          - 3306:3306
+        env:
+          MYSQL_ROOT_PASSWORD: password
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup PHP w/ Composer & WP-CLI
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.2
+          extensions: mbstring, intl, bcmath, exif, gd, mysqli, opcache, zip, pdo_mysql
+          coverage: none
+          tools: composer:v2, wp-cli
+
+      - name: Install Composer dependencies
+        uses: ramsey/composer-install@v3
+        with:
+          composer-options: "--no-progress"
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Setup GraphQL Schema Linter
+        run: npm install -g graphql-schema-linter@^3.0 graphql@^16
+      
+      - name: Install Node.js dependencies
+        run: npm ci
+        env:
+          CI: true
+
+      - name: Build JS assets
+        run: npm run build:js
+
+      - name: Setup WordPress
+        run: |
+          cp .env.dist .env
+          npm run install-test-env
+
+      - name: Generate the Static Schema
+        run: |
+          cd /tmp/wordpress/
+          # Output: /tmp/schema.graphql
+          wp graphql generate-static-schema --allow-root
+
+      - name: Upload schema as release artifact
+        uses: softprops/action-gh-release@v2
+        with:
+          files: /tmp/schema.graphql
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
