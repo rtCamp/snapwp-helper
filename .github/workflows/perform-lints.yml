@@ -388,8 +388,9 @@ jobs:
           echo "Previous tagged schema ${{ steps.get-latest-tag.outputs.tag }}"
 
       - name: Get Previous Released Schema
-        run: curl -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" 'https://github.com/rtCamp/snapwp-helper/releases/download/${{ steps.get-latest-tag.outputs.tag }}/schema.graphql' -L --output /tmp/${{ steps.get-latest-tag.outputs.tag }}.graphql
-      
+        run: |
+          curl -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" 'https://github.com/rtCamp/snapwp-helper/releases/download/${{ steps.get-latest-tag.outputs.tag }}/schema.graphql' -L --output /tmp/${{ steps.get-latest-tag.outputs.tag }}.graphql
+
       - name: Debug schemas
         run: |
           if [ ! -f /tmp/${{ steps.get-latest-tag.outputs.tag }}.graphql ]; then
