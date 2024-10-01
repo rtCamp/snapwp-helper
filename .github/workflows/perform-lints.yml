@@ -339,6 +339,11 @@ jobs:
           coverage: none
           tools: composer:v2, wp-cli
 
+      - name: Install Composer dependencies
+        uses: ramsey/composer-install@v3
+        with:
+          composer-options: "--no-progress"
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -346,9 +351,6 @@ jobs:
 
       - name: Setup GraphQL Schema Linter
         run: npm install -g graphql-schema-linter@^3.0 graphql@^16
-
-      - name: Install Composer dependencies
-        run: composer install --no-progress --no-interaction
 
       - name: Install Node.js dependencies
         run: npm ci
@@ -367,7 +369,7 @@ jobs:
         run: |
           cd /tmp/wordpress/
           # Output: /tmp/schema.graphql
-          wp graphql generate-static-schema --allow-root > /tmp/schema.graphql
+          wp graphql generate-static-schema --allow-root
 
       - name: Lint the Schema
         run: |

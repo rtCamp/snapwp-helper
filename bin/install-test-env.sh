@@ -28,32 +28,24 @@ fi
 
 echo - "switching to the WordPress root directory $WORDPRESS_ROOT_DIR"
 
-if [[ -n "$WORDPRESS_ROOT_DIR" ]]; then
-	mkdir -p "$WORDPRESS_ROOT_DIR"
-	cd "$WORDPRESS_ROOT_DIR" || { echo "Failed to enter directory: $WORDPRESS_ROOT_DIR"; exit 1; }
+mkdir -p "$WORDPRESS_ROOT_DIR"
+cd "$WORDPRESS_ROOT_DIR" || { echo "Failed to enter directory: $WORDPRESS_ROOT_DIR"; exit 1; }
 
-	if [[ -f "wp-load.php" ]]; then
-		CURRENT_WP_VERSION=$(wp core version --allow-root | cut -d '.' -f 1,2)
-		echo "Current WordPress version: $CURRENT_WP_VERSION..."
+if [[ -f "wp-load.php" ]]; then
+	CURRENT_WP_VERSION=$(wp core version --allow-root | cut -d '.' -f 1,2)
+	echo "Current WordPress version: $CURRENT_WP_VERSION..."
 
-		if [[ -n "$WP_VERSION" ]] && [[ "$WP_VERSION" != "latest" ]] && [[ "$WP_VERSION" != "$CURRENT_WP_VERSION" ]]; then
-			status_message "Updating WordPress version $WP_VERSION..."
-			wp core download --version="$WP_VERSION" --force --allow-root
-		fi
-	else
-		# If WordPress is not present, download it
-		echo "WordPress not found. Downloading version $WP_VERSION..."
-		wp core download --version="$WP_VERSION" --allow-root
+	# Update WordPress if the version is different.
+	if [[ -n "$WP_VERSION" ]] && [[ "$WP_VERSION" != "latest" ]] && [[ "$WP_VERSION" != "$CURRENT_WP_VERSION" ]]; then
+		status_message "Updating WordPress version $WP_VERSION..."
+		wp core download --version="$WP_VERSION" --force --allow-root
 	fi
 else
-	echo "WORDPRESS_ROOT_DIR is not set. Exiting..."
-	exit 1
+	# If WordPress is not present, download it
+	echo "WordPress not found. Downloading version $WP_VERSION..."
+	wp core download --version="$WP_VERSION" --allow-root
 fi
 
-if [ -n "$WP_VERSION" ] && [ "$WP_VERSION" != "latest" ] && [ "$WP_VERSION" != "$CURRENT_WP_VERSION" ]; then
-	echo -e "$(status_message "Updating WordPress version $WP_VERSION...")"
-	wp core download --version="${WP_VERSION}" --force --allow-root
-fi
 
 # Create a wp-config.php file if it doesn't exist.
 if [ ! -f "wp-config.php" ]; then
