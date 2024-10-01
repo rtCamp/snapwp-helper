@@ -137,6 +137,7 @@ if [ "$SCRIPT_DEBUG" != "$SCRIPT_DEBUG_CURRENT" ]; then
 fi
 
 SQLDUMP="$WORDPRESS_ROOT_DIR/wp-content/plugins/$PLUGIN_SLUG/tests/_data/dump.sql" 
+mkdir -p "$(dirname "$SQLDUMP")"
 if [ ! -f "$SQLDUMP" ]; then
 	echo -e "$(status_message "Exporting test database dump...")"
 
