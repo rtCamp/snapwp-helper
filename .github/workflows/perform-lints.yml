@@ -389,7 +389,7 @@ jobs:
 
       - name: Get Previous Released Schema
         run: |
-          curl -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" 'https://github.com/rtCamp/snapwp-helper/releases/download/${{ steps.get-latest-tag.outputs.tag }}/schema.graphql' -L --output /tmp/${{ steps.get-latest-tag.outputs.tag }}.graphql
+          curl -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" -L -o /tmp/${{ steps.get-latest-tag.outputs.tag }}.graphql "https://github.com/rtCamp/snapwp-helper/releases/download/${{ steps.get-latest-tag.outputs.tag }}/schema.graphql"
 
       - name: Debug schemas
         run: |
@@ -400,8 +400,6 @@ jobs:
             echo "File exists."
           fi
 
-          echo "Current schema:"
-          cat /tmp/schema.graphql
           echo "Previous schema:"
           cat /tmp/${{ steps.get-latest-tag.outputs.tag }}.graphql
 
