@@ -399,7 +399,7 @@ jobs:
             echo "File exists."
           fi
 
-          "Current schema:"
+          echo "Current schema:"
           cat /tmp/schema.graphql
           echo "Previous schema:"
           cat /tmp/${{ steps.get-latest-tag.outputs.tag }}.graphql
