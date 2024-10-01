@@ -367,7 +367,7 @@ jobs:
         run: |
           cd /tmp/wordpress/
           # Output: /tmp/schema.graphql
-          wp graphql get-schema --allow-root > /tmp/schema.graphql
+          wp graphql generate-static-schema --allow-root > /tmp/schema.graphql
 
       - name: Lint the Schema
         run: |
