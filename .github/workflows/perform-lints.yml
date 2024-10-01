@@ -390,10 +390,16 @@ jobs:
       - name: Get Previous Released Schema
         run: curl 'https://github.com/rtCamp/snapwp-helper/releases/download/${{ steps.get-latest-tag.outputs.tag }}/schema.graphql' -L  --output /tmp/${{ steps.get-latest-tag.outputs.tag }}.graphql
       
+      - name: Debug schemas
+        run: |
+          cat /tmp/schema.graphql
+          echo "Previous schema"
+          cat /tmp/${{ steps.get-latest-tag.outputs.tag }}.graphql
+      
       # https://github.com/marketplace/actions/graphql-inspector
       - name: Install Schema Inspector
         run: |
-          npm install @graphql-inspector/config @graphql-inspector/cli graphql
+          npm install @graphql-inspector/config @graphql-inspector/cli
 
       - name: Run Schema Inspector
         run: |
