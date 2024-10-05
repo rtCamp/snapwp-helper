@@ -1,6 +1,6 @@
 === SnapWP Helper ===
 Contributors: rtCamp, justlevine
-Tags: decoupled, headless, REST API, GraphQL, WPGraphQL, React, NextJS, JAMStack
+Tags: decoupled, headless, GraphQL, WPGraphQL, NextJS
 Requires at least: 6.0
 Tested up to: 6.6.1
 Requires PHP: 7.4

@@ -6,7 +6,6 @@
  * Description: Manages WPGraphQL extensions updates and discovery.
  * Author: rtCamp
  * Author URI: https://github.com/rtCamp
- * Update URI: https://github.com/rtCamp/snapwp-helper
  * Version: 0.0.1
  * Text Domain: snapwp-helper
  * Domain Path: /languages
