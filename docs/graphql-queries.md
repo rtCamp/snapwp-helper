@@ -4,110 +4,46 @@ This document outlines the GraphQL queries available in the SnapWP Helper plugin
 
 ## Table of Contents
 
-- [templateByUri](#templatebyuri)
-  - [Query Structure](#query-structure)
-  - [Arguments](#arguments)
-  - [Return Fields](#return-fields)
-  - [Usage Examples](#usage-examples)
+- [Querying `RenderedTemplate` data with `templateByUri`](#querying-renderedtemplate-data-with-templatebyuri)
 
-## templateByUri
+## Querying `RenderedTemplate` data with `templateByUri`
 
-The `templateByUri` query allows you to fetch template data for a given URI. This is particularly useful for headless WordPress setups where you need to determine the appropriate template and content for a given URL.
+The `RootQuery.templateByUri` field is used to fetch the rendered template data (`RenderedTemplate`) for a given URI. This query allows the use WordPress's Block Template rendering engine as the full source of truth for a headless frontend.
 
 ### Query Structure
 
 ```graphql
-query TemplateByUri($uri: String!) {
-  templateByUri(uri: $uri) {
-    bodyClasses
-    connectedNode {
-      __typename
-      ... on DatabaseIdentifier {
-        databaseId
-      }
-      ... on NodeWithTitle {
-        title
-      }
-      ... on TermNode {
-        name
-      }
-      ... on User {
-        name
+query GetTemplateByUri( $uri: String! ) {
+  templateByUri( uri: $uri ) {
+    bodyClasses # The CSS classes for the <body> tag
+    connectedNode { # The main content node associated with the URI
+      ...CurrentNodeFrag
+    }
+    content # The content for the template. This is the serialized block markup and HTML.
+    editorBlocks { # The editor blocks for the template
+      ...BlockFrag
+    }
+    enqueuedScripts(first: 1000) { # The enqueued scripts for the template
+      nodes {
+        ...EnqueuedAssetFrag
       }
     }
-    renderedHtml
+    enqueuedStylesheets(first: 1000) { # The enqueued stylesheets for the template
+      nodes {
+        ...EnqueuedAssetFrag
+      }
+    }
+    id
+    isComment
+    isContentNode
+    isFrontPage
+    isPostsPage
+    isTermNode
+    renderedHtml # The fully rendered HTML content for the given URI
+    uri
   }
 }
 ```
 
-### Arguments
-
-- `uri` (String!, required): The URI for which to fetch the template data.
-
-### Return Fields
-
-- `bodyClasses` (String): A space-separated list of CSS classes for the `<body>` tag.
-- `connectedNode` (Node): The main content node associated with the URI.
-  - `__typename` (String): The type of the connected node (e.g., "Post", "Page", "Category", etc.).
-  - `databaseId` (ID): The database ID of the connected node.
-  - `title` (String): The title of the connected node (for content types with titles).
-  - `name` (String): The name of the connected node (for taxonomies and users).
-- `renderedHtml` (String): The fully rendered HTML content for the given URI.
-
-### Usage Examples
-
-1. Fetching template data for a blog post:
-
-```graphql
-query {
-  templateByUri(uri: "/2023/05/15/sample-blog-post") {
-    bodyClasses
-    connectedNode {
-      __typename
-      ... on Post {
-        databaseId
-        title
-      }
-    }
-    renderedHtml
-  }
-}
-```
-
-2. Fetching template data for a category archive:
-
-```graphql
-query {
-  templateByUri(uri: "/category/news") {
-    bodyClasses
-    connectedNode {
-      __typename
-      ... on Category {
-        databaseId
-        name
-      }
-    }
-    renderedHtml
-  }
-}
-```
-
-3. Fetching template data for an author archive:
-
-```graphql
-query {
-  templateByUri(uri: "/author/johndoe") {
-    bodyClasses
-    connectedNode {
-      __typename
-      ... on User {
-        databaseId
-        name
-      }
-    }
-    renderedHtml
-  }
-}
-```
-
-These examples demonstrate how to use the `templateByUri` query for different types of WordPress content. The query is flexible and can handle various content types, including posts, pages, custom post types, category archives, tag archives, author archives, and more.
+>[!WARNING]
+> `templateByUri.enqueuedScripts` currently does not return the correct data. This is a known issue in WPGraphQL core and will be fixed in a future release.
