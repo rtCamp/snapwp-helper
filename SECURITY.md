@@ -2,8 +2,7 @@
 
 ## Supported Versions
 
-Use this section to tell people about which versions of your project are
-currently being supported with security updates.
+SnapWP Helper has been developed with security in mind. Below, are details on some of the ways SnapWP Helper works to allow you to use the benefits of SnapWP Helper while keeping your data secure.
 
 | Version | Supported          |
 | ------- | ------------------ |
@@ -12,10 +11,7 @@ currently being supported with security updates.
 | 4.0.x   | :white_check_mark: |
 | < 4.0   | :x:                |
 
+
 ## Reporting a Vulnerability
 
-Use this section to tell people how to report a vulnerability.
-
-Tell them where to go, how often they can expect to get an update on a
-reported vulnerability, what to expect if the vulnerability is accepted or
-declined, etc.
+If you believe you've discovered a security vulnerability, please email info@snapwp.com with details and steps to reproduce.
