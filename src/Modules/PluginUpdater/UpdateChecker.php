@@ -49,13 +49,13 @@ class UpdateChecker {
 			}
 
 			// Don't instantiate if the plugin isn't installed.
-			if ( ! file_exists( WP_PLUGIN_DIR . '/' . $plugin['slug'] ) ) {
+			if ( ! file_exists( WP_PLUGIN_DIR . '/' . $plugin['file_path'] ) ) {
 				continue;
 			}
 
 			$update_checker = PucFactory::buildUpdateChecker(
 				$plugin['update_uri'],
-				WP_PLUGIN_DIR . '/' . $plugin['slug'],
+				WP_PLUGIN_DIR . '/' . $plugin['file_path'],
 				$plugin['slug']
 			);
 
