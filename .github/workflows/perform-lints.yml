@@ -395,10 +395,10 @@ jobs:
           FILE_NAME="schema.graphql"
           GH_API="https://api.github.com"
           GH_REPO="$GH_API/repos/$GITHUB_REPOSITORY"
-          GH_TAGS="$GH_REPO/releases/tags/${{ steps.get-latest-tag.outputs.tag }}"
+          GH_TAG="$GH_REPO/releases/tags/${{ steps.get-latest-tag.outputs.tag }}"
           AUTH="Authorization: token $GITHUB_TOKEN"
 
-          response=$(curl -sH "$AUTH" $GH_TAGS)
+          response=$(curl -sH "$AUTH" $GH_TAG)
           # Get ID of the asset based on given FILE_NAME.
           id=$(echo "$response" | jq --arg name "$FILE_NAME" '.assets[] | select(.name == $name).id')
           [ "$id" ] || { echo "Error: Failed to find ID for $FILE_NAME"; exit 1; }
