@@ -58,6 +58,9 @@ class UpdateChecker {
 				$plugin['slug']
 			);
 
+			// Enable release assets, using regex to match the distribution .zip file.
+			$update_checker->getVcsApi()->enableReleaseAssets('/' . preg_quote($plugin['slug'], '/') . '\.zip/');
+	
 				/**
 				 * Store the instance.
 				 *
