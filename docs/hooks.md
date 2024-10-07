@@ -1,4 +1,4 @@
-# Actions &
+# Actions & Filters
 
 ## TOC
 
@@ -10,7 +10,7 @@
     - [`network_admin_notices`](#network_admin_notices)
   - [GraphQL](#graphql)
     - [`snapwp_helper/graphql/init/register_types`](#snapwp_helpergraphqlinitregister_types)
-		- [`snapwp_helper/graphql/init/after_register_types`](#snapwp_helpergraphqlinitafter_register_types)
+    - [`snapwp_helper/graphql/init/after_register_types`](#snapwp_helpergraphqlinitafter_register_types)
     - [`graphql_register_types_late`](#graphql_register_types_late)
     - [`graphql_register_initial_types`](#graphql_register_initial_types)
     - [`graphql_register_types`](#graphql_register_types)
@@ -23,7 +23,7 @@
     - [`admin_enqueue_scripts`](#admin_enqueue_scripts)
 - [Filter Hooks](#filter-hooks)
   - [GraphQL](#graphql)
-		- [`snapwp_helper/graphql/init/registered_{type}_classes`](#snapwp_helpergraphqlinitregistered_type_classes)
+    - [`snapwp_helper/graphql/init/registered_{type}_classes`](#snapwp_helpergraphqlinitregistered_type_classes)
     - [`wpgraphql_content_blocks_resolver_content`](#wpgraphql_content_blocks_resolver_content)
     - [`snapwp_helper/graphql/resolve_template_uri`](#snapwp_helpergraphqlresolvetemplateuri)
  - [Lifecycle](#lifecycle)
