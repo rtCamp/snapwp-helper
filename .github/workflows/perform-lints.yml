@@ -406,7 +406,13 @@ jobs:
 
           echo "Fetching schema from: $GH_ASSET_URL"
 
-          STATUS_CODE=$(curl -H "$AUTH"  -H 'Accept: application/octet-stream' -L -o /tmp/${{ steps.get-latest-tag.outputs.tag }}.graphql -w "%{http_code}" "$GH_ASSET_URL")
+          STATUS_CODE=$(
+            curl -H "$AUTH" \
+                -H 'Accept: application/octet-stream' \
+                -L -o /tmp/${{ steps.get-latest-tag.outputs.tag }}.graphql \
+                -w "%{http_code}" \
+                "$GH_ASSET_URL"
+          )
 
           if [ "$STATUS_CODE" -ne 200 ]; then
             echo "Failed to fetch schema. HTTP Status Code: $STATUS_CODE"
