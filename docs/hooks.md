@@ -5,9 +5,6 @@
 - [Action Hooks](#action-hooks)
   - [Activation / Deactivation](#activation--deactivation)
     - [`snapwp_helper/activate`](#snapwp_helperactivate)
-  - [Admin Notices](#admin-notices)
-    - [`admin_notices`](#admin_notices)
-    - [`network_admin_notices`](#network_admin_notices)
   - [GraphQL](#graphql)
     - [`snapwp_helper/graphql/init/register_types`](#snapwp_helpergraphqlinitregister_types)
     - [`snapwp_helper/graphql/init/after_register_types`](#snapwp_helpergraphqlinitafter_register_types)
@@ -17,10 +14,6 @@
     - [`graphql_init`](#graphql_init)
   - [Lifecycle](#lifecycle)
     - [`snapwp_helper/init`](#snapwp_helperinit)
-    - [`rest_api_init`](#rest_api_init)
-    - [`init`](#init)
-    - [`admin_menu`](#admin_menu)
-    - [`admin_enqueue_scripts`](#admin_enqueue_scripts)
 - [Filter Hooks](#filter-hooks)
   - [GraphQL](#graphql)
     - [`snapwp_helper/graphql/init/registered_{type}_classes`](#snapwp_helpergraphqlinitregistered_type_classes)
@@ -29,9 +22,6 @@
  - [Lifecycle](#lifecycle)
     - [`snapwp_helper/init/module_classes`](#snapwp_helperinitmodule_classes)
     - [`snapwp_helper/dependencies/registered_dependencies`](#snapwp_helperdependenciesregistered_dependencies)
-    - [`query_vars`](#query_vars)
-    - [`request`](#request)
-    - [`pre_handle_404`](#pre_handle_404)
   - [Plugin Updater](#plugin-updater)
     - [`snapwp_helper/plugin_updater/plugins`](#snapwp_helperplugin_updaterplugins)
 
@@ -46,23 +36,6 @@ Runs when the plugin is activated.
 ```php
 do_action( 'snapwp_helper/activate' );
 ```
-
-`admin_notices`
-
-Fires to display admin notices.
-
-```php
-do_action( 'admin_notices' );
-```
-
-`network_admin_notices`
-
-Fires to display network admin notices.
-
-```php
-do_action( 'network_admin_notices' );
-```
-
 
 ### GraphQL
 
@@ -82,7 +55,7 @@ Fires after all GraphQL types are registered.
 do_action( 'snapwp_helper/graphql/init/after_register_types' );
 ```
 
-`graphql_register_types_late`
+#### `graphql_register_types_late`
 
 Fire an action as the type registry is initialized. This executes during the graphql_register_types action to allow for earlier hooking.
 
@@ -94,7 +67,7 @@ do_action( 'graphql_register_types_late', WPGraphQL\Registry\TypeRegistry $type_
 
 - `$type_registry` (WPGraphQL\Registry\TypeRegistry): The registry of Types used in the GraphQL Schema
 
-`graphql_register_initial_types`
+#### `graphql_register_initial_types`
 
 Fire an action as the type registry is initialized. This executes before the graphql_register_types action to allow for earlier hooking
 
@@ -106,7 +79,7 @@ do_action( 'graphql_register_initial_types', WPGraphQL\Registry\TypeRegistry $ty
 
 - `$type_registry` (WPGraphQL\Registry\TypeRegistry): The registry of Types used in the GraphQL Schema
 
-`graphql_register_types`
+#### `graphql_register_types`
 
 Fire an action as the type registry is initialized. This executes before the graphql_register_types action to allow for earlier hooking
 
@@ -118,7 +91,7 @@ do_action( 'graphql_register_types', TypeRegistry $type_registry );
 
 - `$type_registry` (WPGraphQL\Registry\TypeRegistry): The registry of Types used in the GraphQL Schema
 
-`graphql_init`
+#### `graphql_init`
 
 Fires after themes have been setup, allowing for both plugins and themes to register things before graphql_init.
 
@@ -144,39 +117,6 @@ do_action( 'snapwp_helper/init', \SnapWP\Helper\Main $instance );
 ##### Parameters
 
 - `$instance` _(\SnapWP\Helper\Main)_: The main plugin class instance.
-
-`rest_api_init`
-
-Fires when preparing to serve a REST API request.
-
-```php
-do_action( 'rest_api_init' );
-```
-
-`init`
-
-Fires after WordPress has finished loading but before any headers are sent.
-
-```php
-do_action( 'init' );
-```
-
-`admin_menu`
-
-Fires before the administration menu loads in the admin.
-
-```php
-do_action( 'admin_menu' );
-```
-
-`admin_enqueue_scripts`
-
-Fires when enqueuing scripts for all admin pages.
-
-```php
-do_action( 'admin_enqueue_scripts' );
-```
-
 
 ## Filter Hooks
 
@@ -224,7 +164,7 @@ apply_filters( 'wpgraphql_content_blocks_resolver_content', $content, $node, $ar
 - `$node` (mixed): The current GraphQL node.
 - `$args` (array): The arguments provided for content resolution.
 
-`snapwp_helper/graphql/resolve_template_uri`
+#### `snapwp_helper/graphql/resolve_template_uri`
 
 This filter allows to use a custom template for a specific URI instead of the default WordPress template. It’s useful if your template doesn’t follow WordPress’s usual URL structure.
 
@@ -267,34 +207,6 @@ apply_filters( 'snapwp_helper/dependencies/registered_dependencies', array $depe
    - `slug` _(string)_: A unique slug to identify the dependency. E.g. Plugin slug.
 	 - `name` _(string)_: The pretty name of the dependency used in the admin notice.
 	 - `check_callback` _(`callable(): true|\WP_Error`)_: A callable that returns true if the dependency is met, or a `WP_Error` object (with an explicit error message) if the dependency is not met.
-
-
-`query_vars`
-
-Filters the query variables allowed before processing.
-
-```php
-apply_filters( 'query_vars', $wp->public_query_vars );
-```
-
-`request`
-
-Filters the list of query variables for the current request.
-
-```php
-apply_filters( 'request', $wp->query_vars );
-```
-
-`pre_handle_404`
-
-Filters whether to short-circuit default header status handling.
-
-```php
-apply_filters( 'pre_handle_404', false, $wp_query );
-```
-
-##### Parameters
-- `$wp_query` (WP_Query): The current query object.
 
 ### Plugin Updater
 
