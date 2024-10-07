@@ -84,35 +84,51 @@ do_action( 'snapwp_helper/graphql/init/after_register_types' );
 
 `graphql_register_types_late`
 
-Fires when registering GraphQL types late in the WordPress lifecycle.
+Fire an action as the type registry is initialized. This executes during the graphql_register_types action to allow for earlier hooking.
 
 ```php
-do_action( 'graphql_register_types_late' );
+do_action( 'graphql_register_types_late', WPGraphQL\Registry\TypeRegistry $type_registry );
 ```
+
+##### Parameters
+
+- `$type_registry` (WPGraphQL\Registry\TypeRegistry): The registry of Types used in the GraphQL Schema
 
 `graphql_register_initial_types`
 
-Fires when initially registering GraphQL types.
+Fire an action as the type registry is initialized. This executes before the graphql_register_types action to allow for earlier hooking
 
 ```php
-do_action( 'graphql_register_initial_types' );
+do_action( 'graphql_register_initial_types', WPGraphQL\Registry\TypeRegistry $type_registry );
 ```
+
+##### Parameters
+
+- `$type_registry` (WPGraphQL\Registry\TypeRegistry): The registry of Types used in the GraphQL Schema
 
 `graphql_register_types`
 
-Fires when registering all GraphQL types.
+Fire an action as the type registry is initialized. This executes before the graphql_register_types action to allow for earlier hooking
 
 ```php
-do_action( 'graphql_register_types' );
+do_action( 'graphql_register_types', TypeRegistry $type_registry );
 ```
+
+##### Parameters
+
+- `$type_registry` (WPGraphQL\Registry\TypeRegistry): The registry of Types used in the GraphQL Schema
 
 `graphql_init`
 
-Fires when initializing GraphQL.
+Fires after themes have been setup, allowing for both plugins and themes to register things before graphql_init.
 
 ```php
-do_action( 'graphql_init' );
+do_action( 'graphql_init', WPGraphQL $instance );
 ```
+
+##### Parameters
+
+- `$instance` (WPGraphQL): The instance of the WPGraphQL class
 
 
 ### Lifecycle
@@ -131,7 +147,7 @@ do_action( 'snapwp_helper/init', \SnapWP\Helper\Main $instance );
 
 `rest_api_init`
 
-Runs when initializing the REST API.
+Fires when preparing to serve a REST API request.
 
 ```php
 do_action( 'rest_api_init' );
@@ -139,7 +155,7 @@ do_action( 'rest_api_init' );
 
 `init`
 
-Fires during the initialization of the plugin.
+Fires after WordPress has finished loading but before any headers are sent.
 
 ```php
 do_action( 'init' );
@@ -147,7 +163,7 @@ do_action( 'init' );
 
 `admin_menu`
 
-Fires to create the admin menu.
+Fires before the administration menu loads in the admin.
 
 ```php
 do_action( 'admin_menu' );
@@ -155,7 +171,7 @@ do_action( 'admin_menu' );
 
 `admin_enqueue_scripts`
 
-Fires to enqueue scripts in the admin area.
+Fires when enqueuing scripts for all admin pages.
 
 ```php
 do_action( 'admin_enqueue_scripts' );
@@ -196,7 +212,7 @@ apply_filters( 'snapwp_helper/graphql/init/registered_mutation_classes', array $
 
 #### `wpgraphql_content_blocks_resolver_content`
 
-Filters the resolved content for GraphQL content blocks.
+Filters the content from a node before it's turned into blocks. It can be used to adjust or limit the content that's displayed in the application.
 
 ```php
 apply_filters( 'wpgraphql_content_blocks_resolver_content', $content, $node, $args );
@@ -210,7 +226,7 @@ apply_filters( 'wpgraphql_content_blocks_resolver_content', $content, $node, $ar
 
 `snapwp_helper/graphql/resolve_template_uri`
 
-Filters the resolved template URI in GraphQL.
+This filter allows to use a custom template for a specific URI instead of the default WordPress template. It’s useful if your template doesn’t follow WordPress’s usual URL structure.
 
 ```php
 apply_filters( 'snapwp_helper/graphql/resolve_template_uri', null, $uri, $context, $wp, $extra_query_vars );
@@ -255,7 +271,7 @@ apply_filters( 'snapwp_helper/dependencies/registered_dependencies', array $depe
 
 `query_vars`
 
-Filters the list of public query variables.
+Filters the query variables allowed before processing.
 
 ```php
 apply_filters( 'query_vars', $wp->public_query_vars );
@@ -271,7 +287,7 @@ apply_filters( 'request', $wp->query_vars );
 
 `pre_handle_404`
 
-Short-circuits WordPress’s handling of 404 errors.
+Filters whether to short-circuit default header status handling.
 
 ```php
 apply_filters( 'pre_handle_404', false, $wp_query );
