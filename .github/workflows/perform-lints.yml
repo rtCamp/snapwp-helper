@@ -392,11 +392,21 @@ jobs:
 
       - name: Get Previous Released Schema
         run: |
-          URL="https://github.com/rtCamp/snapwp-helper/releases/download/${{ steps.get-latest-tag.outputs.tag }}/schema.graphql"
+          FILE_NAME="schema.graphql"
+          GH_API="https://api.github.com"
+          GH_REPO="$GH_API/repos/$GITHUB_REPOSITORY"
+          GH_TAGS="$GH_REPO/releases/tags/${{ steps.get-latest-tag.outputs.tag }}"
+          AUTH="Authorization: token $GITHUB_TOKEN"
 
-          echo "Fetching schema from: $URL"
+          response=$(curl -sH "$AUTH" $GH_TAGS)
+          # Get ID of the asset based on given FILE_NAME.
+          id=$(echo "$response" | jq --arg name "$FILE_NAME" '.assets[] | select(.name == $name).id')
+          [ "$id" ] || { echo "Error: Failed to find ID for $FILE_NAME"; exit 1; }
+          GH_ASSET_URL="$GH_REPO/releases/assets/$id"
 
-          STATUS_CODE=$(curl -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" -L -o /tmp/${{ steps.get-latest-tag.outputs.tag }}.graphql -w "%{http_code}" "$URL")
+          echo "Fetching schema from: $GH_ASSET_URL"
+
+          STATUS_CODE=$(curl -H "$AUTH"  -H 'Accept: application/octet-stream' -L -o /tmp/${{ steps.get-latest-tag.outputs.tag }}.graphql -w "%{http_code}" "$GH_ASSET_URL")
 
           if [ "$STATUS_CODE" -ne 200 ]; then
             echo "Failed to fetch schema. HTTP Status Code: $STATUS_CODE"
@@ -414,6 +424,8 @@ jobs:
 
           echo "Previous schema:"
           cat /tmp/${{ steps.get-latest-tag.outputs.tag }}.graphql
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       # https://github.com/marketplace/actions/graphql-inspector
       - name: Install Schema Inspector
