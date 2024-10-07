@@ -8,6 +8,7 @@
 namespace SnapWP\Helper\Modules\PluginUpdater;
 
 use YahnisElsts\PluginUpdateChecker\v5\PucFactory;
+use YahnisElsts\PluginUpdateChecker\v5p4\Vcs\PluginUpdateChecker;
 
 
 /**
@@ -58,8 +59,13 @@ class UpdateChecker {
 				$plugin['slug']
 			);
 
-			// Enable release assets, using regex to match the distribution .zip file.
-			$update_checker->getVcsApi()->enableReleaseAssets( '/' . preg_quote( $plugin['slug'], '/' ) . '\.zip/' );
+			// Check if the update checker is a VCS-based checker.
+			if ( $update_checker instanceof PluginUpdateChecker ) {
+				$vcs_api = $update_checker->getVcsApi();
+				if ( method_exists( $vcs_api, 'enableReleaseAssets' ) ) {
+					$vcs_api->enableReleaseAssets( '/' . preg_quote( $plugin['slug'], '/' ) . '\.zip/' );
+				}
+			}
 
 				/**
 				 * Store the instance.
