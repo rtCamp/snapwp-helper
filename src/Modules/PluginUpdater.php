@@ -24,7 +24,7 @@ class PluginUpdater implements Module {
 	/**
 	 * Retrieve the plugins to check for updates and array with filters applied.
 	 *
-	 * @return array{slug:string,update_uri:string}[]
+	 * @return array{slug:string,file_path:string,update_uri:string}[]
 	 */
 	private function get_plugins(): array {
 		$plugins = [
@@ -43,7 +43,7 @@ class PluginUpdater implements Module {
 		/**
 		 * Filters the plugins that should be checked for updates.
 		 *
-		 * @param array{slug:string,update_uri:string}[] $plugins The plugins to check for updates.
+		 * @param array{slug:string,file_path:string,update_uri:string}[] $plugins The plugins to check for updates.
 		 */
 		return apply_filters( 'snapwp_helper/plugin_updater/plugins', $plugins );
 	}

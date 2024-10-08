@@ -8,7 +8,6 @@
 namespace SnapWP\Helper\Modules\PluginUpdater;
 
 use YahnisElsts\PluginUpdateChecker\v5\PucFactory;
-use YahnisElsts\PluginUpdateChecker\v5p4\Vcs\PluginUpdateChecker;
 
 
 /**
@@ -18,7 +17,7 @@ class UpdateChecker {
 	/**
 	 * Array of plugin data.
 	 *
-	 * @var array{slug:string,update_uri:string}[]
+	 * @var array{slug:string,file_path:string,update_uri:string}[]
 	 */
 	private array $plugin_data;
 
@@ -32,7 +31,7 @@ class UpdateChecker {
 	/**
 	 * UpdateChecker constructor.
 	 *
-	 * @param array{slug:string,update_uri:string}[] $plugin_data Array of plugin data.
+	 * @param array{slug:string,file_path:string,update_uri:string}[] $plugin_data Array of plugin data.
 	 */
 	public function __construct( array $plugin_data ) {
 		$this->plugin_data = $plugin_data;
@@ -53,6 +52,9 @@ class UpdateChecker {
 				continue;
 			}
 
+			/**
+			 * @var \YahnisElsts\PluginUpdateChecker\v5p4\Vcs\PluginUpdateChecker $update_checker
+			 */
 			$update_checker = PucFactory::buildUpdateChecker(
 				$plugin['update_uri'],
 				WP_PLUGIN_DIR . '/' . $plugin['file_path'],
@@ -60,19 +62,20 @@ class UpdateChecker {
 			);
 
 			// Check if the update checker is a VCS-based checker.
-			if ( $update_checker instanceof PluginUpdateChecker ) {
-				$vcs_api = $update_checker->getVcsApi();
-				if ( method_exists( $vcs_api, 'enableReleaseAssets' ) ) {
-					$vcs_api->enableReleaseAssets( '/' . preg_quote( $plugin['slug'], '/' ) . '\.zip/' );
-				}
-			}
+			$release_asset_path = '/' . preg_quote( $plugin['slug'], '/' ) . '\.zip/';
 
-				/**
-				 * Store the instance.
-				 *
-				 * @var \YahnisElsts\PluginUpdateChecker\v5p4\Plugin\UpdateChecker $update_checker
-				 */
-				$this->update_checkers[ $plugin['slug'] ] = $update_checker;
+			/**
+			 * @var \YahnisElsts\PluginUpdateChecker\v5p4\Vcs\GitHubApi $vcs_api
+			 */
+			$vcs_api = $update_checker->getVcsApi();
+			$vcs_api->enableReleaseAssets( $release_asset_path );
+
+			/**
+			 * Store the instance.
+			 *
+			 * @var \YahnisElsts\PluginUpdateChecker\v5p4\Plugin\UpdateChecker $update_checker
+			 */
+			$this->update_checkers[ $plugin['slug'] ] = $update_checker;
 		}
 	}
 
