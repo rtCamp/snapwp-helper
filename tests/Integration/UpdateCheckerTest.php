@@ -21,14 +21,15 @@ class UpdateCheckerTest extends WPTestCase {
 	public function setUp(): void {
 		parent::setUp();
 
-		remove_all_filters( 'puc_is_slug_in_use-wp-graphql-content-blocks/wp-graphql-content-blocks.php' );
+		// Add a filter to bypass the slug check for 'wp-graphql-content-blocks'.
+		add_filter( 'puc_is_slug_in_use-wp-graphql-content-blocks', '__return_false' );
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public function tearDown(): void {
-		remove_all_filters( 'puc_is_slug_in_use-wp-graphql-content-blocks/wp-graphql-content-blocks.php' );
+		remove_all_filters( 'puc_is_slug_in_use-wp-graphql-content-blocks' );
 
 		parent::tearDown();
 	}
@@ -39,7 +40,8 @@ class UpdateCheckerTest extends WPTestCase {
 	public function testPluginUpdateChecker() {
 		$plugin_data = [
 			[
-				'slug'       => 'wp-graphql-content-blocks/wp-graphql-content-blocks.php',
+				'slug'       => 'wp-graphql-content-blocks',
+				'file_path'  => 'wp-graphql-content-blocks/wp-graphql-content-blocks.php',
 				'update_uri' => 'https://github.com/wpengine/wp-graphql-content-blocks',
 			],
 		];
@@ -57,7 +59,7 @@ class UpdateCheckerTest extends WPTestCase {
 		}
 
 		// Programmatically checking if there's an update available for a plugin.
-		$plugin_slug_to_check    = 'wp-graphql-content-blocks/wp-graphql-content-blocks.php';
+		$plugin_slug_to_check    = 'wp-graphql-content-blocks';
 		$update_checker_instance = $actual_update_checkers[ $plugin_slug_to_check ];
 
 		// Test if the plugin is up to date.

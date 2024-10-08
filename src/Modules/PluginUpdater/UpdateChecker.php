@@ -17,7 +17,7 @@ class UpdateChecker {
 	/**
 	 * Array of plugin data.
 	 *
-	 * @var array{slug:string,update_uri:string}[]
+	 * @var array{slug:string,file_path:string,update_uri:string}[]
 	 */
 	private array $plugin_data;
 
@@ -31,7 +31,7 @@ class UpdateChecker {
 	/**
 	 * UpdateChecker constructor.
 	 *
-	 * @param array{slug:string,update_uri:string}[] $plugin_data Array of plugin data.
+	 * @param array{slug:string,file_path:string,update_uri:string}[] $plugin_data Array of plugin data.
 	 */
 	public function __construct( array $plugin_data ) {
 		$this->plugin_data = $plugin_data;
@@ -48,22 +48,34 @@ class UpdateChecker {
 			}
 
 			// Don't instantiate if the plugin isn't installed.
-			if ( ! file_exists( WP_PLUGIN_DIR . '/' . $plugin['slug'] ) ) {
+			if ( ! file_exists( WP_PLUGIN_DIR . '/' . $plugin['file_path'] ) ) {
 				continue;
 			}
 
+			/**
+			 * @var \YahnisElsts\PluginUpdateChecker\v5p4\Vcs\PluginUpdateChecker $update_checker
+			 */
 			$update_checker = PucFactory::buildUpdateChecker(
 				$plugin['update_uri'],
-				WP_PLUGIN_DIR . '/' . $plugin['slug'],
+				WP_PLUGIN_DIR . '/' . $plugin['file_path'],
 				$plugin['slug']
 			);
 
-				/**
-				 * Store the instance.
-				 *
-				 * @var \YahnisElsts\PluginUpdateChecker\v5p4\Plugin\UpdateChecker $update_checker
-				 */
-				$this->update_checkers[ $plugin['slug'] ] = $update_checker;
+			// Check if the update checker is a VCS-based checker.
+			$release_asset_path = '/' . preg_quote( $plugin['slug'], '/' ) . '\.zip/';
+
+			/**
+			 * @var \YahnisElsts\PluginUpdateChecker\v5p4\Vcs\GitHubApi $vcs_api
+			 */
+			$vcs_api = $update_checker->getVcsApi();
+			$vcs_api->enableReleaseAssets( $release_asset_path );
+
+			/**
+			 * Store the instance.
+			 *
+			 * @var \YahnisElsts\PluginUpdateChecker\v5p4\Plugin\UpdateChecker $update_checker
+			 */
+			$this->update_checkers[ $plugin['slug'] ] = $update_checker;
 		}
 	}
 
