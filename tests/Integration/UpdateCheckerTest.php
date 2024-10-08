@@ -39,7 +39,8 @@ class UpdateCheckerTest extends WPTestCase {
 	public function testPluginUpdateChecker() {
 		$plugin_data = [
 			[
-				'slug'       => 'wp-graphql-content-blocks/wp-graphql-content-blocks.php',
+				'slug'       => 'wp-graphql-content-blocks',
+				'file_path'  => 'wp-graphql-content-blocks/wp-graphql-content-blocks.php',
 				'update_uri' => 'https://github.com/wpengine/wp-graphql-content-blocks',
 			],
 		];
