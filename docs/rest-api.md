@@ -1,73 +1,88 @@
-# REST API Documentation
+# REST API Endpoints
 
-This document outlines the REST API endpoints available in the SnapWP Helper plugin.
+This document provides comprehensive documentation for the REST API endpoints available in the SnapWP Helper plugin.
 
-## Endpoints
+| Endpoint | Description | Arguments | Response |
+| -------- | ----------- | --------- | -------- |
+| [`GET /snapwp/v1/env`](#get-snapwpv1env) | Generates environment variables for the SnapWP Helper plugin | `variables` | `content => string` |
 
-### Generate Environment Variables
+## `/snapwp/v1/env`
 
-Generate environment variables for the SnapWP Helper plugin.
+Generates environment variables for the SnapWP Helper plugin.
 
-- **URL:** `/snapwp/v1/env`
-- **Method:** GET
-- **Authentication:** Required (Administrator role)
+### Arguments
 
-#### Request Parameters
+- `variables`: _`array`_ - (Required) An array of objects containing variable names and values.
 
-The request should include a JSON body with the following structure:
+### Response
 
-```json
-{
-  "variables": [
+1. 200 OK
+
+    - **Content**: JSON object containing the generated .env file content.
+    
+    **Example**:
+    
+    ```json
     {
-      "name": "VARIABLE_NAME",
-      "value": "VARIABLE_VALUE"
-    },
-    // ... additional variables
-  ]
-}
-```
+        "content": "# Generated .env file content\nNEXT_URL=http://localhost:3000\nHOME_URL=https://headless-demo.local\nGRAPHQL_ENDPOINT=graphql\n"
+    }
+    ```
 
-#### Supported Variables
+2. 400 Bad Request
+
+    - **Content**: JSON object indicating that no variables were provided.
+    
+    **Example**:
+    
+    ```json
+    {
+        "code": "missing_variables",
+        "message": "No variables provided.",
+        "data": {
+            "status": 400
+        }
+    }
+    ```
+
+3. 500 Internal Server Error
+
+    - **Content**: JSON object containing an error message if the .env generation fails.
+    
+    **Example**:
+    
+    ```json
+    {
+        "code": "env_generation_failed",
+        "message": "Error message describing the issue",
+        "data": {
+            "status": 500
+        }
+    }
+    ```
+
+### Details
+
+**Functionality**:
+- Generates a .env file content based on the provided variables.
+- Only includes supported variables in the generated .env file.
+- Validates required variables (`NEXT_URL` and `HOME_URL`).
+- Sets default value for `GRAPHQL_ENDPOINT` if not provided.
+- Comments out `NODE_TLS_REJECT_UNAUTHORIZED` if not provided.
+
+**Permissions Required**: Requires the `manage_options` capability (Administrator role).
+
+### Supported Variables
 
 - `NODE_TLS_REJECT_UNAUTHORIZED`: Enable if connecting to a self-signed cert
-- `NEXT_URL`: The headless frontend domain URL
-- `HOME_URL`: The WordPress "frontend" domain URL
-- `GRAPHQL_ENDPOINT`: The WordPress GraphQL endpoint
+- `NEXT_URL`: The headless frontend domain URL (Required)
+- `HOME_URL`: The WordPress "frontend" domain URL (Required)
+- `GRAPHQL_ENDPOINT`: The WordPress GraphQL endpoint (Default: "graphql")
 
-#### Response
+### Example Usage
 
-##### Success Response
+Here are various examples demonstrating different use cases:
 
-- **Code:** 200 OK
-- **Content:**
-
-```json
-{
-  "content": "# Generated .env file content"
-}
-```
-
-##### Error Response
-
-- **Code:** 500 Internal Server Error
-- **Content:**
-
-```json
-{
-  "code": "env_generation_failed",
-  "message": "Error message describing the issue"
-}
-```
-
-#### Notes
-
-- The endpoint will only include supported variables in the generated .env file.
-- Required variables (`NEXT_URL` and `HOME_URL`) must have a value.
-- If `GRAPHQL_ENDPOINT` is not provided, it will default to "graphql".
-- The `NODE_TLS_REJECT_UNAUTHORIZED` variable will be commented out if not provided.
-
-#### Example Usage
+#### 1. Basic Usage - Required Variables Only
 
 ```bash
 curl -X GET \
@@ -88,4 +103,149 @@ curl -X GET \
   https://your-wordpress-site.com/wp-json/snapwp/v1/env
 ```
 
-This will return the generated .env file content based on the provided variables.
+Response:
+```json
+{
+    "content": "NEXT_URL=http://localhost:3000\nHOME_URL=https://headless-demo.local\nGRAPHQL_ENDPOINT=graphql\n"
+}
+```
+
+#### 2. All Supported Variables
+
+```bash
+curl -X GET \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_AUTH_TOKEN" \
+  -d '{
+    "variables": [
+      {
+        "name": "NEXT_URL",
+        "value": "http://localhost:3000"
+      },
+      {
+        "name": "HOME_URL",
+        "value": "https://headless-demo.local"
+      },
+      {
+        "name": "GRAPHQL_ENDPOINT",
+        "value": "wp-graphql"
+      },
+      {
+        "name": "NODE_TLS_REJECT_UNAUTHORIZED",
+        "value": "0"
+      }
+    ]
+  }' \
+  https://your-wordpress-site.com/wp-json/snapwp/v1/env
+```
+
+Response:
+```json
+{
+    "content": "NEXT_URL=http://localhost:3000\nHOME_URL=https://headless-demo.local\nGRAPHQL_ENDPOINT=wp-graphql\nNODE_TLS_REJECT_UNAUTHORIZED=0\n"
+}
+```
+
+#### 3. Missing Required Variable
+
+```bash
+curl -X GET \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_AUTH_TOKEN" \
+  -d '{
+    "variables": [
+      {
+        "name": "NEXT_URL",
+        "value": "http://localhost:3000"
+      }
+    ]
+  }' \
+  https://your-wordpress-site.com/wp-json/snapwp/v1/env
+```
+
+Response:
+```json
+{
+    "code": "env_generation_failed",
+    "message": "Required variable HOME_URL is missing.",
+    "data": {
+        "status": 500
+    }
+}
+```
+
+#### 4. Invalid Variable
+
+```bash
+curl -X GET \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_AUTH_TOKEN" \
+  -d '{
+    "variables": [
+      {
+        "name": "NEXT_URL",
+        "value": "http://localhost:3000"
+      },
+      {
+        "name": "HOME_URL",
+        "value": "https://headless-demo.local"
+      },
+      {
+        "name": "INVALID_VARIABLE",
+        "value": "some_value"
+      }
+    ]
+  }' \
+  https://your-wordpress-site.com/wp-json/snapwp/v1/env
+```
+
+Response:
+```json
+{
+    "content": "NEXT_URL=http://localhost:3000\nHOME_URL=https://headless-demo.local\nGRAPHQL_ENDPOINT=graphql\n"
+}
+```
+
+Note that the invalid variable is simply ignored in the generated .env content.
+
+#### 5. No Variables Provided
+
+```bash
+curl -X GET \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_AUTH_TOKEN" \
+  -d '{
+    "variables": []
+  }' \
+  https://your-wordpress-site.com/wp-json/snapwp/v1/env
+```
+
+Response:
+```json
+{
+    "code": "missing_variables",
+    "message": "No variables provided.",
+    "data": {
+        "status": 400
+    }
+}
+```
+
+### Error Handling
+
+- If required variables (`NEXT_URL` or `HOME_URL`) are missing, the API will return a 500 Internal Server Error with an appropriate error message.
+- If no variables are provided, the API will return a 400 Bad Request error.
+- If the user doesn't have the required permissions, the API will return a 401 Unauthorized error.
+
+### Best Practices
+
+1. Always include the required variables (`NEXT_URL` and `HOME_URL`) in your request.
+2. Use HTTPS URLs for production environments.
+3. Only set `NODE_TLS_REJECT_UNAUTHORIZED` to "0" in development environments with self-signed certificates.
+4. Handle potential errors in your client-side code, especially for missing required variables.
+
+### Changelog
+
+- v0.0.1: Initial release of the `/snapwp/v1/env` endpoint.
+
+For any issues or feature requests related to this API, please contact the SnapWP Helper plugin support team or open an issue in the plugin's repository.
