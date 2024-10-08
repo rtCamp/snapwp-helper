@@ -58,7 +58,7 @@ class UpdateCheckerTest extends WPTestCase {
 		}
 
 		// Programmatically checking if there's an update available for a plugin.
-		$plugin_slug_to_check    = 'wp-graphql-content-blocks/wp-graphql-content-blocks.php';
+		$plugin_slug_to_check    = 'wp-graphql-content-blocks';
 		$update_checker_instance = $actual_update_checkers[ $plugin_slug_to_check ];
 
 		// Test if the plugin is up to date.
