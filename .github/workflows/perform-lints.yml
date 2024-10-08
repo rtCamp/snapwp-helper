@@ -10,6 +10,9 @@ on:
       - develop
       - main
 
+permissions:
+  contents: read
+
 # Cancel previous workflow run groups that have not completed.
 concurrency:
   # Group workflow runs by workflow name, along with the head branch ref of the pull request
@@ -388,12 +391,52 @@ jobs:
           echo "Previous tagged schema ${{ steps.get-latest-tag.outputs.tag }}"
 
       - name: Get Previous Released Schema
-        run: curl 'https://github.com/rtCamp/snapwp-helper/releases/download/${{ steps.get-latest-tag.outputs.tag }}/schema.graphql' -L  --output /tmp/${{ steps.get-latest-tag.outputs.tag }}.graphql
-      
+        run: |
+          FILE_NAME="schema.graphql"
+          GH_API="https://api.github.com"
+          GH_REPO="$GH_API/repos/$GITHUB_REPOSITORY"
+          GH_TAG="$GH_REPO/releases/tags/${{ steps.get-latest-tag.outputs.tag }}"
+          AUTH="Authorization: token $GITHUB_TOKEN"
+
+          response=$(curl -sH "$AUTH" $GH_TAG)
+          # Get ID of the asset based on given FILE_NAME.
+          id=$(echo "$response" | jq --arg name "$FILE_NAME" '.assets[] | select(.name == $name).id')
+          [ "$id" ] || { echo "Error: Failed to find ID for $FILE_NAME"; exit 1; }
+          GH_ASSET_URL="$GH_REPO/releases/assets/$id"
+
+          echo "Fetching schema from: $GH_ASSET_URL"
+
+          STATUS_CODE=$(
+            curl -H "$AUTH" \
+                -H 'Accept: application/octet-stream' \
+                -L -o /tmp/${{ steps.get-latest-tag.outputs.tag }}.graphql \
+                -w "%{http_code}" \
+                "$GH_ASSET_URL"
+          )
+
+          if [ "$STATUS_CODE" -ne 200 ]; then
+            echo "Failed to fetch schema. HTTP Status Code: $STATUS_CODE"
+            cat /tmp/${{ steps.get-latest-tag.outputs.tag }}.graphql
+            exit 1
+          fi
+
+          # Additional debug info
+          if [ ! -f /tmp/${{ steps.get-latest-tag.outputs.tag }}.graphql ]; then
+            echo "File not found!"
+            exit 1
+          else
+            echo "File exists."
+          fi
+
+          echo "Previous schema:"
+          cat /tmp/${{ steps.get-latest-tag.outputs.tag }}.graphql
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       # https://github.com/marketplace/actions/graphql-inspector
       - name: Install Schema Inspector
         run: |
-          npm install @graphql-inspector/config @graphql-inspector/cli graphql
+          npm install @graphql-inspector/config @graphql-inspector/cli
 
       - name: Run Schema Inspector
         run: |
