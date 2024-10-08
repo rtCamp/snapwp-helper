@@ -21,8 +21,6 @@ class UpdateCheckerTest extends WPTestCase {
 	public function setUp(): void {
 		parent::setUp();
 
-		remove_all_filters( 'puc_is_slug_in_use-wp-graphql-content-blocks/wp-graphql-content-blocks.php' );
-
 		// Add a filter to bypass the slug check for 'wp-graphql-content-blocks'.
 		add_filter( 'puc_is_slug_in_use-wp-graphql-content-blocks', '__return_false' );
 	}
@@ -31,7 +29,7 @@ class UpdateCheckerTest extends WPTestCase {
 	 * {@inheritDoc}
 	 */
 	public function tearDown(): void {
-		remove_all_filters( 'puc_is_slug_in_use-wp-graphql-content-blocks/wp-graphql-content-blocks.php' );
+		remove_all_filters( 'puc_is_slug_in_use-wp-graphql-content-blocks' );
 
 		parent::tearDown();
 	}
