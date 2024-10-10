@@ -24,16 +24,18 @@ class PluginUpdater implements Module {
 	/**
 	 * Retrieve the plugins to check for updates and array with filters applied.
 	 *
-	 * @return array{slug:string,update_uri:string}[]
+	 * @return array{slug:string,file_path:string,update_uri:string}[]
 	 */
 	private function get_plugins(): array {
 		$plugins = [
 			[
-				'slug'       => 'wp-graphql-content-blocks/wp-graphql-content-blocks.php',
+				'slug'       => 'wp-graphql-content-blocks',
+				'file_path'  => 'wp-graphql-content-blocks/wp-graphql-content-blocks.php',
 				'update_uri' => 'https://github.com/wpengine/wp-graphql-content-blocks',
 			],
 			[
-				'slug'       => 'wpgraphql-ide/wpgraphql-ide.php',
+				'slug'       => 'wpgraphql-ide',
+				'file_path'  => 'wpgraphql-ide/wpgraphql-ide.php',
 				'update_uri' => 'https://github.com/wp-graphql/wpgraphql-ide',
 			],
 		];
@@ -41,7 +43,7 @@ class PluginUpdater implements Module {
 		/**
 		 * Filters the plugins that should be checked for updates.
 		 *
-		 * @param array{slug:string,update_uri:string}[] $plugins The plugins to check for updates.
+		 * @param array{slug:string,file_path:string,update_uri:string}[] $plugins The plugins to check for updates.
 		 */
 		return apply_filters( 'snapwp_helper/plugin_updater/plugins', $plugins );
 	}
