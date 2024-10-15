@@ -1,19 +1,20 @@
-# Actions &
+# Actions & Filters
 
 ## TOC
 
 - [Action Hooks](#action-hooks)
   - [Activation / Deactivation](#activation--deactivation)
     - [`snapwp_helper/activate`](#snapwp_helperactivate)
-  - [GraphQL](#graphql)
+  - [GraphQL Type Registration](#graphql-type-registration)
     - [`snapwp_helper/graphql/init/register_types`](#snapwp_helpergraphqlinitregister_types)
-		- [`snapwp_helper/graphql/init/after_register_types`](#snapwp_helpergraphqlinitafter_register_types)
+    - [`snapwp_helper/graphql/init/after_register_types`](#snapwp_helpergraphqlinitafter_register_types)
   - [Lifecycle](#lifecycle)
     - [`snapwp_helper/init`](#snapwp_helperinit)
 - [Filter Hooks](#filter-hooks)
   - [GraphQL](#graphql)
-		- [`snapwp_helper/graphql/init/registered_{type}_classes`](#snapwp_helpergraphqlinitregistered_type_classes)
-  - [Lifecycle](#lifecycle)
+    - [`snapwp_helper/graphql/init/registered_{type}_classes`](#snapwp_helpergraphqlinitregistered_type_classes)
+    - [`snapwp_helper/graphql/resolve_template_uri`](#snapwp_helpergraphqlresolvetemplateuri)
+ - [Lifecycle](#lifecycle)
     - [`snapwp_helper/init/module_classes`](#snapwp_helperinitmodule_classes)
     - [`snapwp_helper/dependencies/registered_dependencies`](#snapwp_helperdependenciesregistered_dependencies)
   - [Plugin Updater](#plugin-updater)
@@ -31,7 +32,7 @@ Runs when the plugin is activated.
 do_action( 'snapwp_helper/activate' );
 ```
 
-### GraphQL
+### GraphQL Type Registration
 
 #### `snapwp_helper/graphql/init/register_types`
 
@@ -95,6 +96,22 @@ apply_filters( 'snapwp_helper/graphql/init/registered_mutation_classes', array $
 
 - `$registered_classes` _(class-string<\SnapWP\Helper\Interfaces\GraphQLType>[])_: An array of fully-qualified GraphQL Type class-names.
 
+#### `snapwp_helper/graphql/resolve_template_uri`
+
+When this filter return anything other than null, it will be used as a resolved node and the execution will be skipped. This is to be used in extensions to resolve their own templates which might not use WordPress permalink structure.
+
+```php
+apply_filters( 'snapwp_helper/graphql/resolve_template_uri', mixed|null $node, string $uri, \WPGraphQL\AppContext $context, \WP $wp, array|string $extra_query_vars );
+```
+
+##### Parameters
+
+- `$node` (mixed|null): The node, defaults to nothing.
+- `$uri` (string): The uri being searched.
+- `$content` (\WPGraphQL\AppContext): The app context.
+- `$wp` (\WP object): The WP object instance.
+- `$extra_query_vars` (array<string,mixed>|string): Any extra query vars to consider.
+
 ### Lifecycle
 
 #### `snapwp_helper/init/module_classes`
@@ -123,7 +140,6 @@ apply_filters( 'snapwp_helper/dependencies/registered_dependencies', array $depe
    - `slug` _(string)_: A unique slug to identify the dependency. E.g. Plugin slug.
 	 - `name` _(string)_: The pretty name of the dependency used in the admin notice.
 	 - `check_callback` _(`callable(): true|\WP_Error`)_: A callable that returns true if the dependency is met, or a `WP_Error` object (with an explicit error message) if the dependency is not met.
-
 
 ### Plugin Updater
 
