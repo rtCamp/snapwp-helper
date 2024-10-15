@@ -5,19 +5,14 @@
 - [Action Hooks](#action-hooks)
   - [Activation / Deactivation](#activation--deactivation)
     - [`snapwp_helper/activate`](#snapwp_helperactivate)
-  - [GraphQL](#graphql)
+  - [GraphQL Type Registration](#graphql-type-registration)
     - [`snapwp_helper/graphql/init/register_types`](#snapwp_helpergraphqlinitregister_types)
     - [`snapwp_helper/graphql/init/after_register_types`](#snapwp_helpergraphqlinitafter_register_types)
-    - [`graphql_register_types_late`](#graphql_register_types_late)
-    - [`graphql_register_initial_types`](#graphql_register_initial_types)
-    - [`graphql_register_types`](#graphql_register_types)
-    - [`graphql_init`](#graphql_init)
   - [Lifecycle](#lifecycle)
     - [`snapwp_helper/init`](#snapwp_helperinit)
 - [Filter Hooks](#filter-hooks)
   - [GraphQL](#graphql)
     - [`snapwp_helper/graphql/init/registered_{type}_classes`](#snapwp_helpergraphqlinitregistered_type_classes)
-    - [`wpgraphql_content_blocks_resolver_content`](#wpgraphql_content_blocks_resolver_content)
     - [`snapwp_helper/graphql/resolve_template_uri`](#snapwp_helpergraphqlresolvetemplateuri)
  - [Lifecycle](#lifecycle)
     - [`snapwp_helper/init/module_classes`](#snapwp_helperinitmodule_classes)
@@ -37,7 +32,7 @@ Runs when the plugin is activated.
 do_action( 'snapwp_helper/activate' );
 ```
 
-### GraphQL
+### GraphQL Type Registration
 
 #### `snapwp_helper/graphql/init/register_types`
 
@@ -54,55 +49,6 @@ Fires after all GraphQL types are registered.
 ```php
 do_action( 'snapwp_helper/graphql/init/after_register_types' );
 ```
-
-#### `graphql_register_types_late`
-
-Fire an action as the type registry is initialized. This executes during the graphql_register_types action to allow for earlier hooking.
-
-```php
-do_action( 'graphql_register_types_late', WPGraphQL\Registry\TypeRegistry $type_registry );
-```
-
-##### Parameters
-
-- `$type_registry` (WPGraphQL\Registry\TypeRegistry): The registry of Types used in the GraphQL Schema
-
-#### `graphql_register_initial_types`
-
-Fire an action as the type registry is initialized. This executes before the graphql_register_types action to allow for earlier hooking
-
-```php
-do_action( 'graphql_register_initial_types', WPGraphQL\Registry\TypeRegistry $type_registry );
-```
-
-##### Parameters
-
-- `$type_registry` (WPGraphQL\Registry\TypeRegistry): The registry of Types used in the GraphQL Schema
-
-#### `graphql_register_types`
-
-Fire an action as the type registry is initialized. This executes before the graphql_register_types action to allow for earlier hooking
-
-```php
-do_action( 'graphql_register_types', TypeRegistry $type_registry );
-```
-
-##### Parameters
-
-- `$type_registry` (WPGraphQL\Registry\TypeRegistry): The registry of Types used in the GraphQL Schema
-
-#### `graphql_init`
-
-Fires after themes have been setup, allowing for both plugins and themes to register things before graphql_init.
-
-```php
-do_action( 'graphql_init', WPGraphQL $instance );
-```
-
-##### Parameters
-
-- `$instance` (WPGraphQL): The instance of the WPGraphQL class
-
 
 ### Lifecycle
 
@@ -150,34 +96,21 @@ apply_filters( 'snapwp_helper/graphql/init/registered_mutation_classes', array $
 
 - `$registered_classes` _(class-string<\SnapWP\Helper\Interfaces\GraphQLType>[])_: An array of fully-qualified GraphQL Type class-names.
 
-#### `wpgraphql_content_blocks_resolver_content`
-
-Filters the content from a node before it's turned into blocks. It can be used to adjust or limit the content that's displayed in the application.
-
-```php
-apply_filters( 'wpgraphql_content_blocks_resolver_content', $content, $node, $args );
-```
-
-##### Parameters
-
-- `$content` (string): The content being filtered.
-- `$node` (mixed): The current GraphQL node.
-- `$args` (array): The arguments provided for content resolution.
-
 #### `snapwp_helper/graphql/resolve_template_uri`
 
-This filter allows to use a custom template for a specific URI instead of the default WordPress template. It’s useful if your template doesn’t follow WordPress’s usual URL structure.
+When this filter return anything other than null, it will be used as a resolved node and the execution will be skipped. This is to be used in extensions to resolve their own templates which might not use WordPress permalink structure.
 
 ```php
-apply_filters( 'snapwp_helper/graphql/resolve_template_uri', null, $uri, $context, $wp, $extra_query_vars );
+apply_filters( 'snapwp_helper/graphql/resolve_template_uri', mixed|null $node, string $uri, \WPGraphQL\AppContext $context, \WP $wp, array|string $extra_query_vars );
 ```
 
 ##### Parameters
 
-- `$uri` (string): The template URI being resolved.
-- `$context` (mixed): Context information.
-- `$wp` (object): The WP object instance.
-- `$extra_query_vars` (array): Additional query variables.
+- `$node` (mixed|null): The node, defaults to nothing.
+- `$uri` (string): The uri being searched.
+- `$content` (\WPGraphQL\AppContext): The app context.
+- `$wp` (\WP object): The WP object instance.
+- `$extra_query_vars` (array<string,mixed>|string): Any extra query vars to consider.
 
 ### Lifecycle
 
