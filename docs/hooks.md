@@ -1,6 +1,6 @@
 # Actions & Filters
 
-## TOC
+## Table of Contents
 
 - [Action Hooks](#action-hooks)
   - [Activation / Deactivation](#activation--deactivation)

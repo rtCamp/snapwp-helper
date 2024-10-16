@@ -12,7 +12,6 @@
 - [Reference](#reference)
 - [Local Development & Contributing Guidelines](#local-development-testing-and-contribution)
 
-
 ## Overview
 
 SnapWP Helper is a WordPress plugin that allows you to quickly install WPGraphQL extensions and manage extension updates from the WordPress dashboard.
@@ -49,9 +48,11 @@ SnapWP Helper is a WordPress plugin that allows you to quickly install WPGraphQL
 - [GraphQL Queries](docs/graphql-queries.md)
 - [REST API](docs/rest-api.md)
 
-## Local Development, Testing, and Contribution
+## Development & Contribution
 
-See [DEVELOPMENT.md](DEVELOPMENT.md) for guidelines on contributing to this project.
+SnapWP Helper is a free and open-source project developed and maintained by [rtCamp](https://rtcamp.com/). We *welcome* and **encourage** contributions from the community to help improve this project.
+
+To contribute to this project, please follow the guidelines outlined in the [CONTRIBUTING.md](.github/CONTRIBUTING.md) file. To get started with local development and learn more about the project's development processes, code standards, and testing, refer to the [DEVELOPMENT.md](DEVELOPMENT.md) document.
 
 ## License
 
