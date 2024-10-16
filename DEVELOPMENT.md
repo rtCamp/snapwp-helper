@@ -1,6 +1,9 @@
-# Contributing to `SnapWP Helper`
+# Development Guide
 
-Code contributions, bug reports, and feature requests are welcome! The following sections provide guidelines for contributing to this project, as well as information about development processes and testing.
+Code contributions, bug reports, and feature requests are welcome! The following document provides information about development processes and testing.
+
+> [!TIP]
+> To learn more about contributing to the project, please read our [Code of Conduct](./CODE_OF_CONDUCT.md) and [Contributing Guidelines](./CONTRIBUTING.md) guidelines.
 
 ## TOC
 
