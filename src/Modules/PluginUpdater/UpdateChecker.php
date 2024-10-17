@@ -24,7 +24,7 @@ class UpdateChecker {
 	/**
 	 * Array of update checkers.
 	 *
-	 * @var array<string,\YahnisElsts\PluginUpdateChecker\v5p4\Plugin\UpdateChecker>
+	 * @var array<string,\YahnisElsts\PluginUpdateChecker\v5p5\Plugin\UpdateChecker>
 	 */
 	private array $update_checkers = [];
 
@@ -53,7 +53,7 @@ class UpdateChecker {
 			}
 
 			/**
-			 * @var \YahnisElsts\PluginUpdateChecker\v5p4\Vcs\PluginUpdateChecker $update_checker
+			 * @var \YahnisElsts\PluginUpdateChecker\v5p5\Vcs\PluginUpdateChecker $update_checker
 			 */
 			$update_checker = PucFactory::buildUpdateChecker(
 				$plugin['update_uri'],
@@ -65,7 +65,7 @@ class UpdateChecker {
 			$release_asset_path = '/' . preg_quote( $plugin['slug'], '/' ) . '\.zip/';
 
 			/**
-			 * @var \YahnisElsts\PluginUpdateChecker\v5p4\Vcs\GitHubApi $vcs_api
+			 * @var \YahnisElsts\PluginUpdateChecker\v5p5\Vcs\GitHubApi $vcs_api
 			 */
 			$vcs_api = $update_checker->getVcsApi();
 			$vcs_api->enableReleaseAssets( $release_asset_path );
@@ -73,7 +73,7 @@ class UpdateChecker {
 			/**
 			 * Store the instance.
 			 *
-			 * @var \YahnisElsts\PluginUpdateChecker\v5p4\Plugin\UpdateChecker $update_checker
+			 * @var \YahnisElsts\PluginUpdateChecker\v5p5\Plugin\UpdateChecker $update_checker
 			 */
 			$this->update_checkers[ $plugin['slug'] ] = $update_checker;
 		}
@@ -82,7 +82,7 @@ class UpdateChecker {
 	/**
 	 * Get the update checkers.
 	 *
-	 * @return array<string,\YahnisElsts\PluginUpdateChecker\v5p4\Plugin\UpdateChecker>
+	 * @return array<string,\YahnisElsts\PluginUpdateChecker\v5p5\Plugin\UpdateChecker>
 	 */
 	public function get_update_checkers(): array {
 		return $this->update_checkers;
