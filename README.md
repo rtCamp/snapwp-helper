@@ -47,6 +47,7 @@ SnapWP Helper is a WordPress plugin that allows you to quickly install WPGraphQL
 - [Actions & Filters](docs/hooks.md)
 - [GraphQL Queries](docs/graphql-queries.md)
 - [REST API](docs/rest-api.md)
+- [Deployment](docs/deployment.md)
 
 ## Development & Contribution
 
