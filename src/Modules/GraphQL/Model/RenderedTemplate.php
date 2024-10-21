@@ -72,11 +72,37 @@ class RenderedTemplate extends Model {
 					return ! empty( $body_classes ) ? $body_classes : null;
 				},
 				'content'                  => fn (): ?string => ! empty( $this->data['content'] ) ? $this->data['content'] : null,
-				'enqueuedScriptsQueue'     => static function () {
-					// @todo this currently doesn't work.
+				'enqueuedScriptsQueue'     => function () {
 					global $wp_scripts;
-					do_action( 'wp_enqueue_scripts' ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
-					$queue = $wp_scripts->queue;
+
+					// Simulate WP template rendering.
+					ob_start();
+					do_action( 'wp_head' ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
+					ob_end_clean();
+
+					// Arrays to track broken scripts and their dependencies.
+					$broken_scripts   = [];
+					$enqueued_scripts = $wp_scripts->queue ?? [];
+
+					foreach ( $enqueued_scripts as $handle ) {
+
+						// If the script is not registered, add it to the list of broken scripts.
+						if ( ! $wp_scripts->registered[ $handle ] ) {
+							$broken_scripts[] = $handle;
+						} else {
+
+							// Check if the script has any dependencies that are not enqueued.
+							foreach ( $wp_scripts->registered[ $handle ]->deps as $dep ) {
+								if ( ! in_array( $dep, $enqueued_scripts, true ) ) {
+									$broken_scripts[] = $dep;
+								}
+							}
+						}
+					}
+
+					$queue = $this->flatten_enqueued_assets_list( $enqueued_scripts, $wp_scripts );
+
+					// Reset the scripts queue to avoid conflicts with other queries.
 					$wp_scripts->reset();
 					$wp_scripts->queue = [];
 
@@ -102,5 +128,44 @@ class RenderedTemplate extends Model {
 				'uri'                      => fn (): ?string => ! empty( $this->data['uri'] ) ? $this->data['uri'] : null,
 			];
 		}
+	}
+
+	/**
+	 * Get the handles of all scripts enqueued for a given content node
+	 *
+	 * @param array<string,string> $queue            List of scripts for a given content node.
+	 * @param \WP_Dependencies     $wp_dependencies  A Global assets object.
+	 *
+	 * @return array<string>
+	 */
+	public function flatten_enqueued_assets_list( array $queue, \WP_Dependencies $wp_dependencies ): array {
+		$registered_assets = $wp_dependencies->registered;
+		$handles           = [];
+
+		foreach ( $queue as $handle ) {
+
+			// If the script is not registered, skip to the next iteration.
+			if ( empty( $registered_assets[ $handle ] ) ) {
+				continue;
+			}
+
+			// Retrieve the registered script object from the queue.
+			/** @var \_WP_Dependency $script */
+			$script = $registered_assets[ $handle ];
+
+			// Add the script handle to the list of handles.
+			$handles[] = $script->handle;
+
+			// Recursively get the dependencies of the current script.
+			$dependencies = self::flatten_enqueued_assets_list( $script->deps, $wp_dependencies );
+			if ( empty( $dependencies ) ) {
+				continue;
+			}
+
+			array_unshift( $handles, ...$dependencies );
+		}
+
+		// Remove duplicates and re-index the array of handles before returning it.
+		return array_values( array_unique( $handles ) );
 	}
 }
