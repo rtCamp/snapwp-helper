@@ -20,7 +20,7 @@ class EnqueuedScriptsTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase {
 
 		// Reset the queues.
 		$GLOBALS['wp_scripts']->queue = [];
-		$GLOBALS['wp_styles']->queue = [];
+		$GLOBALS['wp_styles']->queue  = [];
 	}
 
 	/**
@@ -61,7 +61,6 @@ class EnqueuedScriptsTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase {
 					enqueuedScripts(first: 100) {
 						nodes {
 							handle
-							position
 						}
 					}
 				}
@@ -82,6 +81,7 @@ class EnqueuedScriptsTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase {
 
 		// Assert no errors.
 		$this->assertArrayNotHasKey( 'error', $actual );
+		$this->assertArrayHasKey( 'data', $actual );
 
 		// Extract the 'handle' values from the response.
 		$handles = array_column( $actual['data']['templateByUri']['enqueuedScripts']['nodes'], 'handle' );
@@ -108,7 +108,7 @@ class EnqueuedScriptsTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase {
 		$query = '
 			query GetCurrentScreen($uri: String!) {
 				templateByUri(uri: $uri) {
-					enqueuedScripts(first: 80) {
+					enqueuedScripts(first: 100) {
 						nodes {
 							handle
 						}
@@ -130,6 +130,7 @@ class EnqueuedScriptsTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase {
 
 		// Assert no errors
 		$this->assertArrayNotHasKey( 'error', $actual );
+		$this->assertArrayHasKey( 'data', $actual );
 
 		// Extract the 'handle' values from the response.
 		$handles = array_column( $actual['data']['templateByUri']['enqueuedScripts']['nodes'], 'handle' );
@@ -156,7 +157,7 @@ class EnqueuedScriptsTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase {
 		$query = '
 			query GetCurrentScreen($uri: String!) {
 				templateByUri(uri: $uri) {
-					enqueuedScripts(first: 80) {
+					enqueuedScripts(first: 100) {
 						nodes {
 							handle
 						}
@@ -178,6 +179,7 @@ class EnqueuedScriptsTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase {
 
 		// Assert no errors.
 		$this->assertArrayNotHasKey( 'error', $actual );
+		$this->assertArrayHasKey( 'data', $actual );
 
 		// Extract the 'handle' values from the response.
 		$handles = array_column( $actual['data']['templateByUri']['enqueuedScripts']['nodes'], 'handle' );
@@ -205,7 +207,7 @@ class EnqueuedScriptsTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase {
 		$query = '
 			query GetCurrentScreen($uri: String!) {
 				templateByUri(uri: $uri) {
-					enqueuedScripts(first: 80) {
+					enqueuedScripts(first: 100) {
 						nodes {
 							handle
 						}
@@ -219,7 +221,7 @@ class EnqueuedScriptsTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase {
 		$post_url = get_permalink( $post_id );
 
 		// Execute the GraphQL query with the post URL.
-		$response = $this->graphql([
+		$actual = $this->graphql([
 			'query'     => $query,
 			'variables' => [
 				'uri' => $post_url,
@@ -227,13 +229,17 @@ class EnqueuedScriptsTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase {
 		]);
 
 		// Assert no errors.
-		$this->assertArrayNotHasKey( 'error', $response );
+		$this->assertArrayNotHasKey( 'error', $actual );
+		$this->assertArrayHasKey( 'data', $actual );
 
 		// Extract the 'handle' values from the response.
-		$handles = array_column( $response['data']['templateByUri']['enqueuedScripts']['nodes'], 'handle' );
+		$handles = array_column( $actual['data']['templateByUri']['enqueuedScripts']['nodes'], 'handle' );
 
 		// Assert that the dependent script and its dependency are returned in the enqueuedScriptsQueue.
 		$this->assertContains( 'dependency-script', $handles );
 		$this->assertContains( 'test-dependent-script', $handles );
+		
+		// Assert that the dependency script is enqueued before the dependent script.
+		$this->assertGreaterThan( array_search( 'dependency-script', $handles ), array_search( 'test-dependent-script', $handles ) );
 	}
 }
