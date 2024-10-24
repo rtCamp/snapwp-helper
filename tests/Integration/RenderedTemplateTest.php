@@ -82,7 +82,7 @@ class EnqueuedScriptsTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase {
 		error_log( print_r( $actual, true ) );
 
 		// Assert no errors.
-		$this->assertArrayNotHasKey( 'error', $actual );
+		$this->assertArrayNotHasKey( 'errors', $actual );
 		$this->assertArrayHasKey( 'data', $actual );
 
 		// Extract the 'handle' values from the response.
@@ -133,7 +133,7 @@ class EnqueuedScriptsTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase {
 		error_log( print_r( $actual, true ) );
 
 		// Assert no errors
-		$this->assertArrayNotHasKey( 'error', $actual );
+		$this->assertArrayNotHasKey( 'errors', $actual );
 		$this->assertArrayHasKey( 'data', $actual );
 
 		// Extract the 'handle' values from the response.
@@ -184,7 +184,7 @@ class EnqueuedScriptsTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase {
 		error_log( print_r( $actual, true ) );
 
 		// Assert no errors.
-		$this->assertArrayNotHasKey( 'error', $actual );
+		$this->assertArrayNotHasKey( 'errors', $actual );
 		$this->assertArrayHasKey( 'data', $actual );
 
 		// Extract the 'handle' values from the response.
@@ -237,7 +237,7 @@ class EnqueuedScriptsTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase {
 		error_log( print_r( $actual, true ) );
 
 		// Assert no errors.
-		$this->assertArrayNotHasKey( 'error', $actual );
+		$this->assertArrayNotHasKey( 'errors', $actual );
 		$this->assertArrayHasKey( 'data', $actual );
 
 		// Extract the 'handle' values from the response.
