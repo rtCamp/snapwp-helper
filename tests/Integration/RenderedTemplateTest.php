@@ -2,31 +2,53 @@
 
 namespace SnapWP\Tests\Integration;
 
-use lucatume\WPBrowser\TestCase\WPTestCase;
-
-class EnqueuedScriptsTest extends WPTestCase {
-
+class EnqueuedScriptsTest extends  \Tests\WPGraphQL\TestCase\WPGraphQLTestCase {
 	/**
-	 * Set up the test environment.
+	 * {@inheritDoc}
 	 */
 	protected function setUp(): void {
 		// Call the parent setup to ensure WP is initialized.
 		parent::setUp();
 
 		// Ensure all enqueued scripts and styles are cleared before each test.
-		global $wp_scripts, $wp_styles;
-		$wp_scripts->queue = [];
-		$wp_styles->queue = [];
+		// global $wp_scripts, $wp_styles;
+		// $wp_scripts->queue = [];
+		// $wp_styles->queue = [];
+
+        // Ensure WordPress has initialized the script and style queues.
+        if ( ! isset( $GLOBALS['wp_scripts'] ) ) {
+            $GLOBALS['wp_scripts'] = new \WP_Scripts();
+        }
+
+        if ( ! isset( $GLOBALS['wp_styles'] ) ) {
+            $GLOBALS['wp_styles'] = new \WP_Styles();
+        }
+
+        // Reset the queues.
+        $GLOBALS['wp_scripts']->queue = [];
+        $GLOBALS['wp_styles']->queue = [];
 	}
 
 	/**
-	 * Tear down the test environment.
+	 * {@inheritDoc}
 	 */
 	protected function tearDown(): void {
+
+
+        if ( isset( $GLOBALS['wp_scripts'] ) ) {
+            $GLOBALS['wp_scripts']->queue = [];
+        }
+
+        if ( isset( $GLOBALS['wp_styles'] ) ) {
+            $GLOBALS['wp_styles']->queue = [];
+        }
+
+
+
 		// Clear the global script and style queues after each test.
-		global $wp_scripts, $wp_styles;
-		$wp_scripts->queue = [];
-		$wp_styles->queue = [];
+		// global $wp_scripts, $wp_styles;
+		// $wp_scripts->queue = [];
+		// $wp_styles->queue = [];
 
 		// Call the parent teardown to clean up.
 		parent::tearDown();
@@ -47,18 +69,60 @@ class EnqueuedScriptsTest extends WPTestCase {
 		});
 
 		// Query the post using GraphQL.
+		// $query = '
+		// 	query GetPostScripts($id: ID!) {
+		// 		post(id: $id) {
+		// 			enqueuedScriptsQueue
+		// 		}
+		// 	}
+		// ';
+
+		// Query the post using GraphQL.
 		$query = '
-			query GetPostScripts($id: ID!) {
-				post(id: $id) {
-					enqueuedScriptsQueue
-				}
-			}
+			query GetCurrentScreen($uri: String!) {
+                templateByUri(uri: $uri) {
+                    enqueuedScripts(first: 80) {
+                        nodes {
+                            handle
+                        }
+                    }
+                }
+            }
 		';
 
-		$response = $this->graphql($query, ['id' => $post_id]);
+
+        // Get the permalink/URL for the created post
+        $post_url = get_permalink( $post_id );
+
+
+		  // Execute the query with the post ID as a variable
+		//   $response = $this->graphql([
+        //     'query' => $query,
+        //     'variables' => [
+        //         'id' => $post_id,
+        //     ],
+        // ]);
+
+		 // Execute the GraphQL query with the post URL
+		 $response = $this->graphql([
+            'query' => $query,
+            'variables' => [
+                'uri' => $post_url,
+            ],
+        ]);
+
+		// $actual = $this->graphql( compact( 'query' ) );
+
+		// $response = $this->graphql($query, ['id' => $post_id]); // @here
+
+        // Assert no errors
+        $this->assertArrayNotHasKey('errors', $response);
+
+		// Extract the 'handle' values from the response
+		$handles = array_column($response['data']['templateByUri']['enqueuedScripts']['nodes'], 'handle');
 
 		// Assert that the script is returned in the enqueuedScriptsQueue.
-		$this->assertStringContains('test-head-script', $response['data']['post']['enqueuedScriptsQueue']);
+		$this->assertContains('test-head-script', $handles);
 	}
 
 	/**
@@ -76,18 +140,52 @@ class EnqueuedScriptsTest extends WPTestCase {
 		});
 
 		// Query the post using GraphQL.
+		// $query = '
+		// 	query GetPostScripts($id: ID!) {
+		// 		post(id: $id) {
+		// 			enqueuedScriptsQueue
+		// 		}
+		// 	}
+		// ';
+
+
+		// Query the post using GraphQL.
 		$query = '
-			query GetPostScripts($id: ID!) {
-				post(id: $id) {
-					enqueuedScriptsQueue
-				}
-			}
+			query GetCurrentScreen($uri: String!) {
+                templateByUri(uri: $uri) {
+                    enqueuedScripts(first: 80) {
+                        nodes {
+                            handle
+                        }
+                    }
+                }
+            }
 		';
 
-		$response = $this->graphql($query, ['id' => $post_id]);
+
+        // Get the permalink/URL for the created post
+        $post_url = get_permalink( $post_id );
+
+
+		 // Execute the GraphQL query with the post URL
+		 $response = $this->graphql([
+            'query' => $query,
+            'variables' => [
+                'uri' => $post_url,
+            ],
+        ]);
+
+
+		// $response = $this->graphql($query, ['id' => $post_id]); // @here
+
+        // Assert no errors
+        $this->assertArrayNotHasKey('errors', $response);
+
+		// Extract the 'handle' values from the response
+		$handles = array_column($response['data']['templateByUri']['enqueuedScripts']['nodes'], 'handle');
 
 		// Assert that the script is returned in the enqueuedScriptsQueue.
-		$this->assertContains('test-content-script', $response['data']['post']['enqueuedScriptsQueue']);
+		$this->assertContains('test-content-script', $handles);
 	}
 
 	/**
@@ -100,23 +198,59 @@ class EnqueuedScriptsTest extends WPTestCase {
 		]);
 
 		// Add a hook to enqueue a script to the footer.
-		add_action( 'wp_footer', function() {
+		add_action( 'wp_enqueue_scripts', function() {
 			wp_enqueue_script( 'test-footer-script', 'https://decoupled.local/test-footer.js', [], '1.0', true );
 		});
 
 		// Query the post using GraphQL.
+		// $query = '
+		// 	query GetPostScripts($id: ID!) {
+		// 		post(id: $id) {
+		// 			enqueuedScriptsQueue
+		// 		}
+		// 	}
+		// ';
+
+		// Query the post using GraphQL.
 		$query = '
-			query GetPostScripts($id: ID!) {
-				post(id: $id) {
-					enqueuedScriptsQueue
-				}
-			}
+			query GetCurrentScreen($uri: String!) {
+                templateByUri(uri: $uri) {
+                    enqueuedScripts(first: 80) {
+                        nodes {
+                            handle
+                        }
+                    }
+                }
+            }
 		';
 
-		$response = $this->graphql($query, ['id' => $post_id]);
+
+        // Get the permalink/URL for the created post
+        $post_url = get_permalink( $post_id );
+
+
+		 // Execute the GraphQL query with the post URL
+		 $response = $this->graphql([
+            'query' => $query,
+            'variables' => [
+                'uri' => $post_url,
+            ],
+        ]);
+
+		// $actual = $this->graphql( compact( 'query' ) );
+
+		error_log(print_r($response, true));
+
+        // Assert no errors
+        $this->assertArrayNotHasKey('errors', $response);
+
+		// Extract the 'handle' values from the response
+		$handles = array_column($response['data']['templateByUri']['enqueuedScripts']['nodes'], 'handle');
+
+		// $response = $this->graphql($query, ['id' => $post_id]); // @here
 
 		// Assert that the script is returned in the enqueuedScriptsQueue.
-		$this->assertContains('test-footer-script', $response['data']['post']['enqueuedScriptsQueue']);
+		$this->assertContains('test-footer-script', $handles);
 	}
 
 	/**
@@ -135,18 +269,53 @@ class EnqueuedScriptsTest extends WPTestCase {
 		});
 
 		// Query the post using GraphQL.
+		// $query = '
+		// 	query GetPostScripts($id: ID!) {
+		// 		post(id: $id) {
+		// 			enqueuedScriptsQueue
+		// 		}
+		// 	}
+		// ';
+
+		// $response = $this->graphql($query, ['id' => $post_id]); // @here
+		// Query the post using GraphQL.
 		$query = '
-			query GetPostScripts($id: ID!) {
-				post(id: $id) {
-					enqueuedScriptsQueue
-				}
-			}
+			query GetCurrentScreen($uri: String!) {
+                templateByUri(uri: $uri) {
+                    enqueuedScripts(first: 80) {
+                        nodes {
+                            handle
+                        }
+                    }
+                }
+            }
 		';
 
-		$response = $this->graphql($query, ['id' => $post_id]);
+
+        // Get the permalink/URL for the created post
+        $post_url = get_permalink( $post_id );
+
+ // Execute the GraphQL query with the post URL
+ $response = $this->graphql([
+	'query' => $query,
+	'variables' => [
+		'uri' => $post_url,
+	],
+]);
+
+		error_log(print_r($response, true));
+
+		 // Assert no errors
+		 $this->assertArrayNotHasKey('errors', $response);
+
+		 // Extract the 'handle' values from the response
+		 $handles = array_column($response['data']['templateByUri']['enqueuedScripts']['nodes'], 'handle');
+ 
+		 // Assert that the script is returned in the enqueuedScriptsQueue.
+
 
 		// Assert that the dependent script and its dependency are returned in the enqueuedScriptsQueue.
-		$this->assertContains('dependency-script', $response['data']['post']['enqueuedScriptsQueue']);
-		$this->assertContains('test-dependent-script', $response['data']['post']['enqueuedScriptsQueue']);
+		$this->assertContains('dependency-script', $handles);
+		$this->assertContains('test-dependent-script', $handles);
 	}
 }
