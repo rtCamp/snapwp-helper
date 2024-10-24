@@ -79,6 +79,8 @@ class EnqueuedScriptsTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase {
 			]
 		);
 
+		error_log( print_r( $actual, true ) );
+
 		// Assert no errors.
 		$this->assertArrayNotHasKey( 'error', $actual );
 		$this->assertArrayHasKey( 'data', $actual );
@@ -128,6 +130,8 @@ class EnqueuedScriptsTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase {
 			],
 		]);
 
+		error_log( print_r( $actual, true ) );
+
 		// Assert no errors
 		$this->assertArrayNotHasKey( 'error', $actual );
 		$this->assertArrayHasKey( 'data', $actual );
@@ -176,6 +180,8 @@ class EnqueuedScriptsTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase {
 				'uri' => $post_url,
 			],
 		]);
+
+		error_log( print_r( $actual, true ) );
 
 		// Assert no errors.
 		$this->assertArrayNotHasKey( 'error', $actual );
@@ -227,6 +233,8 @@ class EnqueuedScriptsTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase {
 				'uri' => $post_url,
 			],
 		]);
+
+		error_log( print_r( $actual, true ) );
 
 		// Assert no errors.
 		$this->assertArrayNotHasKey( 'error', $actual );
