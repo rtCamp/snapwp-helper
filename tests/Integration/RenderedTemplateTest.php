@@ -2,6 +2,8 @@
 
 namespace SnapWP\Tests\Integration;
 
+use WPGraphQL;
+
 class EnqueuedScriptsTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase {
 	/**
 	 * {@inheritDoc}
@@ -21,13 +23,16 @@ class EnqueuedScriptsTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase {
 		// Reset the queues.
 		$GLOBALS['wp_scripts']->queue = [];
 		$GLOBALS['wp_styles']->queue  = [];
+
+		// Clear the schema.
+		WPGraphQL::clear_schema();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	protected function tearDown(): void {
-
+		// Reset the queues.
 		if ( isset( $GLOBALS['wp_scripts'] ) ) {
 			$GLOBALS['wp_scripts']->queue = [];
 		}
@@ -35,6 +40,9 @@ class EnqueuedScriptsTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase {
 		if ( isset( $GLOBALS['wp_styles'] ) ) {
 			$GLOBALS['wp_styles']->queue = [];
 		}
+
+		// Clear the schema.
+		WPGraphQL::clear_schema();
 
 		// Call the parent teardown to clean up.
 		parent::tearDown();
