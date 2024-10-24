@@ -77,28 +77,11 @@ class RenderedTemplate extends Model {
 
 					// Simulate WP template rendering.
 					ob_start();
-					do_action( 'wp_head' ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
+					do_action( 'wp_enqueue_scripts' ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
 					ob_end_clean();
 
-					// Arrays to track broken scripts and their dependencies.
-					$broken_scripts   = [];
+					// Get the list of enqueued scripts.
 					$enqueued_scripts = $wp_scripts->queue ?? [];
-
-					foreach ( $enqueued_scripts as $handle ) {
-
-						// If the script is not registered, add it to the list of broken scripts.
-						if ( ! $wp_scripts->registered[ $handle ] ) {
-							$broken_scripts[] = $handle;
-						} else {
-
-							// Check if the script has any dependencies that are not enqueued.
-							foreach ( $wp_scripts->registered[ $handle ]->deps as $dep ) {
-								if ( ! in_array( $dep, $enqueued_scripts, true ) ) {
-									$broken_scripts[] = $dep;
-								}
-							}
-						}
-					}
 
 					$queue = $this->flatten_enqueued_assets_list( $enqueued_scripts, $wp_scripts );
 
