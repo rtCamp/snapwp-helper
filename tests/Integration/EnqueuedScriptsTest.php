@@ -127,18 +127,18 @@ class EnqueuedScriptsTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase {
 	 * Test that the scripts correctly getting enqueued in the content are returned in the GraphQL response.
 	 */
 	public function testEnqueuedScriptsInContent(): void {
-		// Create a post with a block that enqueues a script.
+		// Create a post with a paragraph block, which will be used to simulate enqueuing a script.
 		$post_id = $this->factory()->post->create( [
-			'post_content' => '<!-- wp:script {"id":"test-content-script"} /-->'
+			'post_content' => '<!-- wp:paragraph {"content":"This is a test paragraph."} /-->'
 		] );
-
-		// Simulate block render with script enqueue.
-		add_action( 'wp_enqueue_scripts', function() use ( $post_id ) {
-			if ( get_the_ID() !== $post_id ) {
-				return;
+	
+		// Add a render block filter to enqueue the script when the paragraph block renders.
+		add_filter( 'render_block_core/paragraph', function( $block_content, $block ) use ( $post_id ) {
+			if ( get_the_ID() === $post_id ) {
+				wp_enqueue_script( 'test-content-script' );
 			}
-			wp_enqueue_script( 'test-content-script' );
-		} );
+			return $block_content;
+		}, 10, 2 );
 
 		// Get the URL for the created post.
 		$post_url = get_permalink( $post_id );
@@ -163,6 +163,8 @@ class EnqueuedScriptsTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase {
 
 		// Assert only the expected script is enqueued by checking unwanted handles are absent.
 		$this->assertNoUnexpectedScriptsEnqueued( $actual, ['test-head-script', 'test-footer-script', 'dependency-script', 'test-dependent-script'] );
+
+		remove_filter( 'render_block_core/paragraph', '__return_false' );
 	}
 
 	/**
