@@ -134,9 +134,8 @@ class EnqueuedScriptsTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase {
 	
 		// Add a render block filter to enqueue the script when the paragraph block renders.
 		add_filter( 'render_block_core/paragraph', function( $block_content, $block ) use ( $post_id ) {
-			if ( get_the_ID() === $post_id ) {
-				wp_enqueue_script( 'test-content-script' );
-			}
+			wp_enqueue_script( 'test-content-script' );
+			
 			return $block_content;
 		}, 10, 2 );
 
