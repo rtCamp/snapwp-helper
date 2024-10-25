@@ -1,9 +1,17 @@
 <?php
+/**
+ * Tests the RenderedTemplate class.
+ *
+ * @package SnapWP\Helper\Tests\Integration
+ */
 
 namespace SnapWP\Tests\Integration;
 
 use WPGraphQL;
 
+/**
+ * Tests the RenderedTemplate class.
+ */
 class EnqueuedScriptsTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase {
 	/**
 	 * {@inheritDoc}
@@ -20,13 +28,10 @@ class EnqueuedScriptsTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase {
 			$GLOBALS['wp_styles'] = new \WP_Styles();
 		}
 
-			// Register scripts used across tests.
-			wp_register_script( 'test-head-script', 'https://decoupled.local/test-head.js', [], '1.0', false );
-			wp_register_script( 'test-content-script', 'https://decoupled.local/test-content.js', [], '1.0', false );
-			wp_register_script( 'test-footer-script', 'https://decoupled.local/test-footer.js', [], '1.0', true );
-			wp_register_script( 'dependency-script', 'https://decoupled.local/dependency.js', [], '1.0', false );
-			wp_register_script( 'test-dependent-script', 'https://decoupled.local/test-dependent.js', ['dependency-script'], '1.0', false );
-	
+		// Register scripts used across tests.
+		wp_register_script( 'test-head-script', 'https://decoupled.local/test-head.js', [], '1.0', false );
+		wp_register_script( 'test-content-script', 'https://decoupled.local/test-content.js', [], '1.0', false );
+		wp_register_script( 'test-footer-script', 'https://decoupled.local/test-footer.js', [], '1.0', true );	
 
 		// Reset the queues.
 		$GLOBALS['wp_scripts']->queue = [];
@@ -61,6 +66,10 @@ class EnqueuedScriptsTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase {
 
 	/**
 	 * Helper to execute a GraphQL query with the post URL.
+	 * 
+	 * @param $post_url The URL of the post to query.
+	 * 
+	 * @return array The response from the GraphQL query.
 	 */
 	private function query( $post_url ): array {
 		$query = '
@@ -97,7 +106,7 @@ class EnqueuedScriptsTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase {
 			if ( get_the_ID() !== $post_id ) {
 				return;
 			}
-			wp_enqueue_script( 'test-head-script', 'https://decoupled.local/test-head.js', [], '1.0', false );
+			wp_enqueue_script( 'test-head-script' );
 		} );
 
 		// Get the permalink/URL for the created post.
@@ -105,8 +114,6 @@ class EnqueuedScriptsTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase {
 
 		// Execute the GraphQL query with the post URL.
 		$actual = $this->query( $post_url );
-
-		error_log( print_r( $actual, true ) );
 
 		// Assert no errors.
 		$this->assertArrayNotHasKey( 'errors', $actual );
@@ -117,6 +124,9 @@ class EnqueuedScriptsTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase {
 
 		// Assert that the script is returned in the enqueuedScriptsQueue.
 		$this->assertContains( 'test-head-script', $handles );
+
+		// Assert only the expected script is enqueued by checking unwanted handles are absent.
+		$this->assert_no_unexpected_scripts_enqueued( $actual, ['test-content-script', 'test-footer-script', 'dependency-script', 'test-dependent-script'] );
 	}
 
 	/**
@@ -133,14 +143,14 @@ class EnqueuedScriptsTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase {
 			if ( get_the_ID() !== $post_id ) {
 				return;
 			}
-			wp_enqueue_script( 'test-content-script', 'https://decoupled.local/test-content.js', [], '1.0', false );
+			wp_enqueue_script( 'test-content-script' );
 		} );
 
 		// Get the URL for the created post.
 		$post_url = get_permalink( $post_id );
 
+		// Execute the GraphQL query with the post URL.
 		$actual = $this->query( $post_url );
-		error_log( print_r( $actual, true ) );
 
 		// Assert no errors
 		$this->assertArrayNotHasKey( 'errors', $actual );
@@ -151,6 +161,9 @@ class EnqueuedScriptsTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase {
 
 		// Assert that the script is returned in the enqueuedScriptsQueue.
 		$this->assertContains('test-content-script', $handles );
+
+		// Assert only the expected script is enqueued by checking unwanted handles are absent.
+		$this->assert_no_unexpected_scripts_enqueued( $actual, ['test-head-script', 'test-footer-script', 'dependency-script', 'test-dependent-script'] );
 	}
 
 	/**
@@ -167,14 +180,14 @@ class EnqueuedScriptsTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase {
 			if ( get_the_ID() !== $post_id ) {
 				return;
 			}
-			wp_enqueue_script( 'test-footer-script', 'https://decoupled.local/test-footer.js', [], '1.0', true );
+			wp_enqueue_script( 'test-footer-script' );
 		});
 
 		// Get the URL for the created post.
 		$post_url = get_permalink( $post_id );
 
+		// Execute the GraphQL query with the post URL.
 		$actual = $this->query( $post_url );
-		error_log( print_r( $actual, true ) );
 
 		// Assert no errors.
 		$this->assertArrayNotHasKey( 'errors', $actual );
@@ -185,6 +198,9 @@ class EnqueuedScriptsTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase {
 
 		// Assert that the script is returned in the enqueuedScriptsQueue.
 		$this->assertContains( 'test-footer-script', $handles );
+
+		// Assert only the expected script is enqueued by checking unwanted handles are absent.
+		$this->assert_no_unexpected_scripts_enqueued( $actual, ['test-head-script', 'test-content-script', 'dependency-script', 'test-dependent-script'] );
 	}
 
 	/**
@@ -208,9 +224,8 @@ class EnqueuedScriptsTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase {
 		// Get the URL for the created post.
 		$post_url = get_permalink( $post_id );
 
+		// Execute the GraphQL query with the post URL.
 		$actual = $this->query( $post_url );
-
-		error_log( print_r( $actual, true ) );
 
 		// Assert no errors.
 		$this->assertArrayNotHasKey( 'errors', $actual );
@@ -225,5 +240,20 @@ class EnqueuedScriptsTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase {
 		
 		// Assert that the dependency script is enqueued before the dependent script.
 		$this->assertGreaterThan( array_search( 'dependency-script', $handles ), array_search( 'test-dependent-script', $handles ) );
+	}
+
+	/**
+	 * Assert that none of the unwanted scripts are enqueued.
+	 * 
+	 * @param array $response         The GraphQL response.
+	 * @param array $unwanted_handles The handles of the scripts that should not be enqueued.
+	 */
+	private function assert_no_unexpected_scripts_enqueued( array $response, array $unwanted_handles ): void {
+		$enqueued_handles = array_column( $response['data']['templateByUri']['enqueuedScripts']['nodes'], 'handle' );
+
+		// Assert each unwanted handle is not in the enqueued handles.
+		foreach ( $unwanted_handles as $handle ) {
+			$this->assertNotContains( $handle, $enqueued_handles, "Unexpected script $handle was enqueued." );
+		}
 	}
 }
