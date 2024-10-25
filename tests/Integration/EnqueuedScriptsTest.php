@@ -84,7 +84,7 @@ class EnqueuedScriptsTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase {
 	/**
 	 * Test that the scripts correctly getting enqueued in the head are returned in the GraphQL response.
 	 */
-	public function test_enqueued_scripts_in_head(): void {
+	public function testEnqueuedScriptsInHead(): void {
 		// Create a post.
 		$post_id = $this->factory()->post->create( [
 			'post_title' => 'Test Post with Head Script'
@@ -120,13 +120,13 @@ class EnqueuedScriptsTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase {
 		$this->assertContains( 'test-head-script', $handles );
 
 		// Assert only the expected script is enqueued by checking unwanted handles are absent.
-		$this->assert_no_unexpected_scripts_enqueued( $actual, ['test-content-script', 'test-footer-script', 'dependency-script', 'test-dependent-script'] );
+		$this->assertNoUnexpectedScriptsEnqueued( $actual, ['test-content-script', 'test-footer-script', 'dependency-script', 'test-dependent-script'] );
 	}
 
 	/**
 	 * Test that the scripts correctly getting enqueued in the content are returned in the GraphQL response.
 	 */
-	public function test_enqueued_scripts_in_content(): void {
+	public function testEnqueuedScriptsInContent(): void {
 		// Create a post with a block that enqueues a script.
 		$post_id = $this->factory()->post->create( [
 			'post_content' => '<!-- wp:script {"id":"test-content-script"} /-->'
@@ -162,13 +162,13 @@ class EnqueuedScriptsTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase {
 		$this->assertContains('test-content-script', $handles );
 
 		// Assert only the expected script is enqueued by checking unwanted handles are absent.
-		$this->assert_no_unexpected_scripts_enqueued( $actual, ['test-head-script', 'test-footer-script', 'dependency-script', 'test-dependent-script'] );
+		$this->assertNoUnexpectedScriptsEnqueued( $actual, ['test-head-script', 'test-footer-script', 'dependency-script', 'test-dependent-script'] );
 	}
 
 	/**
 	 * Test that the scripts correctly getting enqueued in the footer are returned in the GraphQL response.
 	 */
-	public function test_enqueued_scripts_in_footer(): void {
+	public function testEnqueuedScriptsInFooter(): void {
 		// Create a post.
 		$post_id = $this->factory()->post->create([
 			'post_title' => 'Test Post with Footer Script'
@@ -204,13 +204,13 @@ class EnqueuedScriptsTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase {
 		$this->assertContains( 'test-footer-script', $handles );
 
 		// Assert only the expected script is enqueued by checking unwanted handles are absent.
-		$this->assert_no_unexpected_scripts_enqueued( $actual, ['test-head-script', 'test-content-script', 'dependency-script', 'test-dependent-script'] );
+		$this->assertNoUnexpectedScriptsEnqueued( $actual, ['test-head-script', 'test-content-script', 'dependency-script', 'test-dependent-script'] );
 	}
 
 	/**
 	 * Test that scripts with dependencies are enqueued properly.
 	 */
-	public function test_enqueued_scripts_with_dependencies(): void {
+	public function testEnqueuedScriptsWithDependencies(): void {
 		// Create a post.
 		$post_id = $this->factory()->post->create([
 			'post_title' => 'Test Post with Dependencies'
@@ -257,7 +257,7 @@ class EnqueuedScriptsTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase {
 	 * @param array $response         The GraphQL response.
 	 * @param array $unwanted_handles The handles of the scripts that should not be enqueued.
 	 */
-	private function assert_no_unexpected_scripts_enqueued( array $response, array $unwanted_handles ): void {
+	private function assertNoUnexpectedScriptsEnqueued( array $response, array $unwanted_handles ): void {
 		$enqueued_handles = array_column( $response['data']['templateByUri']['enqueuedScripts']['nodes'], 'handle' );
 
 		// Assert each unwanted handle is not in the enqueued handles.
