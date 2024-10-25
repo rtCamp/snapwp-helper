@@ -66,13 +66,9 @@ class EnqueuedScriptsTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase {
 
 	/**
 	 * Helper to execute a GraphQL query with the post URL.
-	 * 
-	 * @param $post_url The URL of the post to query.
-	 * 
-	 * @return array The response from the GraphQL query.
 	 */
-	private function query( $post_url ): array {
-		$query = '
+	private function query(): string {
+		return '
 			query GetCurrentScreen($uri: String!) {
 				templateByUri(uri: $uri) {
 					enqueuedScripts(first: 100) {
@@ -83,13 +79,6 @@ class EnqueuedScriptsTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase {
 				}
 			}
 		';
-
-		return $this->graphql([
-			'query'     => $query,
-			'variables' => [
-				'uri' => $post_url,
-			],
-		]);
 	}
 
 	/**
@@ -113,7 +102,12 @@ class EnqueuedScriptsTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase {
 		$post_url = get_permalink( $post_id );
 
 		// Execute the GraphQL query with the post URL.
-		$actual = $this->query( $post_url );
+		$query     = $this->query();
+		$variables = [
+			'uri' => $post_url,
+		];
+
+		$actual = $this->graphql( compact( 'query', 'variables' ) );
 
 		// Assert no errors.
 		$this->assertArrayNotHasKey( 'errors', $actual );
@@ -150,7 +144,12 @@ class EnqueuedScriptsTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase {
 		$post_url = get_permalink( $post_id );
 
 		// Execute the GraphQL query with the post URL.
-		$actual = $this->query( $post_url );
+		$query     = $this->query();
+		$variables = [
+			'uri' => $post_url,
+		];
+
+		$actual = $this->graphql( compact( 'query', 'variables' ) );
 
 		// Assert no errors
 		$this->assertArrayNotHasKey( 'errors', $actual );
@@ -187,7 +186,12 @@ class EnqueuedScriptsTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase {
 		$post_url = get_permalink( $post_id );
 
 		// Execute the GraphQL query with the post URL.
-		$actual = $this->query( $post_url );
+		$query     = $this->query();
+		$variables = [
+			'uri' => $post_url,
+		];
+
+		$actual = $this->graphql( compact( 'query', 'variables' ) );
 
 		// Assert no errors.
 		$this->assertArrayNotHasKey( 'errors', $actual );
@@ -225,7 +229,12 @@ class EnqueuedScriptsTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase {
 		$post_url = get_permalink( $post_id );
 
 		// Execute the GraphQL query with the post URL.
-		$actual = $this->query( $post_url );
+		$query     = $this->query();
+		$variables = [
+			'uri' => $post_url,
+		];
+
+		$actual = $this->graphql( compact( 'query', 'variables' ) );
 
 		// Assert no errors.
 		$this->assertArrayNotHasKey( 'errors', $actual );
