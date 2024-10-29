@@ -97,15 +97,49 @@ class RenderedTemplate extends Model {
 					// Prevent possible side effects printed to the output buffer.
 					ob_start();
 
+					// Ensure core styles are properly initialized.
+					if ( is_admin_bar_showing() ) {
+						wp_enqueue_style( 'admin-bar' );
+					}
+
+					// Let plugins and themes enqueue their styles.
 					do_action( 'wp_enqueue_scripts' ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
 
-					$queue = $wp_styles->queue;
+					// Get the list of enqueued styles.
+					$enqueued_styles = $wp_styles->queue ?? [];
+
+					// Process dependencies and create flattened list.
+					$processed_styles = [];
+					foreach ( $enqueued_styles as $handle ) {
+						if ( ! isset( $wp_styles->registered[ $handle ] ) ) {
+							continue;
+						}
+
+						// Get the style object.
+						$style = $wp_styles->registered[ $handle ];
+
+						// Process dependencies first.
+						if ( ! empty( $style->deps ) ) {
+							foreach ( $style->deps as $dep ) {
+								if ( ! in_array( $dep, $processed_styles, true ) && isset( $wp_styles->registered[ $dep ] ) ) {
+									$processed_styles[] = $dep;
+								}
+							}
+						}
+
+						// Add the style if not already processed.
+						if ( ! in_array( $handle, $processed_styles, true ) ) {
+							$processed_styles[] = $handle;
+						}
+					}
+
+					// Reset the styles queue to avoid conflicts.
 					$wp_styles->reset();
 					$wp_styles->queue = [];
 
 					ob_end_clean();
 
-					return $queue;
+					return $processed_styles;
 				},
 				'renderedHtml'             => fn (): ?string => ! empty( $this->data['renderedHtml'] ) ? $this->data['renderedHtml'] : null,
 				'uri'                      => fn (): ?string => ! empty( $this->data['uri'] ) ? $this->data['uri'] : null,
