@@ -91,19 +91,23 @@ class RenderedTemplate extends Model {
 
 					return $queue;
 				},
-				'enqueuedStylesheetsQueue' => static function () {
+				'enqueuedStylesheetsQueue' => function () {
 					global $wp_styles;
 
 					// Prevent possible side effects printed to the output buffer.
 					ob_start();
-
 					do_action( 'wp_enqueue_scripts' ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
+					ob_end_clean();
 
-					$queue = $wp_styles->queue;
+					// Get the list of enqueued styles.
+					$enqueued_styles = $wp_styles->queue ?? [];
+
+					// Use the existing flatten_enqueued_assets_list method.
+					$queue = $this->flatten_enqueued_assets_list( $enqueued_styles, $wp_styles );
+
+					// Reset the styles queue to avoid conflicts with other queries.
 					$wp_styles->reset();
 					$wp_styles->queue = [];
-
-					ob_end_clean();
 
 					return $queue;
 				},
