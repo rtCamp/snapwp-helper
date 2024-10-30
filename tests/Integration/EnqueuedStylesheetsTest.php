@@ -29,6 +29,8 @@ class EnqueuedStylesheetsTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCas
         wp_register_style( 'test-additional-style', 'https://decoupled.local/test-additional.css', [], '1.0' );
         wp_register_style( 'test-dependency-style', 'https://decoupled.local/test-dependency.css', [], '1.0' );
         wp_register_style( 'test-dependent-style', 'https://decoupled.local/test-dependent.css', ['test-dependency-style'], '1.0' );
+        wp_register_style( 'test-block-dependency', 'https://decoupled.local/test-block-dependency.css', [], '1.0' );
+        wp_register_style( 'test-block-style', 'https://decoupled.local/test-block-style.css', ['test-block-dependency'], '1.0' );
 
         // Reset the queue.
         $GLOBALS['wp_styles']->queue = [];
@@ -214,6 +216,69 @@ class EnqueuedStylesheetsTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCas
         $this->assertNoUnexpectedStylesheetsEnqueued( $actual, [
             'test-main-style',
             'test-additional-style'
+        ]);
+    }
+
+    /**
+     * Test that block styles with dependencies are enqueued correctly.
+     */
+    public function testBlockStyleWithDependency(): void {
+        // Create a post with a block that would trigger the style
+        $post_id = $this->factory()->post->create([
+            'post_title' => 'Test Post with Block Style',
+            'post_content' => '<!-- wp:test/block-with-style /-->'
+        ]);
+
+        // Register the block style
+        add_action( 'wp_enqueue_scripts', function() use ( $post_id ) {
+            if ( get_the_ID() !== $post_id ) {
+                return;
+            }
+            
+            // Simulate block style registration
+            wp_enqueue_style( 'test-block-style' );
+            
+            // Register it as a block style
+            wp_enqueue_block_style( 'test/block-with-style', [
+                'handle' => 'test-block-style'
+            ]);
+        });
+
+        // Get the permalink for the created post
+        $post_url = get_permalink( $post_id );
+
+        // Execute the GraphQL query
+        $query = $this->query();
+        $variables = [
+            'uri' => $post_url,
+        ];
+
+        $actual = $this->graphql( compact( 'query', 'variables' ) );
+
+        // Assert no errors
+        $this->assertArrayNotHasKey( 'errors', $actual );
+        $this->assertArrayHasKey( 'data', $actual );
+
+        // Extract the 'handle' values from the response
+        $handles = array_column( $actual['data']['templateByUri']['enqueuedStylesheets']['nodes'], 'handle' );
+
+        // Assert that both the block style and its dependency are returned
+        $this->assertContains( 'test-block-dependency', $handles );
+        $this->assertContains( 'test-block-style', $handles );
+
+        // Assert that the dependency appears before the block style
+        $this->assertLessThan(
+            array_search( 'test-block-style', $handles ),
+            array_search( 'test-block-dependency', $handles ),
+            'Block style dependency should be enqueued before the block style'
+        );
+
+        // Assert only the expected stylesheets are enqueued
+        $this->assertNoUnexpectedStylesheetsEnqueued( $actual, [
+            'test-main-style',
+            'test-additional-style',
+            'test-dependency-style',
+            'test-dependent-style'
         ]);
     }
 
