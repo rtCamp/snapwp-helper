@@ -37,11 +37,11 @@ final class SchemaFilters implements Registrable {
 	 */
 	public function register_hooks(): void {
 		// No need to check for dependencies, since missing filters will just be ignored.
-		add_filter( 'wpgraphql_content_blocks_resolver_content', [ $this, 'get_content_from_model' ], 10, 2 );
 		add_filter( 'graphql_object_fields', [ $this, 'overload_content_blocks_resolver' ], 10 );
+		add_filter( 'wpgraphql_content_blocks_resolver_content', [ $this, 'get_content_from_model' ], 10, 2 );
 
 		// Cache rendered blocks.
-		add_filter( 'pre_render_block', [ $this, 'get_cached_rendered_block' ], 10, 2 ); // @todo: this should be as early priority as possible
+		add_filter( 'pre_render_block', [ $this, 'get_cached_rendered_block' ], 11, 2 ); // @todo: this should be as early priority as possible
 		// We want to cache the rendered block as late as possible to ensure we're caching the final output.
 		add_filter( 'render_block', [ $this, 'cache_rendered_block' ], PHP_INT_MAX - 1, 2 );
 	}
@@ -99,7 +99,7 @@ final class SchemaFilters implements Registrable {
 		}
 
 		// Bail if block content is already set.
-		if ( null !== $block_content ) {
+		if ( null !== $block_content || empty( $parsed_block ) ) {
 			return $block_content;
 		}
 

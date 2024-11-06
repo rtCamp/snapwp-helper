@@ -25,7 +25,20 @@ final class ContentBlocksResolver {
 	 * @return array<string,mixed> The list of content blocks.
 	 */
 	public static function resolve_content_blocks( $node, $args, $allowed_block_names = [] ): array {
-		global $post_id;
+
+		/**
+		 * When this filter returns a non-null value, the content blocks resolver will use that value
+		 *
+		 * @param ?array                 $content_blocks The content blocks to parse.
+		 * @param \WPGraphQL\Model\Model $node           The node we are resolving.
+		 * @param array                  $args           GraphQL query args to pass to the connection resolver.
+		 * @param array                  $allowed_block_names The list of allowed block names to filter.
+		 */
+		$pre_resolved_blocks = apply_filters( 'wpgraphql_content_blocks_pre_resolve_blocks', null, $node, $args, $allowed_block_names ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- WPGraphQL filter.
+
+		if ( null !== $pre_resolved_blocks && is_array( $pre_resolved_blocks ) ) {
+			return $pre_resolved_blocks;
+		}
 
 		$content = null;
 		if ( $node instanceof Post ) {
@@ -66,15 +79,18 @@ final class ContentBlocksResolver {
 		}
 
 		// Final level of filtering out blocks not in the allowed list.
-		if ( ! empty( $allowed_block_names ) ) {
-			$parsed_blocks = array_filter(
-				$parsed_blocks,
-				static function ( $parsed_block ) use ( $allowed_block_names ) {
-					return in_array( $parsed_block['blockName'], $allowed_block_names, true );
-				},
-				ARRAY_FILTER_USE_BOTH
-			);
-		}
+		$parsed_blocks = self::filter_allowed_blocks( $parsed_blocks, $allowed_block_names );
+
+		/**
+		 * Filters the content blocks after they have been resolved.
+		 *
+		 * @param array                  $parsed_blocks The parsed blocks.
+		 * @param \WPGraphQL\Model\Model $node          The node we are resolving.
+		 * @param array                  $args          GraphQL query args to pass to the connection resolver.
+		 * @param array                  $allowed_block_names The list of allowed block names to filter.
+		 */
+		$parsed_blocks = apply_filters( 'wpgraphql_content_blocks_resolve_blocks', $parsed_blocks, $node, $args, $allowed_block_names ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- WPGraphQL filter.
+
 		return $parsed_blocks;
 	}
 
@@ -101,13 +117,16 @@ final class ContentBlocksResolver {
 	 * @return array<string,mixed> The flattened block.
 	 */
 	private static function flatten_inner_blocks( $block ): array {
-		$result            = [];
+		$result = [];
+
+		// Assign a unique clientId to the block if it doesn't already have one.
 		$block['clientId'] = isset( $block['clientId'] ) ? $block['clientId'] : uniqid();
 		array_push( $result, $block );
 
 		foreach ( $block['innerBlocks'] as $child ) {
 			$child['parentClientId'] = $block['clientId'];
 
+			// Flatten the child, and merge with the result.
 			$result = array_merge( $result, self::flatten_inner_blocks( $child ) );
 		}
 
@@ -131,6 +150,8 @@ final class ContentBlocksResolver {
 	/**
 	 * Recursively process blocks.
 	 *
+	 * This mirrors the `do_blocks` function in WordPress which is responsible for hydrating certain block attributes and supports, but without the forced rendering.
+	 *
 	 * @param array<string,mixed>[] $blocks Blocks data.
 	 *
 	 * @return array<string,mixed>[] The processed blocks.
@@ -145,7 +166,7 @@ final class ContentBlocksResolver {
 		}
 
 		// Remove empty blocks.
-		return array_filter( $parsed );
+		return array_values( array_filter( $parsed ) );
 	}
 
 	/**
@@ -177,6 +198,13 @@ final class ContentBlocksResolver {
 
 		$block = self::populate_pattern_inner_blocks( $block );
 
+		/**
+		 * Filters the block data after it has been processed.
+		 *
+		 * @param array<string,mixed> $block The block data.
+		 */
+		$block = apply_filters( 'wpgraphql_content_blocks_handle_do_block', $block ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- WPGraphQL filter.
+
 		// Prepare innerBlocks.
 		if ( ! empty( $block['innerBlocks'] ) ) {
 			$block['innerBlocks'] = self::handle_do_blocks( $block['innerBlocks'] );
@@ -196,19 +224,12 @@ final class ContentBlocksResolver {
 			return false;
 		}
 
-		if ( ! empty( $block['innerBlocks'] ) || ! empty( trim( $block['innerHTML'] ) ) ) {
-			return false;
+		// If there is no innerHTML or innerContent, we can consider it empty.
+		if ( empty( $block['innerHTML'] ) && empty( $block['innerContent'] ) ) {
+			return true;
 		}
 
-		// $block['innerContent'] can be an array, we need to check if it's empty, including empty strings.
-		if ( ! empty( $block['innerContent'] ) ) {
-			$inner_content = implode( '', $block['innerContent'] );
-			if ( ! empty( trim( $inner_content ) ) ) {
-				return false;
-			}
-		}
-
-		$stripped = preg_replace( '/<!--(.*)-->/Uis', '', render_block( $block ) );
+		$stripped = preg_replace( '/<!--(.*)-->/Uis', '', $block['innerHTML'] );
 
 		return empty( trim( $stripped ?? '' ) );
 	}
@@ -221,6 +242,11 @@ final class ContentBlocksResolver {
 	 * @return array<string,mixed> The populated block.
 	 */
 	private static function populate_template_part_inner_blocks( array $block ): array {
+		// Bail if not WP 5.8 or later.
+		if ( ! function_exists( 'get_block_templates' ) ) {
+			return $block;
+		}
+
 		if ( 'core/template-part' !== $block['blockName'] || ! isset( $block['attrs']['slug'] ) ) {
 			return $block;
 		}
@@ -301,6 +327,11 @@ final class ContentBlocksResolver {
 	 * @return array<string,mixed> The populated block.
 	 */
 	private static function populate_pattern_inner_blocks( array $block ): array {
+		// Bail if not WP 6.6 or later.
+		if ( ! function_exists( 'resolve_pattern_blocks' ) ) {
+			return $block;
+		}
+
 		if ( 'core/pattern' !== $block['blockName'] || ! isset( $block['attrs']['slug'] ) ) {
 			return $block;
 		}
@@ -314,5 +345,26 @@ final class ContentBlocksResolver {
 		$block['innerBlocks'] = $resolved_patterns;
 
 		return $block;
+	}
+
+	/**
+	 * Filters out disallowed blocks from the list of blocks
+	 *
+	 * @param array<string,mixed> $blocks A list of blocks to filter.
+	 * @param string[]            $allowed_block_names The list of allowed block names to filter.
+	 *
+	 * @return array<string,mixed> The filtered list of blocks.
+	 */
+	private static function filter_allowed_blocks( array $blocks, array $allowed_block_names ): array {
+		if ( empty( $allowed_block_names ) ) {
+			return $blocks;
+		}
+
+		return array_filter(
+			$blocks,
+			static function ( $block ) use ( $allowed_block_names ) {
+				return in_array( $block['blockName'], $allowed_block_names, true );
+			}
+		);
 	}
 }
