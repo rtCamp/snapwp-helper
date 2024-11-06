@@ -25,7 +25,6 @@ final class ContentBlocksResolver {
 	 * @return array<string,mixed> The list of content blocks.
 	 */
 	public static function resolve_content_blocks( $node, $args, $allowed_block_names = [] ): array {
-		global $post_id;
 
 		/**
 		 * When this filter returns a non-null value, the content blocks resolver will use that value

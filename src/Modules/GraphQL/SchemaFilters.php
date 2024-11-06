@@ -37,7 +37,7 @@ final class SchemaFilters implements Registrable {
 	 */
 	public function register_hooks(): void {
 		// No need to check for dependencies, since missing filters will just be ignored.
-		add_filter( 'wpgraphql_content_blocks_handle_do_block', [ ContentBlocksResolver::class, 'handle_do_block' ], 10, 1 );
+		add_filter( 'graphql_object_fields', [ $this, 'overload_content_blocks_resolver' ], 10 );
 		add_filter( 'wpgraphql_content_blocks_resolver_content', [ $this, 'get_content_from_model' ], 10, 2 );
 
 		// Cache rendered blocks.
@@ -58,6 +58,27 @@ final class SchemaFilters implements Registrable {
 		}
 
 		return $content;
+	}
+
+	/**
+	 * Overloads the content blocks resolver to use ourn own resolver.
+	 *
+	 * @todo This is necessary because WPGraphQL Content Blocks' resolver is broken.
+	 *
+	 * @param array<string,mixed> $fields The config for the interface type.
+	 *
+	 * @return array<string,mixed>
+	 */
+	public function overload_content_blocks_resolver( array $fields ): array {
+		if ( ! isset( $fields['editorBlocks'] ) ) {
+			return $fields;
+		}
+
+		$fields['editorBlocks']['resolve'] = static function ( $node, $args ) {
+			return ContentBlocksResolver::resolve_content_blocks( $node, $args );
+		};
+
+		return $fields;
 	}
 
 	/**
