@@ -77,11 +77,77 @@ class RenderedTemplate extends Model {
 
 					// Simulate WP template rendering.
 					ob_start();
+					// Hook early to catch all script registrations.
+					add_action(
+						'wp_enqueue_scripts',
+						static function () use ( $wp_scripts ) {
+							// Ensure WordPress core interactivity is registered.
+							if ( ! isset( $wp_scripts->registered['@wordpress/interactivity'] ) ) {
+								wp_register_script(
+									'@wordpress/interactivity',
+									includes_url( 'js/dist/interactivity.min.js' ),
+									[],
+									get_bloginfo( 'version' ),
+									true
+								);
+							}
+
+							// Check for core interactive blocks.
+							$interactive_blocks = [
+								'core/navigation',
+								'core/query',
+								'core/post-template',
+							];
+
+							foreach ( $interactive_blocks as $block ) {
+								if ( has_block( $block ) ) {
+									// Force register core modules if not already registered.
+									if ( ! class_exists( 'WP_Interactivity_API' ) && function_exists( 'wp_script_modules' ) ) {
+										$api = new \WP_Interactivity_API();
+										$api->register_script_modules();
+									}
+
+									wp_enqueue_script( '@wordpress/interactivity' );
+									break;
+								}
+							}
+						},
+						5
+					);
+
+					// Register modules hook.
+					if ( function_exists( 'wp_script_modules' ) ) {
+						add_action(
+							'wp_enqueue_scripts',
+							static function () {
+								wp_script_modules()->add_hooks();
+							},
+							20
+						);
+					}
+
 					do_action( 'wp_enqueue_scripts' ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
 					ob_end_clean();
 
 					// Get the list of enqueued scripts.
 					$enqueued_scripts = $wp_scripts->queue ?? [];
+
+					// Add dependencies for interactivity script.
+					foreach ( $wp_scripts->registered as $handle => $script ) {
+						if ( strpos( $handle, '@wordpress/' ) === 0 ) {
+							if ( ! in_array( $handle, $enqueued_scripts, true ) ) {
+								$enqueued_scripts[] = $handle;
+							}
+							// Add dependencies.
+							if ( ! empty( $script->deps ) ) {
+								foreach ( $script->deps as $dep ) {
+									if ( ! in_array( $dep, $enqueued_scripts, true ) ) {
+										$enqueued_scripts[] = $dep;
+									}
+								}
+							}
+						}
+					}
 
 					$queue = $this->flatten_enqueued_assets_list( $enqueued_scripts, $wp_scripts );
 
