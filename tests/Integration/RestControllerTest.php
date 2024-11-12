@@ -86,7 +86,7 @@ class RestControllerTest extends WPTestCase {
 		$this->assertNotEmpty( $actual_data['content'] );
 		$search   = '\n';
 		$replace  = '';
-		$expected = "\n# Enable if connecting to a self-signed cert\n# NODE_TLS_REJECT_UNAUTHORIZED=0\n# The headless frontend domain URL\n# NEXT_URL=0\n# The WordPress \"frontend\" domain URL\nHOME_URL=http://localhost\n# The WordPress GraphQL endpoint\nGRAPHQL_ENDPOINT=graphql";
+		$expected = "\n# Enable if connecting to a self-signed cert\n# NODE_TLS_REJECT_UNAUTHORIZED='0'\n# The headless frontend domain URL\n# NEXT_URL='0'\n# The WordPress \"frontend\" domain URL\nHOME_URL=http://localhost\n# The WordPress GraphQL endpoint\nGRAPHQL_ENDPOINT=graphql";
 
 		$this->assertEquals( $expected, str_replace( $search, $replace, $actual_data['content'] ) );
 
