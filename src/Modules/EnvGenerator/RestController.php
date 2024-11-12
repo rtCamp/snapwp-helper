@@ -30,7 +30,6 @@ class RestController extends AbstractRestAPI {
 			[
 				'methods'             => \WP_REST_Server::READABLE,
 				'callback'            => [ $this, 'get_item' ],
-				'args'                => $this->get_args(),
 				'permission_callback' => [ $this, 'permissions_check' ],
 			]
 		);
@@ -44,19 +43,19 @@ class RestController extends AbstractRestAPI {
 	 * @return \WP_REST_Response|\WP_Error The response object.
 	 */
 	public function get_item( $request ) {
-		$args = $request->get_params();
-
-		if ( empty( $args['variables'] ) ) {
-			return new \WP_Error( 'missing_variables', 'No variables provided.', [ 'status' => 400 ] );
-		}
 
 		/**
 		 * Validate and generate the .env content.
 		 *
 		 * @var array<key-of<\SnapWP\Helper\Modules\EnvGenerator\VariableRegistry::VARIABLES>,string> $variables
 		 */
-		$variables = $this->prepare_variables( $args['variables'] );
+		$variables = snapwp_helper_get_env_variables();
 
+		if ( is_wp_error( $variables ) ) {
+			return $variables;
+		}
+
+		// Generate the .env content using the fetched variables.
 		$content = $this->generate_env_content( $variables );
 
 		if ( $content instanceof \WP_Error ) {
@@ -67,36 +66,6 @@ class RestController extends AbstractRestAPI {
 		$response = new \WP_REST_Response( [ 'content' => $content ], 200 );
 
 		return rest_ensure_response( $response );
-	}
-
-	/**
-	 * Define the schema for the expected arguments.
-	 *
-	 * @return array<string,mixed>[] Array of argument schema definitions.
-	 */
-	public function get_args() {
-		return [
-			'variables' => [
-				'description'       => __( 'The variables to be included in the .env file.', 'snapwp-helper' ),
-				'type'              => 'array',
-				'items'             => [
-					'type'       => 'object',
-					'properties' => [
-						'variable' => [
-							'type'        => 'string',
-							'description' => __( 'The ENV variable.', 'snapwp-helper' ),
-						],
-						'value'    => [
-							'type'        => 'string',
-							'description' => __( 'The value of the ENV variable.', 'snapwp-helper' ),
-						],
-					],
-				],
-				'required'          => true,
-				'validate_callback' => 'rest_validate_request_arg',
-				'sanitize_callback' => 'rest_sanitize_request_arg',
-			],
-		];
 	}
 
 	/**
