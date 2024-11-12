@@ -51,10 +51,6 @@ class RestController extends AbstractRestAPI {
 		 */
 		$variables = snapwp_helper_get_env_variables();
 
-		if ( is_wp_error( $variables ) ) {
-			return $variables;
-		}
-
 		// Generate the .env content using the fetched variables.
 		$content = $this->generate_env_content( $variables );
 
@@ -94,22 +90,5 @@ class RestController extends AbstractRestAPI {
 		}
 
 		return $content;
-	}
-
-	/**
-	 * Prepare the variables passed in the request.
-	 *
-	 * @param array<string,mixed>[] $variables The variables to be included in the .env file.
-	 *
-	 * @return array<string,string> The prepared variables.
-	 */
-	private function prepare_variables( array $variables ): array {
-		$prepared = [];
-
-		foreach ( $variables as $variable ) {
-			$prepared[ $variable['name'] ] = $variable['value'];
-		}
-
-		return $prepared;
 	}
 }
