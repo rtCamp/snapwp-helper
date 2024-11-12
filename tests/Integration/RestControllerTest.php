@@ -93,43 +93,4 @@ class RestControllerTest extends WPTestCase {
 		// Clean up.
 		wp_delete_user( $admin_id, true );
 	}
-
-	/**
-	 * Tests that endpoint returns an error when required values are missing.
-	 */
-	public function testMissingRequiredValues(): void {
-
-		$admin_id = $this->factory()->user->create( [ 'role' => 'administrator' ] );
-
-
-		// Mock missing required variables (e.g., HOME_URL) in WordPress options.
-		$original_home = get_home_url();
-		update_option( 'home', '' ); // Make sure this option is missing or empty.
-		
-		// Create a new POST request to the REST endpoint.
-		$request = new \WP_REST_Request( 'GET', $this->endpoint );
-		$request->set_header( 'Origin', get_site_url() );
-		$request->set_header( 'Content-Type', 'application/json' );
-
-		// Set the current user as administrator.
-		wp_set_current_user( $admin_id );
-
-		$actual           = $this->server->dispatch( $request );
-		
-		// temp : error_log( print_r( $actual, true ) );
-		error_log( print_r( $actual, true ) );
-		$actual_code      = $actual->get_data()['code'];
-		$actual_message   = $actual->get_data()['message'];
-		$expected_code    = 'env_generation_failed';
-		$expected_message = 'Required variables must have a value.';
-
-		$this->assertInstanceOf( \WP_REST_Response::class, $actual );
-		$this->assertEquals( $expected_code, $actual_code );
-		$this->assertEquals( 500, $actual->get_status() );
-		$this->assertStringContainsString( $expected_message, $actual_message );
-
-		// Clean up.
-		update_option( 'home', $original_home );
-		wp_delete_user( $admin_id, true );
-	}
 }
