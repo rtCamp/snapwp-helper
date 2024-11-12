@@ -115,6 +115,9 @@ class RestControllerTest extends WPTestCase {
 		wp_set_current_user( $admin_id );
 
 		$actual           = $this->server->dispatch( $request );
+		
+		// temp : error_log( print_r( $actual, true ) );
+		error_log( print_r( $actual, true ) );
 		$actual_code      = $actual->get_data()['code'];
 		$actual_message   = $actual->get_data()['message'];
 		$expected_code    = 'env_generation_failed';
