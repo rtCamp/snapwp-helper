@@ -14,8 +14,6 @@ if ( ! function_exists( 'snapwp_helper_get_env_content' ) ) {
 	/**
 	 * Generates the .env file content based on the provided variables.
 	 *
-	 * @param array<key-of<\SnapWP\Helper\Modules\EnvGenerator\VariableRegistry::VARIABLES>,string> $variables The variables to generate the .env content.
-	 *
 	 * @return string|\WP_Error The .env file content or an error object.
 	 */
 	function snapwp_helper_get_env_content() {
