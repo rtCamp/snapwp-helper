@@ -44,12 +44,15 @@ class RestController extends AbstractRestAPI {
 	 */
 	public function get_item( $request ) {
 
-		/**
-		 * Validate and generate the .env content.
-		 *
-		 * @var array<key-of<\SnapWP\Helper\Modules\EnvGenerator\VariableRegistry::VARIABLES>,string> $variables
-		 */
+		// Fetch the environment variables and check for errors.
 		$variables = snapwp_helper_get_env_variables();
+		if ( is_wp_error( $variables ) ) {
+			return new \WP_Error(
+				'env_variables_error',
+				$variables->get_error_message(),
+				[ 'status' => 500 ]
+			);
+		}
 
 		// Generate the .env content using the fetched variables.
 		$content = $this->generate_env_content( $variables );
