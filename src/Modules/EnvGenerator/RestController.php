@@ -44,21 +44,16 @@ class RestController extends AbstractRestAPI {
 	 */
 	public function get_item( $request ) {
 
-		// Fetch the environment variables and check for errors.
-		$variables = snapwp_helper_get_env_variables();
-		if ( is_wp_error( $variables ) ) {
+		// Generate the .env content using the fetched variables.
+		$content = snapwp_helper_get_env_content();
+
+		// Check if the content is an error.
+		if ( $content instanceof \WP_Error ) {
 			return new \WP_Error(
-				'env_variables_error',
-				$variables->get_error_message(),
+				'env_content_generation_failed',
+				$content->get_error_message(),
 				[ 'status' => 500 ]
 			);
-		}
-
-		// Generate the .env content using the fetched variables.
-		$content = $this->generate_env_content( $variables );
-
-		if ( $content instanceof \WP_Error ) {
-			return $content;
 		}
 
 		// Return the generated content in the response.
@@ -76,22 +71,5 @@ class RestController extends AbstractRestAPI {
 	 */
 	public function permissions_check( \WP_REST_Request $request ): bool {
 		return current_user_can( 'manage_options' );
-	}
-
-	/**
-	 * Generate the .env content based on the passed arguments.
-	 *
-	 * @param array<key-of<\SnapWP\Helper\Modules\EnvGenerator\VariableRegistry::VARIABLES>,string> $variables The variables to generate the .env content.
-	 *
-	 * @return string|\WP_Error The generated .env content or WP_Error if the generation fails.
-	 */
-	private function generate_env_content( array $variables ) {
-		$content = snapwp_helper_generate_env_content( $variables );
-
-		if ( is_wp_error( $content ) ) {
-			return new \WP_Error( 'env_generation_failed', $content->get_error_message(), [ 'status' => 500 ] );
-		}
-
-		return $content;
 	}
 }

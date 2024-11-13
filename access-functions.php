@@ -10,7 +10,7 @@ declare(strict_types=1);
 use SnapWP\Helper\Modules\EnvGenerator\Generator;
 use SnapWP\Helper\Modules\EnvGenerator\VariableRegistry;
 
-if ( ! function_exists( 'snapwp_helper_generate_env_content' ) ) {
+if ( ! function_exists( 'snapwp_helper_get_env_content' ) ) {
 	/**
 	 * Generates the .env file content based on the provided variables.
 	 *
@@ -18,7 +18,18 @@ if ( ! function_exists( 'snapwp_helper_generate_env_content' ) ) {
 	 *
 	 * @return string|\WP_Error The .env file content or an error object.
 	 */
-	function snapwp_helper_generate_env_content( array $variables ) {
+	function snapwp_helper_get_env_content() {
+
+		// Fetch the environment variables and check for errors.
+		$variables = snapwp_helper_get_env_variables();
+		if ( is_wp_error( $variables ) ) {
+			return new \WP_Error(
+				'env_variables_error',
+				$variables->get_error_message(),
+				[ 'status' => 500 ]
+			);
+		}
+
 		$generator = new Generator( $variables, new VariableRegistry() );
 
 		// Generate and return the content for env file.
