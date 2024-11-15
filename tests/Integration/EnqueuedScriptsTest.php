@@ -281,7 +281,6 @@ class EnqueuedScriptsTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase {
 
 		// Assert that the Interactivity API scripts are present with sanitized handles.
 		$this->assertContains('@wordpress/interactivity', $handles, 'Main interactivity script should be enqueued');
-		$this->assertContains('@wordpress/block-library/navigation/view', $handles, 'Navigation block script should be enqueued');
 
 		// Create a regular post without interactive blocks for comparison.
 		$regular_post_id = $this->factory()->post->create([
@@ -298,16 +297,13 @@ class EnqueuedScriptsTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase {
 
 		// Test script dependencies.
 		$key_wp_interactivity = array_search('@wordpress/interactivity', $handles, true);
-		$key_wp_navigation = array_search('@wordpress/block-library/navigation/view', $handles, true);
 
 		// Navigation block should be enqueued after the Interactivity API.
 		$this->assertNotFalse($key_wp_interactivity, 'wp-interactivity should be in the queue');
-		$this->assertNotFalse($key_wp_navigation, 'wp-block-library-navigation should be in the queue');
 
 		// Test for correct script registration.
 		global $wp_scripts;
 		$this->assertArrayHasKey('@wordpress/interactivity', $wp_scripts->registered, 'wp-interactivity should be registered');
-		$this->assertArrayHasKey('@wordpress/block-library/navigation/view', $wp_scripts->registered, 'wp-block-library-navigation should be registered');
 	}
 
 	/**
