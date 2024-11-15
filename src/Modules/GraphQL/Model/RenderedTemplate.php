@@ -77,79 +77,32 @@ class RenderedTemplate extends Model {
 
 					// Simulate WP template rendering.
 					ob_start();
-					// Hook early to catch all script registrations.
-					add_action(
-						'wp_enqueue_scripts',
-						static function () use ( $wp_scripts ) {
-							// Ensure WordPress core interactivity is registered.
-							if ( ! isset( $wp_scripts->registered['@wordpress/interactivity'] ) ) {
-								wp_register_script(
-									'@wordpress/interactivity',
-									includes_url( 'js/dist/interactivity.min.js' ),
-									[],
-									get_bloginfo( 'version' ),
-									true
-								);
-							}
-
-							// Check for core interactive blocks.
-							$interactive_blocks = [
-								'core/navigation',
-								'core/query',
-								'core/post-template',
-							];
-
-							foreach ( $interactive_blocks as $block ) {
-								if ( has_block( $block ) ) {
-									// Force register core modules if not already registered.
-									if ( ! class_exists( 'WP_Interactivity_API' ) && function_exists( 'wp_script_modules' ) ) {
-										$api = new \WP_Interactivity_API();
-										$api->register_script_modules();
-									}
-
-									wp_enqueue_script( '@wordpress/interactivity' );
-									break;
-								}
-							}
-						},
-						5
-					);
-
-					// Register modules hook.
-					if ( function_exists( 'wp_script_modules' ) ) {
-						add_action(
-							'wp_enqueue_scripts',
-							static function () {
-								wp_script_modules()->add_hooks();
-							},
-							20
-						);
-					}
-
 					do_action( 'wp_enqueue_scripts' ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
+					// Add missing 'wp_footer' from WP lifecycle.
+					wp_footer();
 					ob_end_clean();
 
 					// Get the list of enqueued scripts.
 					$enqueued_scripts = $wp_scripts->queue ?? [];
 
-					// Add dependencies for interactivity script.
-					foreach ( $wp_scripts->registered as $handle => $script ) {
-						if ( strpos( $handle, '@wordpress/' ) === 0 ) {
-							if ( ! in_array( $handle, $enqueued_scripts, true ) ) {
-								$enqueued_scripts[] = $handle;
-							}
-							// Add dependencies.
-							if ( ! empty( $script->deps ) ) {
-								foreach ( $script->deps as $dep ) {
-									if ( ! in_array( $dep, $enqueued_scripts, true ) ) {
-										$enqueued_scripts[] = $dep;
-									}
-								}
-							}
-						}
+					// Get script modules from Interactivity API and register them.
+					$script_modules = self::get_script_modules();
+					if ( ! empty( $script_modules ) ) {
+						$this->register_module_scripts( $script_modules );
 					}
 
 					$queue = $this->flatten_enqueued_assets_list( $enqueued_scripts, $wp_scripts );
+
+					// Add script modules to the queue if available.
+					if ( ! empty( $script_modules ) ) {
+						foreach ( $script_modules as $module ) {
+							// Sanitize the module ID into a valid WordPress handle.
+							$handle = $module['id'];
+							if ( ! in_array( $handle, $queue, true ) ) {
+								$queue[] = $handle;
+							}
+						}
+					}
 
 					// Reset the scripts queue to avoid conflicts with other queries.
 					$wp_scripts->reset();
@@ -184,7 +137,121 @@ class RenderedTemplate extends Model {
 	}
 
 	/**
-	 * Get the handles of all scripts enqueued for a given content node
+	 * Gets the script modules loaded by the Interactivity API.
+	 *
+	 * @return array<string,array{
+	 *   id: string,
+	 *   src: string,
+	 *   version: string|false|null,
+	 *   dependencies: list<string>,
+	 *   dependents: list<string>,
+	 * }>|null
+	 */
+	protected static function get_script_modules(): ?array {
+		// Check for WP 6.5+ compatibility.
+		if ( ! function_exists( 'wp_script_modules' ) ) {
+			return null;
+		}
+
+		$modules = wp_script_modules();
+
+		try {
+			$reflector = new \ReflectionClass( $modules );
+
+			// Get required methods.
+			$get_marked_for_enqueue = $reflector->getMethod( 'get_marked_for_enqueue' );
+			$get_dependencies       = $reflector->getMethod( 'get_dependencies' );
+			$get_src                = $reflector->getMethod( 'get_src' );
+
+			// Make methods accessible.
+			$get_marked_for_enqueue->setAccessible( true );
+			$get_dependencies->setAccessible( true );
+			$get_src->setAccessible( true );
+
+			// Get enqueued modules.
+			$enqueued = $get_marked_for_enqueue->invoke( $modules );
+
+			// Get dependencies for enqueued modules.
+			$deps = $get_dependencies->invoke( $modules, array_keys( $enqueued ) );
+
+			// Merge enqueued modules and their dependencies.
+			$all_modules = array_merge( $enqueued, $deps );
+
+			$sources = [];
+			foreach ( $all_modules as $id => $module ) {
+				$src                 = $get_src->invoke( $modules, $id );
+				$script_dependencies = $get_dependencies->invoke( $modules, [ $id ] );
+
+				// Ensure dependencies are always an array of strings.
+				$dependencies = array_map( 'strval', array_keys( $script_dependencies ) );
+
+				$dependents = [];
+				foreach ( $all_modules as $dep_id => $dep ) {
+					foreach ( $dep['dependencies'] as $dependency ) {
+						if ( $dependency['id'] === $id ) {
+							$dependents[] = strval( $dep_id ); // Ensure dependents are strings.
+						}
+					}
+				}
+
+				$sources[ $id ] = [
+					'id'           => strval( $id ), // Ensure the ID is a string.
+					'src'          => $src,
+					'version'      => $module['version'],
+					'dependencies' => $dependencies,
+					'dependents'   => $dependents,
+				];
+			}
+
+			// Reset method accessibility.
+			$get_marked_for_enqueue->setAccessible( false );
+			$get_dependencies->setAccessible( false );
+			$get_src->setAccessible( false );
+
+			return $sources;
+		} catch ( \ReflectionException $e ) {
+			return null;
+		}
+	}
+
+	/**
+	 * Registers module scripts with WordPress.
+	 *
+	 * @param array<string,array{id:string,src:string,version:string|false|null,dependencies:string[],dependents:string[]}> $modules Array of script modules to register.
+	 */
+	protected function register_module_scripts( array $modules ): void {
+		global $wp_scripts;
+
+		foreach ( $modules as $module ) {
+			$handle = $module['id'];
+
+			// Skip if already registered.
+			if ( isset( $wp_scripts->registered[ $handle ] ) ) {
+				continue;
+			}
+
+			// Convert script handles into an array.
+			$deps = [];
+			foreach ( $module['dependencies'] as $dep ) {
+				$deps[] = $dep;
+			}
+
+			// Register the script.
+			wp_register_script(
+				$handle,
+				$module['src'],
+				$deps,
+				$module['version'] ?: null,
+				true // in footer.
+			);
+
+			// Ensure it's marked as enqueued.
+			wp_enqueue_script( $handle );
+		}
+	}
+
+	/**
+	 * Get the handles of all scripts enqueued for a given content node.
 	 *
 	 * @param array<string,string> $queue            List of scripts for a given content node.
 	 * @param \WP_Dependencies     $wp_dependencies  A Global assets object.

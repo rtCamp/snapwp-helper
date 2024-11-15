@@ -253,72 +253,61 @@ class EnqueuedScriptsTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase {
 	}
 
 	/**
-	 * Test that the WordPress Interactivity API script is properly enqueued when needed.
+	 * Test that the WordPress Interactivity API scripts are properly registered and enqueued.
 	 */
-	public function testWordPressInteractivityScriptEnqueuing(): void
+	public function testInteractivityApiScriptsEnqueuing(): void
 	{
-		global $wp_scripts;
+		// Create a post with a navigation block that uses the Interactivity API.
+		$post_id = $this->factory()->post->create([
+			'post_content' => '<!-- wp:navigation {"layout":{"type":"flex","orientation":"horizontal"}} /-->'
+		]);
 
-		// Clear any existing scripts first
-		$wp_scripts->reset();
+		$post_url = get_permalink($post_id);
 
-		// Register core scripts that would normally be registered by WordPress
-		wp_register_script(
-			'@wordpress/interactivity',
-			includes_url('js/dist/interactivity.min.js'),
-			[],
-			get_bloginfo('version'),
-			true
-		);
+		// Execute the GraphQL query with the post URL.
+		$query = $this->query();
+		$variables = [
+			'uri' => $post_url,
+		];
 
-		// First test: non-interactive post
+		$actual = $this->graphql(compact('query', 'variables'));
+
+		// Assert no errors.
+		$this->assertArrayNotHasKey('errors', $actual);
+		$this->assertArrayHasKey('data', $actual);
+
+		// Extract the script handles.
+		$handles = array_column($actual['data']['templateByUri']['enqueuedScripts']['nodes'], 'handle');
+
+		// Assert that the Interactivity API scripts are present with sanitized handles.
+		$this->assertContains('@wordpress/interactivity', $handles, 'Main interactivity script should be enqueued');
+		$this->assertContains('@wordpress/block-library/navigation/view', $handles, 'Navigation block script should be enqueued');
+
+		// Create a regular post without interactive blocks for comparison.
 		$regular_post_id = $this->factory()->post->create([
 			'post_content' => '<!-- wp:paragraph -->Regular post<!-- /wp:paragraph -->'
 		]);
 
-		$query = $this->query();
+		// Test the regular post.
 		$variables = [
 			'uri' => get_permalink($regular_post_id),
 		];
 
 		$regular_actual = $this->graphql(compact('query', 'variables'));
-
 		$regular_handles = array_column($regular_actual['data']['templateByUri']['enqueuedScripts']['nodes'], 'handle');
 
-		// Reset scripts before testing interactive content
-		$wp_scripts->reset();
-		remove_all_actions('wp_enqueue_scripts');
+		// Test script dependencies.
+		$key_wp_interactivity = array_search('@wordpress/interactivity', $handles, true);
+		$key_wp_navigation = array_search('@wordpress/block-library/navigation/view', $handles, true);
 
-		// Register the scripts again
-		wp_register_script(
-			'@wordpress/interactivity',
-			includes_url('js/dist/interactivity.min.js'),
-			[],
-			get_bloginfo('version'),
-			true
-		);
+		// Navigation block should be enqueued after the Interactivity API.
+		$this->assertNotFalse($key_wp_interactivity, 'wp-interactivity should be in the queue');
+		$this->assertNotFalse($key_wp_navigation, 'wp-block-library-navigation should be in the queue');
 
-		// Create a post with a navigation block
-		$post_id = $this->factory()->post->create([
-			'post_content' => '<!-- wp:navigation {"layout":{"type":"flex","orientation":"horizontal"}} /-->'
-		]);
-
-		// Get the permalink for the created post
-		$post_url = get_permalink($post_id);
-
-		// Execute the GraphQL query
-		$variables['uri'] = $post_url;
-		$actual = $this->graphql(compact('query', 'variables'));
-
-		// Assert no errors
-		$this->assertArrayNotHasKey('errors', $actual);
-		$this->assertArrayHasKey('data', $actual);
-
-		// Extract the script handles
-		$handles = array_column($actual['data']['templateByUri']['enqueuedScripts']['nodes'], 'handle');
-
-		// Assert that the interactivity script is enqueued
-		$this->assertContains('@wordpress/interactivity', $handles, 'Interactivity script should be enqueued for interactive content');
+		// Test for correct script registration.
+		global $wp_scripts;
+		$this->assertArrayHasKey('@wordpress/interactivity', $wp_scripts->registered, 'wp-interactivity should be registered');
+		$this->assertArrayHasKey('@wordpress/block-library/navigation/view', $wp_scripts->registered, 'wp-block-library-navigation should be registered');
 	}
 
 	/**
