@@ -85,7 +85,10 @@ class RenderedTemplate extends Model {
 					// Get the list of enqueued scripts.
 					$enqueued_scripts = $wp_scripts->queue ?? [];
 
-					// Get script modules from Interactivity API and register them.
+					// @todo This is a temporary workaround for WPGraphQL's EnqueuedScriptConnectionResolver
+					// which relies on $wp_scripts global. A proper solution will be implemented with a new
+					// EnqueuedScript type and separate field from enqueuedScripts.
+					// @see https://core.trac.wordpress.org/ticket/60597
 					$script_modules = self::get_script_modules();
 					if ( ! empty( $script_modules ) ) {
 						$this->register_module_scripts( $script_modules );
@@ -137,7 +140,11 @@ class RenderedTemplate extends Model {
 	}
 
 	/**
-	 * Gets the script modules loaded by the Interactivity API.
+	 * Get script modules registered with WordPress.
+	 *
+	 * This includes modules from the Interactivity API and other sources.
+	 *
+	 * @see https://github.com/WordPress/wordpress-develop/blob/trunk/src/wp-includes/script-modules.php
 	 *
 	 * @return array<string,array{
 	 *   id: string,
@@ -210,6 +217,7 @@ class RenderedTemplate extends Model {
 
 			return $sources;
 		} catch ( \ReflectionException $e ) {
+			graphql_debug( $e->getMessage() );
 			return null;
 		}
 	}
