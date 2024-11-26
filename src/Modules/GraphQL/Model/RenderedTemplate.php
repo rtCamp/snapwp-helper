@@ -85,10 +85,11 @@ class RenderedTemplate extends Model {
 					// Get the list of enqueued scripts.
 					$enqueued_scripts = $wp_scripts->queue ?? [];
 
-					// @todo This is a temporary workaround for WPGraphQL's EnqueuedScriptConnectionResolver
-					// which relies on $wp_scripts global. A proper solution will be implemented with a new
-					// EnqueuedScript type and separate field from enqueuedScripts.
-					// @see https://core.trac.wordpress.org/ticket/60597
+					/**
+					 * @todo This is a temporary workaround for WPGraphQL's EnqueuedScriptConnectionResolver
+					 * which relies on $wp_scripts global. A proper solution will be implemented with a new
+					 * EnqueuedScript type and separate field from enqueuedScripts.
+					 */
 					$script_modules = self::get_script_modules();
 					if ( ! empty( $script_modules ) ) {
 						$this->register_module_scripts( $script_modules );
@@ -140,11 +141,12 @@ class RenderedTemplate extends Model {
 	}
 
 	/**
-	 * Get script modules registered with WordPress.
+	 * Get the registered script modules.
 	 *
-	 * This includes modules from the Interactivity API and other sources.
+	 * Inspired by https://github.com/johnbillion/query-monitor/blob/6b66f6513580023415fe21e6f0218bd256b3c59a/classes/Collector_Assets.php#L271
+	 * Workaround until WP provides a public API.
 	 *
-	 * @see https://github.com/WordPress/wordpress-develop/blob/trunk/src/wp-includes/script-modules.php
+	 * @see https://core.trac.wordpress.org/ticket/60597
 	 *
 	 * @return array<string,array{
 	 *   id: string,
