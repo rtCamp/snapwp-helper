@@ -28,6 +28,17 @@ query GetTemplateByUri( $uri: String! ) {
         ...EnqueuedAssetFrag
       }
     }
+    enqueuedScriptModules(first: 1000) { # The enqueued script modules for the template
+      nodes {
+        ...ScriptModuleFrag
+        dependencies {
+          importType # static or dynamic
+          connectedScriptModule {
+            ...ScriptModuleFrag
+          }
+        }
+      }
+    }
     enqueuedStylesheets(first: 1000) { # The enqueued stylesheets for the template
       nodes {
         ...EnqueuedAssetFrag

@@ -69,9 +69,9 @@ class EnqueuedScriptsTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase {
 	 */
 	private function query(): string {
 		return '
-			query GetCurrentScreen($uri: String!) {
+			query GetEnqueuedScripts($uri: String!) {
 				templateByUri(uri: $uri) {
-					enqueuedScripts(first: 100) {
+					enqueuedScripts(first: 1000) {
 						nodes {
 							handle
 						}
@@ -272,124 +272,6 @@ class EnqueuedScriptsTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase {
 
 		// Assert that the dependency script is enqueued before the dependent script.
 		$this->assertGreaterThan( array_search( 'dependency-script', $handles ), array_search( 'test-dependent-script', $handles ) );
-	}
-
-	/**
-	 * Test script modules registration and enqueuing with Modules.
-	 */
-	public function testEnqueuedScriptsWithModules(): void {
-		// Register custom script modules.
-		wp_register_script_module(
-			'test-module-dependency',
-			'https://example.com/dep.js',
-			[],
-			'1.0.0'
-		);
-
-		wp_register_script_module(
-			'test-module-main',
-			'https://example.com/main.js',
-			[ 'test-module-dependency' ],
-			'1.0.0'
-		);
-
-		// Create a post.
-		$post_id = $this->factory()->post->create(
-			[
-				'post_content' => '<!-- wp:paragraph -->Test post<!-- /wp:paragraph -->',
-			]
-		);
-
-		$post_url = get_permalink( $post_id );
-
-		// First test without enqueuing.
-		$query     = $this->query();
-		$variables = [ 'uri' => $post_url ];
-
-		$actual  = $this->graphql( compact( 'query', 'variables' ) );
-		$handles = array_column( $actual['data']['templateByUri']['enqueuedScripts']['nodes'], 'handle' );
-
-		// Verify modules aren't present when not enqueued.
-		$this->assertNotContains( 'test-module-main', $handles );
-		$this->assertNotContains( 'test-module-dependency', $handles );
-
-		// Now enqueue the main module (dependency should be auto-enqueued).
-		wp_enqueue_script_module( 'test-module-main' );
-
-		$actual  = $this->graphql( compact( 'query', 'variables' ) );
-		$handles = array_column( $actual['data']['templateByUri']['enqueuedScripts']['nodes'], 'handle' );
-
-		// Verify both modules are present and properly ordered.
-		$this->assertContains( 'test-module-main', $handles );
-		$this->assertContains( 'test-module-dependency', $handles );
-
-		$dep_index  = array_search( 'test-module-dependency', $handles, true );
-		$main_index = array_search( 'test-module-main', $handles, true );
-
-		$this->assertNotFalse( $dep_index );
-		$this->assertNotFalse( $main_index );
-
-		// Verify proper registration.
-		global $wp_scripts;
-		$this->assertArrayHasKey( 'test-module-main', $wp_scripts->registered );
-		$this->assertArrayHasKey( 'test-module-dependency', $wp_scripts->registered );
-	}
-
-	/**
-	 * Test that the WordPress Interactivity API scripts are properly registered and enqueued.
-	 */
-	public function testEnqueuedScriptsWithInteractivityAPI(): void {
-		// Create a post with a navigation block that uses the Interactivity API.
-		$post_id = $this->factory()->post->create(
-			[
-				'post_content' => '<!-- wp:navigation {"layout":{"type":"flex","orientation":"horizontal"}} /-->',
-			]
-		);
-
-		$post_url = get_permalink( $post_id );
-
-		// Execute the GraphQL query with the post URL.
-		$query     = $this->query();
-		$variables = [
-			'uri' => $post_url,
-		];
-
-		$actual = $this->graphql( compact( 'query', 'variables' ) );
-
-		// Assert no errors.
-		$this->assertArrayNotHasKey( 'errors', $actual );
-		$this->assertArrayHasKey( 'data', $actual );
-
-		// Extract the script handles.
-		$handles = array_column( $actual['data']['templateByUri']['enqueuedScripts']['nodes'], 'handle' );
-
-		// Assert that the Interactivity API scripts are present with sanitized handles.
-		$this->assertContains( '@wordpress/interactivity', $handles, 'Main interactivity script should be enqueued' );
-
-		// Create a regular post without interactive blocks for comparison.
-		$regular_post_id = $this->factory()->post->create(
-			[
-				'post_content' => '<!-- wp:paragraph -->Regular post<!-- /wp:paragraph -->',
-			]
-		);
-
-		// Test the regular post.
-		$variables = [
-			'uri' => get_permalink( $regular_post_id ),
-		];
-
-		$regular_actual  = $this->graphql( compact( 'query', 'variables' ) );
-		$regular_handles = array_column( $regular_actual['data']['templateByUri']['enqueuedScripts']['nodes'], 'handle' );
-
-		// Test script dependencies.
-		$key_wp_interactivity = array_search( '@wordpress/interactivity', $handles, true );
-
-		// Navigation block should be enqueued after the Interactivity API.
-		$this->assertNotFalse( $key_wp_interactivity, 'wp-interactivity should be in the queue' );
-
-		// Test for correct script registration.
-		global $wp_scripts;
-		$this->assertArrayHasKey( '@wordpress/interactivity', $wp_scripts->registered, 'wp-interactivity should be registered' );
 	}
 
 	/**
