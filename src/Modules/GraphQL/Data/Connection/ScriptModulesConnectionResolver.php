@@ -58,7 +58,7 @@ class ScriptModulesConnectionResolver extends AbstractConnectionResolver {
 	/**
 	 * {@inheritDoc}
 	 *
-	 * Since we load _all_ script modules regardless of the query, there's no performance benefit to limiting pagination. 
+	 * Since we load _all_ script modules regardless of the query, there's no performance benefit to limiting pagination.
 	 */
 	protected function max_query_amount(): int {
 		return 1000;
