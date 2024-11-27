@@ -4,7 +4,7 @@
  *
  * Temporary until supported by WPGraphQL / REST API.
  *
- * @package SnapWP\Helper\Modules\GraphQL\SiteEditor
+ * @package SnapWP\Helper\Modules\GraphQL\Type\WPObject
  * @since 0.0.1
  */
 
@@ -12,6 +12,7 @@ declare( strict_types = 1 );
 
 namespace SnapWP\Helper\Modules\GraphQL\Type\WPObject;
 
+use SnapWP\Helper\Modules\GraphQL\Data\Connection\ScriptModulesConnectionResolver;
 use SnapWP\Helper\Modules\GraphQL\Interfaces\TypeWithConnections;
 use SnapWP\Helper\Modules\GraphQL\Interfaces\TypeWithInterfaces;
 use WPGraphQL\AppContext;
@@ -96,7 +97,7 @@ final class RenderedTemplate extends AbstractObject implements TypeWithConnectio
 	 */
 	public function get_connections(): array {
 		return [
-			'enqueuedScripts'     => [
+			'enqueuedScripts'       => [
 				'toType'      => 'EnqueuedScript',
 				'description' => __( 'The scripts enqueued for the template.', 'snapwp-helper' ),
 				'resolve'     => static function ( $source, $args, $context, $info ) {
@@ -105,7 +106,16 @@ final class RenderedTemplate extends AbstractObject implements TypeWithConnectio
 					return $resolver->get_connection();
 				},
 			],
-			'enqueuedStylesheets' => [
+			'enqueuedScriptModules' => [
+				'toType'      => ScriptModule::get_type_name(),
+				'description' => __( 'The script modules enqueued for the template.', 'snapwp-helper' ),
+				'resolve'     => static function ( $source, $args, $context, $info ) {
+					$resolver = new ScriptModulesConnectionResolver( $source, $args, $context, $info );
+
+					return $resolver->get_connection();
+				},
+			],
+			'enqueuedStylesheets'   => [
 				'toType'      => 'EnqueuedStylesheet',
 				'description' => __( 'The stylesheets enqueued for the template.', 'snapwp-helper' ),
 				'resolve'     => static function ( $source, $args, $context, $info ) {

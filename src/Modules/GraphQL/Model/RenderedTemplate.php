@@ -8,6 +8,7 @@
 namespace SnapWP\Helper\Modules\GraphQL\Model;
 
 use GraphQLRelay\Relay;
+use SnapWP\Helper\Modules\GraphQL\Utils\ScriptModuleUtils;
 use WPGraphQL\Model\Model;
 
 /**
@@ -64,20 +65,22 @@ class RenderedTemplate extends Model {
 	protected function init() {
 		if ( empty( $this->fields ) ) {
 			$this->fields = [
-				'id'                       => function (): string {
+				'id'                         => function (): string {
 					return Relay::toGlobalId( 'rendered-template', $this->data['uri'] );
 				},
-				'bodyClasses'              => static function (): ?array {
+				'bodyClasses'                => static function (): ?array {
 					$body_classes = get_body_class();
 					return ! empty( $body_classes ) ? $body_classes : null;
 				},
-				'content'                  => fn (): ?string => ! empty( $this->data['content'] ) ? $this->data['content'] : null,
-				'enqueuedScriptsQueue'     => function () {
+				'content'                    => fn (): ?string => ! empty( $this->data['content'] ) ? $this->data['content'] : null,
+				'enqueuedScriptsQueue'       => function () {
 					global $wp_scripts;
 
 					// Simulate WP template rendering.
 					ob_start();
 					do_action( 'wp_enqueue_scripts' ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
+					// Add missing 'wp_footer' from WP lifecycle.
+					wp_footer();
 					ob_end_clean();
 
 					// Get the list of enqueued scripts.
@@ -91,7 +94,32 @@ class RenderedTemplate extends Model {
 
 					return $queue;
 				},
-				'enqueuedStylesheetsQueue' => function () {
+				'enqueuedScriptModulesQueue' => static function () {
+					// Simulate WP template rendering.
+					ob_start();
+					wp_head();
+					wp_footer();
+					ob_end_clean();
+
+					$script_modules = ScriptModuleUtils::get_enqueued_script_modules();
+
+					if ( empty( $script_modules ) ) {
+						return [];
+					}
+
+					$queue = [];
+
+					foreach ( $script_modules as $module ) {
+						// Sanitize the module ID into a valid WordPress handle.
+						$handle = $module['id'];
+						if ( ! in_array( $handle, $queue, true ) ) {
+							$queue[] = $handle;
+						}
+					}
+
+					return $queue;
+				},
+				'enqueuedStylesheetsQueue'   => function () {
 					global $wp_styles;
 
 					// Prevent possible side effects printed to the output buffer.
@@ -111,14 +139,14 @@ class RenderedTemplate extends Model {
 
 					return $queue;
 				},
-				'renderedHtml'             => fn (): ?string => ! empty( $this->data['renderedHtml'] ) ? $this->data['renderedHtml'] : null,
-				'uri'                      => fn (): ?string => ! empty( $this->data['uri'] ) ? $this->data['uri'] : null,
+				'renderedHtml'               => fn (): ?string => ! empty( $this->data['renderedHtml'] ) ? $this->data['renderedHtml'] : null,
+				'uri'                        => fn (): ?string => ! empty( $this->data['uri'] ) ? $this->data['uri'] : null,
 			];
 		}
 	}
 
 	/**
-	 * Get the handles of all scripts enqueued for a given content node
+	 * Get the handles of all scripts enqueued for a given content node.
 	 *
 	 * @param array<string,string> $queue            List of scripts for a given content node.
 	 * @param \WP_Dependencies     $wp_dependencies  A Global assets object.
