@@ -14,6 +14,8 @@ use SnapWP\Helper\Modules\GraphQL\Interfaces\GraphQLType;
 use SnapWP\Helper\Modules\GraphQL\Type\Fields;
 use SnapWP\Helper\Modules\GraphQL\Type\WPObject;
 use SnapWP\Helper\Traits\Singleton;
+use WPGraphQL\AppContext;
+
 /**
  * Class - TypeRegistry
  */
@@ -32,6 +34,7 @@ final class TypeRegistry implements Registrable {
 	 */
 	public function register_hooks(): void {
 		add_action( get_graphql_register_action(), [ $this, 'init' ] );
+		add_filter( 'graphql_data_loaders', [ $this, 'register_data_loaders' ], 10, 2 );
 	}
 
 	/**
@@ -62,6 +65,20 @@ final class TypeRegistry implements Registrable {
 		 * Fires after all types have been registered.
 		 */
 		do_action( 'snapwp_helper/graphql/init/after_register_types' );
+	}
+
+	/**
+	 * Registers custom data loaders.
+	 *
+	 * @param array<string,\WPGraphQL\Data\Loader\AbstractDataLoader> $data_loaders The data loaders.
+	 * @param \WPGraphQL\AppContext                                   $context      The AppContext object.
+	 *
+	 * @return array<string,\WPGraphQL\Data\Loader\AbstractDataLoader>
+	 */
+	public function register_data_loaders( array $data_loaders, AppContext $context ): array {
+		$data_loaders['script_module'] = new Data\Loader\ScriptModuleLoader( $context );
+
+		return $data_loaders;
 	}
 
 	/**
@@ -145,6 +162,8 @@ final class TypeRegistry implements Registrable {
 		$classes_to_register = [
 			WPObject\FontFace::class,
 			WPObject\GlobalStyles::class,
+			WPObject\ScriptModuleDependency::class,
+			WPObject\ScriptModule::class,
 			WPObject\RenderedTemplate::class,
 		];
 
