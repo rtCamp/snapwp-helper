@@ -191,10 +191,10 @@ jobs:
     strategy:
       matrix:
         php: [ '8.2' ] #, '8.1' ] @todo reenable when repo is made public
-        wordpress: [ '6.6' ] #, '6.5' ]
+        wordpress: [ '6.7' ] #, '6.6' ]
         include:
         - php: '8.2'
-          wordpress: '6.6'
+          wordpress: '6.7'
           coverage: 1
       fail-fast: false
     steps:
