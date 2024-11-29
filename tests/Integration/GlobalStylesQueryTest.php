@@ -31,7 +31,6 @@ class GlobalStylesQueryTest extends  \Tests\WPGraphQL\TestCase\WPGraphQLTestCase
 		$query = 'query testGlobalStyles {
 			globalStyles {
 				blockStyles
-				customCss
 				renderedFontFaces
 				stylesheet
 			}
@@ -45,7 +44,6 @@ class GlobalStylesQueryTest extends  \Tests\WPGraphQL\TestCase\WPGraphQLTestCase
 		$this->assertQuerySuccessful( $actual, [
 			$this->expectedObject( 'globalStyles', [
 				$this->expectedField( 'blockStyles', self::NOT_FALSY ),
-				$this->expectedField( 'customCss', self::NOT_FALSY ),
 				$this->expectedField( 'renderedFontFaces', self::NOT_FALSY ),
 				$this->expectedField( 'stylesheet', self::NOT_FALSY ),
 			] )
