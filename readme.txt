@@ -2,7 +2,7 @@
 Contributors: rtCamp, justlevine
 Tags: decoupled, headless, REST API, GraphQL, WPGraphQL, React, NextJS, JAMStack
 Requires at least: 6.0
-Tested up to: 6.6.1
+Tested up to: 6.7.1
 Requires PHP: 7.4
 Stable tag: 0.0.1
 License: GPLv3 or later
