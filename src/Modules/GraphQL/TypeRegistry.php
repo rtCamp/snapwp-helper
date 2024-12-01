@@ -185,6 +185,7 @@ final class TypeRegistry implements Registrable {
 	private function fields(): array {
 		$classes_to_register = [
 			Fields\RootQuery::class,
+			Fields\EnqueuedScript::class,
 		];
 
 		/**
