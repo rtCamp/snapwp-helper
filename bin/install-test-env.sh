@@ -58,6 +58,8 @@ echo -e "$(status_message "Installing WordPress...")"
 
 wp core install --title="$SITE_TITLE" --admin_user="$WORDPRESS_ADMIN_USER" --admin_password="$WORDPRESS_ADMIN_PASSWORD" --admin_email=admin@test.local --skip-email --url="$WORDRESS_URL:$BUILTIN_SERVER_PORT" --allow-root
 
+wp core update-db --allow-root
+
 # Make sure the uploads and upgrade folders exist and we have permissions to add files.
 echo -e "$(status_message "Ensuring that files can be uploaded...")"
 # pwd
