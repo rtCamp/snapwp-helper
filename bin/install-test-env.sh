@@ -19,17 +19,16 @@ echo "Installing test environment for WordPress ${WP_VERSION}..."
 # Create the database if it doesn't exist.
 install_db
 
+echo - "switching to the WordPress root directory $WORDPRESS_ROOT_DIR"
+mkdir -p "$WORDPRESS_ROOT_DIR"
+cd "$WORDPRESS_ROOT_DIR" || { echo "Failed to enter directory: $WORDPRESS_ROOT_DIR"; exit 1; }
+
 # If this is the test site, we reset the database so no posts/comments/etc.
 # dirty up the tests.
 if [ "$1" == '--reset-site' ]; then
 	echo -e "$(status_message "Resetting test database...")"
 	wp db reset --yes --quiet --allow-root
 fi
-
-echo - "switching to the WordPress root directory $WORDPRESS_ROOT_DIR"
-
-mkdir -p "$WORDPRESS_ROOT_DIR"
-cd "$WORDPRESS_ROOT_DIR" || { echo "Failed to enter directory: $WORDPRESS_ROOT_DIR"; exit 1; }
 
 if [[ -f "wp-load.php" ]]; then
 	CURRENT_WP_VERSION=$(wp core version --allow-root | cut -d '.' -f 1,2)
