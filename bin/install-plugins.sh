@@ -29,7 +29,7 @@ wp plugin activate wp-graphql --allow-root
 
 # WPGraphQL Content Blocks plugin.
 if ! $( wp plugin is-installed wp-graphql-content-blocks --allow-root ); then
-	wp plugin install https://github.com/wpengine/wp-graphql-content-blocks/releases/download/latest/wp-graphql-content-blocks.zip --allow-root
+	wp plugin install https://github.com/wpengine/wp-graphql-content-blocks/releases/latest/download/wp-graphql-content-blocks.zip --allow-root
 fi
 wp plugin activate wp-graphql-content-blocks --allow-root
 
