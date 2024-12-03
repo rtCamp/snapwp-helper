@@ -35,10 +35,10 @@ final class EnqueuedScript extends AbstractFields {
 				'description' => __( 'The location where this script should be loaded', 'snapwp-helper' ),
 				'resolve'     => static function ( \_WP_Dependency $script ) {
 					if ( isset( $script->extra['group'] ) && 1 === (int) $script->extra['group'] ) {
-						return 'header';
+						return 'footer';
 					}
 
-					return 'footer';
+					return 'header';
 				},
 			],
 		];
