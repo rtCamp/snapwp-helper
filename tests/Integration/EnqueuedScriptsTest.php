@@ -74,6 +74,7 @@ class EnqueuedScriptsTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase {
 					enqueuedScripts(first: 1000) {
 						nodes {
 							handle
+							location
 						}
 					}
 				}
@@ -118,11 +119,12 @@ class EnqueuedScriptsTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase {
 		$this->assertArrayNotHasKey( 'errors', $actual );
 		$this->assertArrayHasKey( 'data', $actual );
 
-		// Extract the 'handle' values from the response.
-		$handles = array_column( $actual['data']['templateByUri']['enqueuedScripts']['nodes'], 'handle' );
-
-		// Assert that the script is returned in the enqueuedScriptsQueue.
-		$this->assertContains( 'test-head-script', $handles );
+		// Get the index to test the 'test-head-script' handle.
+		$index = array_search( 'test-head-script', array_column( $actual['data']['templateByUri']['enqueuedScripts']['nodes'], 'handle' ) );
+		$this->assertNotFalse( $index );
+		$actual_script = $actual['data']['templateByUri']['enqueuedScripts']['nodes'][ $index ];
+		$this->assertEquals( 'test-head-script', $actual_script['handle'] );
+		$this->assertEquals( 'header', $actual_script['location'] );
 
 		// Assert only the expected script is enqueued by checking unwanted handles are absent.
 		$this->assertNoUnexpectedScriptsEnqueued( $actual, [ 'test-content-script', 'test-footer-script', 'dependency-script', 'test-dependent-script' ] );
@@ -167,10 +169,13 @@ class EnqueuedScriptsTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase {
 		$this->assertArrayHasKey( 'data', $actual );
 
 		// Extract the 'handle' values from the response.
-		$handles = array_column( $actual['data']['templateByUri']['enqueuedScripts']['nodes'], 'handle' );
-
-		// Assert that the script is returned in the enqueuedScriptsQueue.
-		$this->assertContains( 'test-content-script', $handles );
+		
+		// Get the index to test the 'test-content-script' handle.
+		$index = array_search( 'test-content-script', array_column( $actual['data']['templateByUri']['enqueuedScripts']['nodes'], 'handle' ) );
+		$this->assertNotFalse( $index );
+		$actual_script = $actual['data']['templateByUri']['enqueuedScripts']['nodes'][ $index ];
+		$this->assertEquals( 'test-content-script', $actual_script['handle'] );
+		$this->assertEquals( 'header', $actual_script['location'] );
 
 		// Assert only the expected script is enqueued by checking unwanted handles are absent.
 		$this->assertNoUnexpectedScriptsEnqueued( $actual, [ 'test-head-script', 'test-footer-script', 'dependency-script', 'test-dependent-script' ] );
@@ -215,11 +220,11 @@ class EnqueuedScriptsTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase {
 		$this->assertArrayNotHasKey( 'errors', $actual );
 		$this->assertArrayHasKey( 'data', $actual );
 
-		// Extract the 'handle' values from the response.
-		$handles = array_column( $actual['data']['templateByUri']['enqueuedScripts']['nodes'], 'handle' );
-
-		// Assert that the script is returned in the enqueuedScriptsQueue.
-		$this->assertContains( 'test-footer-script', $handles );
+		// Get the index to test the 'test-footer-script' handle.
+		$index = array_search( 'test-footer-script', array_column( $actual['data']['templateByUri']['enqueuedScripts']['nodes'], 'handle' ) );
+		$this->assertNotFalse( $index );
+		$actual_script = $actual['data']['templateByUri']['enqueuedScripts']['nodes'][ $index ];
+		$this->assertEquals( 'test-footer-script', $actual_script['handle'] );
 
 		// Assert only the expected script is enqueued by checking unwanted handles are absent.
 		$this->assertNoUnexpectedScriptsEnqueued( $actual, [ 'test-head-script', 'test-content-script', 'dependency-script', 'test-dependent-script' ] );
