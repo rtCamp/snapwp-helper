@@ -57,20 +57,10 @@ install_db() {
 		return 0
 	fi
 
-	# parse DB_HOST for port or socket references
-	local PARTS=(${WORDPRESS_DB_HOST//\:/ })
-	local DB_HOSTNAME=${PARTS[0]}
-	local DB_SOCK_OR_PORT=${PARTS[1]}
-	local EXTRA=""
+	local EXTRA=" --host=$WORDPRESS_DB_HOST --protocol=tcp"
 
-	if ! [ -z $DB_HOSTNAME ]; then
-		if [ $(echo $DB_SOCK_OR_PORT | grep -e '^[0-9]\{1,\}$') ]; then
-			EXTRA=" --host=$DB_HOSTNAME --port=$DB_SOCK_OR_PORT --protocol=tcp"
-		elif ! [ -z $DB_SOCK_OR_PORT ]; then
-			EXTRA=" --socket=$DB_SOCK_OR_PORT"
-		elif ! [ -z $DB_HOSTNAME ]; then
-			EXTRA=" --host=$DB_HOSTNAME --protocol=tcp"
-		fi
+	if [ -n "$WORDPRESS_DB_PORT" ]; then
+		EXTRA="$EXTRA --port=$WORDPRESS_DB_PORT"
 	fi
 
 	# create database
