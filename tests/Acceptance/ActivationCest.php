@@ -12,6 +12,11 @@ class ActivationCest {
 		$I->loginAsAdmin();
 		$I->amOnPluginsPage();
 
+		// Log the page content.
+		codecept_debug( $I->grabPageSource() );
+
+		$I->seePluginInstalled( 'snapwp-helper' );
+
 		$I->activatePlugin( 'snapwp-helper' );
 
 		$I->seePluginActivated( 'snapwp-helper' );

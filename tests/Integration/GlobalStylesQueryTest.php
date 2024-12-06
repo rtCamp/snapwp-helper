@@ -12,7 +12,7 @@ use SnapWP\Helper\Utils\Utils;
 /**
  * Class - GlobalStylesQueryTest
  */
-class GlobalStylesQueryTest extends  \Tests\WPGraphQL\TestCase\WPGraphQLTestCase {
+class GlobalStylesQueryTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase {
 	/**
 	 * {@inheritDoc}
 	 */
@@ -28,6 +28,14 @@ class GlobalStylesQueryTest extends  \Tests\WPGraphQL\TestCase\WPGraphQLTestCase
 	}
 
 	public function testGlobalStylesQuery(): void {
+		/**
+		 * Handle WP 6.7+ deprecations for global styles functions.
+		 *
+		 * @todo Confirm correct replacement for wp_get_global_styles_custom_css
+		*/
+		$this->setExpectedDeprecated( 'wp_get_global_styles_custom_css' );
+		$this->setExpectedDeprecated( 'WP_Theme_JSON::get_custom_css' );
+
 		$query = 'query testGlobalStyles {
 			globalStyles {
 				blockStyles
@@ -42,21 +50,35 @@ class GlobalStylesQueryTest extends  \Tests\WPGraphQL\TestCase\WPGraphQLTestCase
 		// Check if the query was successful.
 		$this->assertArrayNotHasKey( 'errors', $actual );
 
-		$this->assertQuerySuccessful( $actual, [
-			$this->expectedObject( 'globalStyles', [
-				$this->expectedField( 'blockStyles', self::NOT_FALSY ),
-				$this->expectedField( 'customCss', self::NOT_FALSY ),
-				$this->expectedField( 'renderedFontFaces', self::NOT_FALSY ),
-				$this->expectedField( 'stylesheet', self::NOT_FALSY ),
-			] )
-		] );
+		$this->assertQuerySuccessful(
+			$actual,
+			[
+				$this->expectedObject(
+					'globalStyles',
+					[
+						$this->expectedField( 'blockStyles', self::NOT_FALSY ),
+						$this->expectedField( 'customCss', self::NOT_FALSY ),
+						$this->expectedField( 'renderedFontFaces', self::NOT_FALSY ),
+						$this->expectedField( 'stylesheet', self::NOT_FALSY ),
+					]
+				),
+			]
+		);
 
 		$this->assertStringContainsString( 'wp-fonts-local', $actual['data']['globalStyles']['renderedFontFaces'] );
 		// Check for the @font-face property
-		$this->assertStringContainsString( "@font-face", $actual['data']['globalStyles']['renderedFontFaces'] );
+		$this->assertStringContainsString( '@font-face', $actual['data']['globalStyles']['renderedFontFaces'] );
 	}
 
 	public function testFontFacesQuery(): void {
+		/**
+		 * Handle WP 6.7+ deprecations for global styles functions.
+		 *
+		 * @todo Confirm correct replacement for wp_get_global_styles_custom_css
+		*/
+		$this->setExpectedDeprecated( 'wp_get_global_styles_custom_css' );
+		$this->setExpectedDeprecated( 'WP_Theme_JSON::get_custom_css' );
+
 		$query = 'query testFontFaces {
 			globalStyles {
 				fontFaces {
@@ -88,16 +110,16 @@ class GlobalStylesQueryTest extends  \Tests\WPGraphQL\TestCase\WPGraphQLTestCase
 
 		$this->assertNotEmpty( $actual['data']['globalStyles']['fontFaces'] );
 
-		for( $i= 0; $i < count( $expected); $i++ ) {
+		for ( $i = 0; $i < count( $expected ); $i++ ) {
 			// Fonts will always have a src and a family.
-			$this->assertArrayHasKey( 'src', $actual['data']['globalStyles']['fontFaces'][$i] );
-			$this->assertArrayHasKey( 'fontFamily', $actual['data']['globalStyles']['fontFaces'][$i] );
+			$this->assertArrayHasKey( 'src', $actual['data']['globalStyles']['fontFaces'][ $i ] );
+			$this->assertArrayHasKey( 'fontFamily', $actual['data']['globalStyles']['fontFaces'][ $i ] );
 
 			// For all other properties, we check if they are present in the expected array.
-			foreach( $expected[$i] as $key => $value ) {
+			foreach ( $expected[ $i ] as $key => $value ) {
 				$actual_key = Utils::kebab_to_camel_case( $key );
-				$this->assertArrayHasKey( $actual_key, $actual['data']['globalStyles']['fontFaces'][$i] );
-				$this->assertEquals( $value, $actual['data']['globalStyles']['fontFaces'][$i][$actual_key] );
+				$this->assertArrayHasKey( $actual_key, $actual['data']['globalStyles']['fontFaces'][ $i ] );
+				$this->assertEquals( $value, $actual['data']['globalStyles']['fontFaces'][ $i ][ $actual_key ] );
 			}
 		}
 	}

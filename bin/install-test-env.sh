@@ -19,17 +19,16 @@ echo "Installing test environment for WordPress ${WP_VERSION}..."
 # Create the database if it doesn't exist.
 install_db
 
+echo - "switching to the WordPress root directory $WORDPRESS_ROOT_DIR"
+mkdir -p "$WORDPRESS_ROOT_DIR"
+cd "$WORDPRESS_ROOT_DIR" || { echo "Failed to enter directory: $WORDPRESS_ROOT_DIR"; exit 1; }
+
 # If this is the test site, we reset the database so no posts/comments/etc.
 # dirty up the tests.
 if [ "$1" == '--reset-site' ]; then
 	echo -e "$(status_message "Resetting test database...")"
 	wp db reset --yes --quiet --allow-root
 fi
-
-echo - "switching to the WordPress root directory $WORDPRESS_ROOT_DIR"
-
-mkdir -p "$WORDPRESS_ROOT_DIR"
-cd "$WORDPRESS_ROOT_DIR" || { echo "Failed to enter directory: $WORDPRESS_ROOT_DIR"; exit 1; }
 
 if [[ -f "wp-load.php" ]]; then
 	CURRENT_WP_VERSION=$(wp core version --allow-root | cut -d '.' -f 1,2)
@@ -57,6 +56,8 @@ fi
 echo -e "$(status_message "Installing WordPress...")"
 
 wp core install --title="$SITE_TITLE" --admin_user="$WORDPRESS_ADMIN_USER" --admin_password="$WORDPRESS_ADMIN_PASSWORD" --admin_email=admin@test.local --skip-email --url="$WORDRESS_URL:$BUILTIN_SERVER_PORT" --allow-root
+
+wp core update-db --allow-root
 
 # Make sure the uploads and upgrade folders exist and we have permissions to add files.
 echo -e "$(status_message "Ensuring that files can be uploaded...")"
@@ -114,6 +115,10 @@ if [ "$WP_DEBUG" != $WP_DEBUG_CURRENT ]; then
 	wp config set WP_DEBUG $WP_DEBUG --raw --type=constant --quiet --allow-root
 	WP_DEBUG_RESULT=$(wp config get --type=constant --format=json WP_DEBUG  --allow-root | tr -d '\r')
 	echo -e "$(status_message "WP_DEBUG: $WP_DEBUG_RESULT...")"
+
+	# @todo Unmute WP_DEBUG_DISPLAY
+	# @see https://github.com/wp-graphql/wp-graphql/issues/3239
+	wp config set WP_DEBUG_DISPLAY false --raw --type=constant --quiet --allow-root
 fi
 
 # Disable Update Checks
