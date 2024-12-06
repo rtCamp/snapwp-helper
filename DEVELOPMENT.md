@@ -275,7 +275,7 @@ To run the tests in your [local WordPress environment](#using-a-local-wordpress-
 
    ```
 > [!IMPORTANT]
-> If you are using [LocalWP](https://localwp.com/), make sure to run the testsfrom **inside the Local by Flywheel shell** at the root of the _plugin_ directory:
+> If you are using [LocalWP](https://localwp.com/), make sure to run the tests from **inside the LocalWP shell** at the root of the _plugin_ directory:
 >
 >   ```bash
 >   # Switch to the plugin directory
