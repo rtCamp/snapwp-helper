@@ -50,7 +50,7 @@ final class GlobalStyles extends AbstractObject {
 					remove_action( 'wp_head', 'wp_custom_css_cb', 101 );
 
 					$custom_css  = wp_get_custom_css();
-					$custom_css .= wp_get_global_stylesheet( [ 'custom-css' ] );
+					$custom_css .= wp_get_global_styles_custom_css();
 					return $custom_css ?: null;
 				},
 			],
