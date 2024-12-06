@@ -62,7 +62,7 @@ install_db() {
 	if [ -n "$WORDPRESS_DB_SOCKET" ]; then
 		EXTRA=" --socket=$WORDPRESS_DB_SOCKET"
 	elif [ -n "$WORDPRESS_DB_HOST" ]; then
-		EXTRA=" --host=$WORDPRESS_DB_HOST" --protocol=tcp"
+		EXTRA=" --host=$WORDPRESS_DB_HOST --protocol=tcp"
 		if [ -n "$WORDPRESS_DB_PORT" ]; then
 				EXTRA="$EXTRA --port=$WORDPRESS_DB_PORT"
 		fi
