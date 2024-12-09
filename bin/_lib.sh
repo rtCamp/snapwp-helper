@@ -57,7 +57,7 @@ install_db() {
 		return 0
 	fi
 
-	local EXTRA=" --host=$WORDPRESS_DB_HOST --protocol=tcp"
+	local EXTRA=" --host=$WORDPRESS_DB_HOST"
 
 	if [ -n "$WORDPRESS_DB_PORT" ]; then
 		EXTRA="$EXTRA --port=$WORDPRESS_DB_PORT"
