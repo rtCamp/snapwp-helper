@@ -78,24 +78,29 @@ class Admin implements Module {
 
 		?>
 		<div class="wrap" id="snapwp-admin">
-            <h2><?php esc_html_e( 'SnapWP', 'snapwp-helper' ); ?></h2>
-            <h3><?php esc_html_e( 'Local Installation Guide.', 'snapwp-helper' ); ?></h3>
+			<h2><?php esc_html_e( 'SnapWP', 'snapwp-helper' ); ?></h2>
+			<h3><?php esc_html_e( 'Local Installation Guide.', 'snapwp-helper' ); ?></h3>
 
-            <div class="mb-3">
-                <p><?php esc_html_e( '1. Clone the Repository.', 'snapwp-helper' ); ?></p>
-                <div>
-                    <p><?php esc_html_e( 'Clone the repository to your local machine under wp-content/plugins directory.', 'snapwp-helper' ); ?></p>
-                    <code>git clone https://github.com/rtCamp/headless.git</code>
-                </div>
-            </div>
+			<div class="mb-3">
+				<p><?php esc_html_e( '1. Clone the Repository.', 'snapwp-helper' ); ?></p>
+				<div>
+					<p><?php esc_html_e( 'Clone the repository to your local machine under wp-content/plugins directory.', 'snapwp-helper' ); ?></p>
+					<code>git clone https://github.com/rtCamp/headless.git</code>
+				</div>
+			</div>
 
-            <div class="mb-3">
-                <p><?php esc_html_e( '2. Create an Environment File.', 'snapwp-helper' ); ?></p>
-                <div>
-                    <p>
-	                    <?php esc_html_e( 'Navigate to `wp-content/plugins/snapwp-helper`, create a new `.env` file, and paste in the following:', 'snapwp-helper' ); ?>
-                    </p>
-                    <code style="display: block; white-space: pre-wrap;">PLUGIN_SLUG=snapwp-helper
+			<div class="mb-3">
+				<p><?php esc_html_e( '2. Create an Environment File.', 'snapwp-helper' ); ?></p>
+				<div>
+					<p>
+						<?php
+						echo esc_html(
+						// Translators: %s is the directory path of snapwp-helper plugin.
+							sprintf( __( 'Navigate to `%s`, create a new `.env` file, and paste in the following:', 'snapwp-helper' ), SNAPWP_HELPER_PLUGIN_DIR ),
+						);
+						?>
+					</p>
+					<code style="display: block; white-space: pre-wrap;">PLUGIN_SLUG=snapwp-helper
 
 # Configure these to match your existing testing environment or the one you want to create with Docker.
 ## Usually, these values should match the ones in the `wp-config.php` file.
@@ -105,7 +110,7 @@ class Admin implements Module {
 DB_NAME=wordpress
 DB_HOST=<?php echo esc_html( defined( 'DB_HOST' ) ? DB_HOST : '127.0.0.1' ); ?>
 
-# Make sure the user has the necessary permissions for the database. E.g. `GRANT ALL PRIVILEGES ON wordpress.* TO '<?php echo esc_html( defined( 'DB_USER' ) ? DB_USER : 'root' ); ?>'@'<?php echo esc_html( defined( 'DB_HOST' ) ? DB_HOST : '127.0.0.1' ); ?>';`
+# Make sure the user has the necessary permissions for the database. E.g. `GRANT ALL PRIVILEGES ON WordPress.* TO '<?php echo esc_html( defined( 'DB_USER' ) ? DB_USER : 'root' ); ?>'@'<?php echo esc_html( defined( 'DB_HOST' ) ? DB_HOST : '127.0.0.1' ); ?>';`
 DB_USER=<?php echo esc_html( defined( 'DB_USER' ) ? DB_USER : 'root' ); ?>
 
 DB_PASSWORD=<?php echo esc_html( defined( 'DB_PASSWORD' ) ? DB_PASSWORD : 'password' ); ?>
@@ -156,28 +161,42 @@ TEST_TABLE_PREFIX=test_
 
 # The DSN used by Acceptance tests.
 TEST_DB_DSN="mysql:host=${TEST_DB_HOST};port=${TEST_DB_PORT};dbname=${TEST_DB_NAME}"</code>
-                </div>
-            </div>
+				</div>
+			</div>
 
-            <div class="mb-3">
-                <p><?php esc_html_e( '3. Install Dependencies.', 'snapwp-helper' ); ?></p>
-                <div>
-                    <p><?php esc_html_e( 'Navigate to `wp-content/plugins/snapwp-helper` and run the following command.', 'snapwp-helper' ); ?></p>
-                    <code>nvm use && npm run install-local-deps</code>
-                </div>
-            </div>
+			<div class="mb-3">
+				<p><?php esc_html_e( '3. Install Dependencies.', 'snapwp-helper' ); ?></p>
+				<div>
+					<p>
+						<?php
+						echo esc_html(
+						// Translators: %s is the directory path of snapwp-helper plugin.
+							sprintf( __( 'Navigate to `%s` and run the following command.', 'snapwp-helper' ), SNAPWP_HELPER_PLUGIN_DIR ),
+						);
+						?>
+					</p>
+					<code>nvm use && npm run install-local-deps</code>
+				</div>
+			</div>
 
-            <div class="mb-3">
-                <p><?php esc_html_e( '4. Install Test Environment.', 'snapwp-helper' ); ?></p>
-                <div>
-                    <p><?php esc_html_e( 'Navigate to `wp-content/plugins/snapwp-helper` and run the following command.', 'snapwp-helper' ); ?></p>
-                    <code>nvm use && npm run install-test-env</code>
-                </div>
-            </div>
+			<div class="mb-3">
+				<p><?php esc_html_e( '4. Install Test Environment.', 'snapwp-helper' ); ?></p>
+				<div>
+					<p>
+						<?php
+						echo esc_html(
+							// Translators: %s is the directory path of snapwp-helper plugin.
+							sprintf( __( 'Navigate to `%s` and run the following command.', 'snapwp-helper' ), SNAPWP_HELPER_PLUGIN_DIR ),
+						);
+						?>
+					</p>
+					<code>nvm use && npm run install-test-env</code>
+				</div>
+			</div>
 
-            <div class="mb-3">
-                <p>All Set!</p>
-            </div>
+			<div class="mb-3">
+				<p>All Set!</p>
+			</div>
 		</div>
 		<?php
 	}
