@@ -78,8 +78,106 @@ class Admin implements Module {
 
 		?>
 		<div class="wrap" id="snapwp-admin">
-			<h1><?php esc_html_e( 'SnapWP', 'snapwp-helper' ); ?></h1>
-			<p><?php esc_html_e( 'Welcome to SnapWP.', 'snapwp-helper' ); ?></p>
+            <h2><?php esc_html_e( 'SnapWP', 'snapwp-helper' ); ?></h2>
+            <h3><?php esc_html_e( 'Local Installation Guide.', 'snapwp-helper' ); ?></h3>
+
+            <div class="mb-3">
+                <p><?php esc_html_e( '1. Clone the Repository.', 'snapwp-helper' ); ?></p>
+                <div>
+                    <p><?php esc_html_e( 'Clone the repository to your local machine under wp-content/plugins directory.', 'snapwp-helper' ); ?></p>
+                    <code>git clone https://github.com/rtCamp/headless.git</code>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <p><?php esc_html_e( '2. Create an Environment File.', 'snapwp-helper' ); ?></p>
+                <div>
+                    <p>
+	                    <?php esc_html_e( 'Navigate to `wp-content/plugins/snapwp-helper`, create a new `.env` file, and paste in the following:', 'snapwp-helper' ); ?>
+                    </p>
+                    <code style="display: block; white-space: pre-wrap;">PLUGIN_SLUG=snapwp-helper
+
+# Configure these to match your existing testing environment or the one you want to create with Docker.
+## Usually, these values should match the ones in the `wp-config.php` file.
+## If using LocalWP, you can find the values in the LocalWP app under the site's settings.
+
+# NOTE: Codeception will modify the database during testing. If you want to preserve your local data use a separate database.
+DB_NAME=wordpress
+DB_HOST=<?php echo esc_html( defined( 'DB_HOST' ) ? DB_HOST : '127.0.0.1' ); ?>
+
+# Make sure the user has the necessary permissions for the database. E.g. `GRANT ALL PRIVILEGES ON wordpress.* TO '<?php echo esc_html( defined( 'DB_USER' ) ? DB_USER : 'root' ); ?>'@'<?php echo esc_html( defined( 'DB_HOST' ) ? DB_HOST : '127.0.0.1' ); ?>';`
+DB_USER=<?php echo esc_html( defined( 'DB_USER' ) ? DB_USER : 'root' ); ?>
+
+DB_PASSWORD=<?php echo esc_html( defined( 'DB_PASSWORD' ) ? DB_PASSWORD : 'password' ); ?>
+
+# Can be found by connecting to the database and running `SHOW GLOBAL VARIABLES LIKE 'PORT';`
+DB_PORT=3306
+
+# The local path to the WordPress root directory, the one containing the wp-load.php file.
+## This can be a relative path from the directory that contains the codeception.yml file, or an absolute path.
+WORDPRESS_ROOT_DIR="./tests/_wordpress"
+
+# This table prefix used by the WordPress site, and in Acceptance tests.
+WORDPRESS_TABLE_PREFIX=wp_
+
+# The URL and domain of the WordPress site, and in Acceptance tests.
+## If the port is in use, you can change it to a different port.
+WORDPRESS_URL=http://localhost:63391
+WORDPRESS_DOMAIN=localhost:63391
+WORDPRESS_ADMIN_PATH=/wp-admin
+
+# The username and password of the administrator user of the WordPress site, and in Acceptance tests.
+WORDPRESS_ADMIN_USER=admin
+WORDPRESS_ADMIN_PASSWORD=password
+
+# Additional variables for the WordPress installation.
+SITE_TITLE='Headless Test Site'
+
+WORDPRESS_DEBUG=1
+WORDPRESS_CONFIG_EXTRA="define( 'SCRIPT_DEBUG', true ); define( 'FS_METHOD', 'direct' );"
+
+# Tests will require a MySQL database to run.
+# Do not use a database that contains important data!
+WORDPRESS_DB_HOST=${DB_HOST}
+WORDPRESS_DB_USER=${DB_USER}
+WORDPRESS_DB_PASSWORD=${DB_PASSWORD}
+WORDPRESS_DB_NAME=${DB_NAME}
+WORDPRESS_DB_PORT=${DB_PORT}
+
+# Integration tests will use these variables instead.
+# By default this is the same as WordPress
+TEST_DB_HOST=${WORDPRESS_DB_HOST}
+TEST_DB_USER=${WORDPRESS_DB_USER}
+TEST_DB_PASSWORD=${WORDPRESS_DB_PASSWORD}
+TEST_DB_NAME=${WORDPRESS_DB_NAME}
+TEST_DB_PORT=${WORDPRESS_DB_PORT}
+# The Integration suite will use this table prefix for the WordPress tables.
+TEST_TABLE_PREFIX=test_
+
+# The DSN used by Acceptance tests.
+TEST_DB_DSN="mysql:host=${TEST_DB_HOST};port=${TEST_DB_PORT};dbname=${TEST_DB_NAME}"</code>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <p><?php esc_html_e( '3. Install Dependencies.', 'snapwp-helper' ); ?></p>
+                <div>
+                    <p><?php esc_html_e( 'Navigate to `wp-content/plugins/snapwp-helper` and run the following command.', 'snapwp-helper' ); ?></p>
+                    <code>nvm use && npm run install-local-deps</code>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <p><?php esc_html_e( '4. Install Test Environment.', 'snapwp-helper' ); ?></p>
+                <div>
+                    <p><?php esc_html_e( 'Navigate to `wp-content/plugins/snapwp-helper` and run the following command.', 'snapwp-helper' ); ?></p>
+                    <code>nvm use && npm run install-test-env</code>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <p>All Set!</p>
+            </div>
 		</div>
 		<?php
 	}
