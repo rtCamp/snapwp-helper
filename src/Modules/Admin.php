@@ -107,36 +107,39 @@ class Admin implements Module {
 ## If using LocalWP, you can find the values in the LocalWP app under the site's settings.
 
 # NOTE: Codeception will modify the database during testing. If you want to preserve your local data use a separate database.
-DB_NAME=wordpress
-DB_HOST=<?php echo esc_html( defined( 'DB_HOST' ) ? DB_HOST : '127.0.0.1' ); ?>
+DB_NAME=<?php echo defined( 'DB_NAME' ) ? DB_NAME : 'wordpress'; ?>
+
+DB_HOST=<?php echo defined( 'DB_HOST' ) ? DB_HOST : '127.0.0.1'; ?>
 
 # Make sure the user has the necessary permissions for the database. E.g. `GRANT ALL PRIVILEGES ON WordPress.* TO '<?php echo esc_html( defined( 'DB_USER' ) ? DB_USER : 'root' ); ?>'@'<?php echo esc_html( defined( 'DB_HOST' ) ? DB_HOST : '127.0.0.1' ); ?>';`
-DB_USER=<?php echo esc_html( defined( 'DB_USER' ) ? DB_USER : 'root' ); ?>
+DB_USER=<?php echo defined( 'DB_USER' ) ? DB_USER : 'root'; ?>
 
-DB_PASSWORD=<?php echo esc_html( defined( 'DB_PASSWORD' ) ? DB_PASSWORD : 'password' ); ?>
+DB_PASSWORD=<?php echo defined( 'DB_PASSWORD' ) ? DB_PASSWORD : 'password'; ?>
 
 # Can be found by connecting to the database and running `SHOW GLOBAL VARIABLES LIKE 'PORT';`
 DB_PORT=3306
 
 # The local path to the WordPress root directory, the one containing the wp-load.php file.
 ## This can be a relative path from the directory that contains the codeception.yml file, or an absolute path.
-WORDPRESS_ROOT_DIR="./tests/_wordpress"
+WORDPRESS_ROOT_DIR="<?php echo get_home_path(); ?>"
 
 # This table prefix used by the WordPress site, and in Acceptance tests.
 WORDPRESS_TABLE_PREFIX=wp_
 
 # The URL and domain of the WordPress site, and in Acceptance tests.
 ## If the port is in use, you can change it to a different port.
-WORDPRESS_URL=http://localhost:63391
-WORDPRESS_DOMAIN=localhost:63391
+WORDPRESS_URL=<?php echo home_url(); ?>
+
+WORDPRESS_DOMAIN=<?php echo preg_replace('(^https?://)', '', home_url() ); ?>
+
 WORDPRESS_ADMIN_PATH=/wp-admin
 
 # The username and password of the administrator user of the WordPress site, and in Acceptance tests.
-WORDPRESS_ADMIN_USER=admin
-WORDPRESS_ADMIN_PASSWORD=password
+WORDPRESS_ADMIN_USER=
+WORDPRESS_ADMIN_PASSWORD=
 
 # Additional variables for the WordPress installation.
-SITE_TITLE='Headless Test Site'
+SITE_TITLE='<?php echo get_bloginfo( 'name' ); ?>'
 
 WORDPRESS_DEBUG=1
 WORDPRESS_CONFIG_EXTRA="define( 'SCRIPT_DEBUG', true ); define( 'FS_METHOD', 'direct' );"
