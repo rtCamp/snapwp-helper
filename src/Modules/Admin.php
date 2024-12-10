@@ -107,30 +107,30 @@ class Admin implements Module {
 ## If using LocalWP, you can find the values in the LocalWP app under the site's settings.
 
 # NOTE: Codeception will modify the database during testing. If you want to preserve your local data use a separate database.
-DB_NAME=<?php echo defined( 'DB_NAME' ) ? DB_NAME : 'wordpress'; ?>
+DB_NAME=<?php echo esc_html( defined( 'DB_NAME' ) ? DB_NAME : 'WordPress' ); ?>
 
-DB_HOST=<?php echo defined( 'DB_HOST' ) ? DB_HOST : '127.0.0.1'; ?>
+DB_HOST=<?php echo esc_html( defined( 'DB_HOST' ) ? DB_HOST : '127.0.0.1' ); ?>
 
 # Make sure the user has the necessary permissions for the database. E.g. `GRANT ALL PRIVILEGES ON WordPress.* TO '<?php echo esc_html( defined( 'DB_USER' ) ? DB_USER : 'root' ); ?>'@'<?php echo esc_html( defined( 'DB_HOST' ) ? DB_HOST : '127.0.0.1' ); ?>';`
-DB_USER=<?php echo defined( 'DB_USER' ) ? DB_USER : 'root'; ?>
+DB_USER=<?php echo esc_html( defined( 'DB_USER' ) ? DB_USER : 'root' ); ?>
 
-DB_PASSWORD=<?php echo defined( 'DB_PASSWORD' ) ? DB_PASSWORD : 'password'; ?>
+DB_PASSWORD=<?php echo esc_html( defined( 'DB_PASSWORD' ) ? DB_PASSWORD : 'password' ); ?>
 
 # Can be found by connecting to the database and running `SHOW GLOBAL VARIABLES LIKE 'PORT';`
 DB_PORT=3306
 
 # The local path to the WordPress root directory, the one containing the wp-load.php file.
 ## This can be a relative path from the directory that contains the codeception.yml file, or an absolute path.
-WORDPRESS_ROOT_DIR="<?php echo get_home_path(); ?>"
+WORDPRESS_ROOT_DIR="<?php echo esc_html( get_home_path() ); ?>"
 
 # This table prefix used by the WordPress site, and in Acceptance tests.
 WORDPRESS_TABLE_PREFIX=wp_
 
 # The URL and domain of the WordPress site, and in Acceptance tests.
 ## If the port is in use, you can change it to a different port.
-WORDPRESS_URL=<?php echo home_url(); ?>
+WORDPRESS_URL=<?php echo esc_url( home_url() ); ?>
 
-WORDPRESS_DOMAIN=<?php echo preg_replace('(^https?://)', '', home_url() ); ?>
+WORDPRESS_DOMAIN=<?php echo esc_url( preg_replace( '(^https?://)', '', home_url() ) ); ?>
 
 WORDPRESS_ADMIN_PATH=/wp-admin
 
@@ -139,7 +139,7 @@ WORDPRESS_ADMIN_USER=
 WORDPRESS_ADMIN_PASSWORD=
 
 # Additional variables for the WordPress installation.
-SITE_TITLE='<?php echo get_bloginfo( 'name' ); ?>'
+SITE_TITLE='<?php echo esc_html( get_bloginfo( 'name' ) ); ?>'
 
 WORDPRESS_DEBUG=1
 WORDPRESS_CONFIG_EXTRA="define( 'SCRIPT_DEBUG', true ); define( 'FS_METHOD', 'direct' );"
@@ -168,7 +168,18 @@ TEST_DB_DSN="mysql:host=${TEST_DB_HOST};port=${TEST_DB_PORT};dbname=${TEST_DB_NA
 			</div>
 
 			<div class="mb-3">
-				<p><?php esc_html_e( '3. Install Dependencies.', 'snapwp-helper' ); ?></p>
+				<p><?php esc_html_e( '3. Update Username/Password in `.env`.', 'snapwp-helper' ); ?></p>
+				<div>
+					<p>
+						<?php
+							esc_html_e( 'Add WordPress admin username & password to WORDPRESS_ADMIN_USER & WORDPRESS_ADMIN_PASSWORD constants respectively.', 'snapwp-helper' );
+						?>
+					</p>
+				</div>
+			</div>
+
+			<div class="mb-3">
+				<p><?php esc_html_e( '4. Install Dependencies.', 'snapwp-helper' ); ?></p>
 				<div>
 					<p>
 						<?php
@@ -183,7 +194,7 @@ TEST_DB_DSN="mysql:host=${TEST_DB_HOST};port=${TEST_DB_PORT};dbname=${TEST_DB_NA
 			</div>
 
 			<div class="mb-3">
-				<p><?php esc_html_e( '4. Install Test Environment.', 'snapwp-helper' ); ?></p>
+				<p><?php esc_html_e( '5. Install Test Environment.', 'snapwp-helper' ); ?></p>
 				<div>
 					<p>
 						<?php
