@@ -130,7 +130,7 @@ WORDPRESS_TABLE_PREFIX=wp_
 ## If the port is in use, you can change it to a different port.
 WORDPRESS_URL=<?php echo esc_url( home_url() ); ?>
 
-WORDPRESS_DOMAIN=<?php echo esc_url( preg_replace( '(^https?://)', '', home_url() ) ); ?>
+WORDPRESS_DOMAIN=<?php echo esc_url( preg_replace( '(^https?://)', '', home_url() ) ?? '' ); ?>
 
 WORDPRESS_ADMIN_PATH=/wp-admin
 
