@@ -94,10 +94,10 @@ class Admin implements Module {
 			</div>
 
 			<div>
-				<p><?php esc_html_e( '1. Clone the Repository.', 'snapwp-helper' ); ?></p>
+				<p><?php esc_html_e( '1. Scaffold a decoupled frontend.', 'snapwp-helper' ); ?></p>
 				<div>
-					<p><?php esc_html_e( 'Clone the repository to your local machine.', 'snapwp-helper' ); ?></p>
-					<code>git clone https://github.com/rtCamp/headless.git</code>
+					<p><?php esc_html_e( 'Run the following command to generate a decoupled frontend.', 'snapwp-helper' ); ?></p>
+					<code>npx snapwp</code>
 				</div>
 			</div>
 
@@ -105,32 +105,27 @@ class Admin implements Module {
 				<p><?php esc_html_e( '2. Create an Environment File.', 'snapwp-helper' ); ?></p>
 				<div>
 					<p>
-						<?php esc_html_e( 'Navigate to `./frontend/examples/nextjs/starter/`, create a new `.env` file, and paste in the following variables. Then, uncomment & update the NEXT_URL variable as needed.', 'snapwp-helper' ); ?>
+						<?php esc_html_e( 'Navigate to `@todo: Update front-end .env file path`, and paste in the following variables. Then, uncomment & update the NEXT_URL variable as needed.', 'snapwp-helper' ); ?>
 					</p>
 					<code style="display: block; white-space: pre-wrap;"><?php echo esc_html( trim( str_replace( '\n', "\n", $env_file_content ) ) ); ?></code>
 				</div>
 			</div>
 
 			<div>
-				<p><?php esc_html_e( '3. Scaffold your new Frontend.', 'snapwp-helper' ); ?></p>
-				<div>
-					<p>
-						<?php
-							esc_html_e( 'Navigate to `./frontend` and run the following command.', 'snapwp-helper' );
-						?>
-					</p>
-					<code>npm run snapwp</code>
-				</div>
-			</div>
-
-			<div>
-				<p>All Set!</p>
+				<p><?php esc_html_e( '3. Run decoupled frontend.', 'snapwp-helper' ); ?></p>
 				<div>
 					<p>
 						<?php esc_html_e( 'You are now ready to view your headless site locally!', 'snapwp-helper' ); ?>
 					</p>
 					<p>
-						<?php esc_html_e( 'Open your new directory, run `npm run dev` or `npm run build && npm run start` and visit the `NEXT_URL` from `.env` (updated in Step 2), in your browser to see your new headless site.', 'snapwp-helper' ); ?>
+						<?php
+							printf(
+								// Translators: %1$s & %2$s is HTML code.
+								esc_html__( 'Open `@todo: Update front-end path` and run %1$s or %2$s and visit the `NEXT_URL` from `.env` (updated in Step 2), in your browser to see your new headless site.', 'snapwp-helper' ),
+								'<code>npm run dev</code>',
+								'<code>npm run build && npm run start</code>'
+							);
+						?>
 					</p>
 				</div>
 			</div>
