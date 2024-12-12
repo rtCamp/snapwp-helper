@@ -35,7 +35,7 @@ class AdminTest extends WPTestCase {
 	public function testRenderMenu(): void {
 		$assets = new Admin();
 
-		$this->expectOutputRegex( '/Local Installation Guide/' );
+		$this->expectOutputRegex( '/Local Installation Guide for Frontend/' );
 		$assets->render_menu();
 	}
 }
