@@ -90,14 +90,25 @@ class Admin implements Module {
 					'type' => 'error',
 				]
 			);
-
-			return;
 		}
 
 		$env_file_content = snapwp_helper_get_env_content();
 
 		if ( is_wp_error( $env_file_content ) ) {
-			$env_file_content = '';
+			$error_message = sprintf(
+				// translators: %s is the error message.
+				__( 'Unable to generate the `.env` file content: %s', 'snapwp-helper' ),
+				$env_file_content->get_error_message()
+			);
+			wp_admin_notice(
+				$error_message,
+				[
+					'type' => 'error',
+				]
+			);
+
+			// translators: %s is the error message.
+			$env_file_content = sprintf( __( 'Error: %s', 'snapwp-helper' ), $error_message );
 		}
 
 		?>
