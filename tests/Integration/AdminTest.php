@@ -35,7 +35,7 @@ class AdminTest extends WPTestCase {
 	public function testRenderMenu(): void {
 		$assets = new Admin();
 
-		$this->expectOutputRegex( '/Local Installation Guide for Frontend/' );
+		$this->expectOutputRegex( '/SnapWP Frontend Setup Guide/' );
 		$assets->render_menu();
 	}
 }
