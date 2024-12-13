@@ -76,6 +76,24 @@ class Admin implements Module {
 	public function render_menu(): void {
 		wp_enqueue_script( Assets::ADMIN_SCRIPT_HANDLE );
 
+		$variables = snapwp_helper_get_env_variables();
+
+		// Display an error message if the variables could not be loaded.
+		if ( is_wp_error( $variables ) ) {
+			wp_admin_notice(
+				sprintf(
+					// translators: %s is the error message.
+					__( 'Unable to load environment variables: %s', 'snapwp-helper' ),
+					$variables->get_error_message()
+				),
+				[
+					'type' => 'error',
+				]
+			);
+
+			return;
+		}
+
 		$env_file_content = snapwp_helper_get_env_content();
 
 		if ( is_wp_error( $env_file_content ) ) {
@@ -85,50 +103,79 @@ class Admin implements Module {
 		?>
 		<div class="wrap" id="snapwp-admin">
 			<h2><?php esc_html_e( 'SnapWP', 'snapwp-helper' ); ?></h2>
-			<h3><?php esc_html_e( 'Local Installation Guide for Frontend', 'snapwp-helper' ); ?></h3>
 
-			<div>
-				<p>
-					<?php esc_html_e( 'To view your headless site locally, you need to set up a localhost environment.', 'snapwp-helper' ); ?>
-				</p>
-			</div>
+			<?php if ( is_array( $variables ) ) : ?>
+				<h3><?php esc_html_e( 'Environment Variables', 'snapwp-helper' ); ?></h3>
+				<p><?php esc_html_e( 'These `.env` variables are used by SnapWP\'s frontend to connect with your WordPress backend.', 'snapwp-helper', ); ?></p>
+				<table class="wp-list-table widefat striped">
+					<thead>
+						<tr>
+							<th><?php esc_html_e( 'Variable', 'snapwp-helper' ); ?></th>
+							<th><?php esc_html_e( 'Value', 'snapwp-helper' ); ?></th>
+						</tr>
+					</thead>
+					<tbody>
+						<?php foreach ( $variables as $key => $value ) : ?>
+							<?php
+							if ( in_array( $key, [ 'NODE_TLS_REJECT_UNAUTHORIZED', 'NEXT_URL' ], true ) ) {
+								continue; }
+							?>
+							<tr>
+								<td><?php echo esc_html( $key ); ?></td>
+								<td><?php echo esc_html( $value ); ?></td>
+							</tr>
+						<?php endforeach; ?>
+					</tbody>
+				</table>
+			<?php endif; ?>
 
-			<div>
-				<p><?php esc_html_e( '1. Scaffold a decoupled frontend.', 'snapwp-helper' ); ?></p>
-				<div>
+			<h3><?php esc_html_e( 'SnapWP Frontend Setup Guide', 'snapwp-helper' ); ?></h3>
+
+			<p>
+				<?php esc_html_e( 'To get started with using SnapWP locally, follow the steps below:', 'snapwp-helper' ); ?>
+			</p>
+
+			<ol>
+				<li>
+					<p><?php esc_html_e( 'Scaffold a decoupled frontend.', 'snapwp-helper' ); ?></p>
 					<p><?php esc_html_e( 'Run the following command to generate a decoupled frontend.', 'snapwp-helper' ); ?></p>
 					<code>npx snapwp</code>
-				</div>
-			</div>
+				</li>
 
-			<div>
-				<p><?php esc_html_e( '2. Create an Environment File.', 'snapwp-helper' ); ?></p>
-				<div>
+				<li>
+					<!-- @todo: Required .env variables should be passed to the scaffold command. -->
+					<p><?php esc_html_e( 'Create an Environment File.', 'snapwp-helper' ); ?></p>
 					<p>
-						<?php esc_html_e( 'Navigate to `@todo: Update front-end .env file path`, and paste in the following variables. Then, uncomment & update the NEXT_URL variable as needed.', 'snapwp-helper' ); ?>
+						<?php esc_html_e( 'Navigate to your newly-created frontend application, and update the `.env` file with the following variables:', 'snapwp-helper' ); ?>
 					</p>
 					<code style="display: block; white-space: pre-wrap;"><?php echo esc_html( trim( str_replace( '\n', "\n", $env_file_content ) ) ); ?></code>
-				</div>
-			</div>
+					<p>
+						<?php
+						printf(
+							// translators: %s is the command, wrapped in code tags.
+							esc_html__( 'Then update the %s variable with the URL of your WordPress site.', 'snapwp-helper' ),
+							'<code>NEXT_URL</code>'
+						);
+						?>
+					</p>
+				</li>
 
-			<div>
-				<p><?php esc_html_e( '3. Run decoupled frontend.', 'snapwp-helper' ); ?></p>
-				<div>
+				<li>
+					<p><?php esc_html_e( 'Start the SnapWP frontend.', 'snapwp-helper' ); ?></p>
 					<p>
 						<?php esc_html_e( 'You are now ready to view your headless site locally!', 'snapwp-helper' ); ?>
-					</p>
+					<p>
 					<p>
 						<?php
 							printf(
-								// Translators: %1$s & %2$s is HTML code.
-								esc_html__( 'Open `@todo: Update front-end path` and run %1$s or %2$s and visit the `NEXT_URL` from `.env` (updated in Step 2), in your browser to see your new headless site.', 'snapwp-helper' ),
+								// Translators: %1$s and %2$s are the commands, wrapped in code tags.
+								esc_html__( 'Run %1$s (for development) or %2$s (for production) and visit the `NEXT_URL` from `.env` (updated in Step 2), in your browser to see SnapWP in action!.', 'snapwp-helper' ),
 								'<code>npm run dev</code>',
 								'<code>npm run build && npm run start</code>'
 							);
 						?>
-					</p>
-				</div>
-			</div>
+				</li>
+			</ol>
 		</div>
 		<?php
 	}
