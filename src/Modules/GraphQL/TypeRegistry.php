@@ -11,6 +11,7 @@ namespace SnapWP\Helper\Modules\GraphQL;
 
 use SnapWP\Helper\Interfaces\Registrable;
 use SnapWP\Helper\Modules\GraphQL\Interfaces\GraphQLType;
+use SnapWP\Helper\Modules\GraphQL\Type\Connection;
 use SnapWP\Helper\Modules\GraphQL\Type\Fields;
 use SnapWP\Helper\Modules\GraphQL\Type\WPObject;
 use SnapWP\Helper\Traits\Singleton;
@@ -204,7 +205,9 @@ final class TypeRegistry implements Registrable {
 	 * @return string[]
 	 */
 	private function connections(): array {
-		$classes_to_register = [];
+		$classes_to_register = [
+			Connection\BlockMediaItemConnection::class,
+		];
 
 		/**
 		 * Filters the list of connection classes to register.
