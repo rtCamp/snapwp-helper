@@ -88,6 +88,11 @@ class BlockMediaItemConnection implements GraphQLType {
 						$media_id = ! empty( $source['attrs']['mediaId'] ) ? (int) $source['attrs']['mediaId'] : null;
 					}
 
+					// If no media ID is found, try to get the post thumbnail ID (e.g. Cover, MediaText).
+					if ( empty( $media_id ) && ! empty( $source['attrs']['useFeaturedImage'] ) ) {
+						$media_id = get_post_thumbnail_id();
+					}
+
 					// Bail early if no media ID is found.
 					if ( empty( $media_id ) ) {
 						return null;

@@ -1,0 +1,60 @@
+<?php
+/**
+ * Registers custom fields to the GraphQL CoreCover Object.
+ *
+ * Temporary (non-conflicting) backport until supported by WPGraphQL Content Blocks.
+ *
+ * @package SnapWP\Helper\Modules\GraphQL\Type\Fields
+ * @since 0.0.1
+ */
+
+declare( strict_types = 1 );
+
+namespace SnapWP\Helper\Modules\GraphQL\Type\Fields;
+
+/**
+ * Class - CoreCover
+ */
+final class CoreCover extends AbstractFields {
+	/**
+	 * {@inheritDoc}
+	 */
+	public static function get_type_name(): string {
+		return 'CoreCover';
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function get_fields(): array {
+		return [
+			'mediaDetails' => [
+				'type'        => 'MediaDetails',
+				'description' => sprintf(
+					// translators: %s is the block type name.
+					__( 'Media Details of the %s Block Type', 'snapwp-helper' ),
+					self::get_type_name(),
+				),
+				'resolve'     => static function ( $block ) {
+					$attrs = $block['attrs'];
+					$id    = $attrs['id'] ?? null;
+
+					// @TODO: This is necessary becasue WPGraphQL Content Blocks doesn't hydrate from globals.
+					if ( empty( $id ) && ! empty( $attrs['useFeaturedImage'] ) ) {
+						$id = get_post_thumbnail_id();
+					}
+
+					if ( $id ) {
+						$media_details = wp_get_attachment_metadata( $id );
+						if ( ! empty( $media_details ) ) {
+							$media_details['ID'] = $id;
+
+							return $media_details;
+						}
+					}
+					return null;
+				},
+			],
+		];
+	}
+}
