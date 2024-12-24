@@ -37,11 +37,6 @@ final class GlobalStyles extends AbstractObject {
 	 */
 	public function get_fields(): array {
 		return [
-			'blockStyles'       => [
-				'type'        => 'String',
-				'description' => __( 'The Global block styles.', 'snapwp-helper' ),
-				'resolve'     => fn () => $this->get_global_styles_for_blocks(),
-			],
 			'customCss'         => [
 				'type'        => 'String',
 				'description' => __( 'The Global custom css defined in the theme or theme.json.', 'snapwp-helper' ),
@@ -50,7 +45,7 @@ final class GlobalStyles extends AbstractObject {
 					remove_action( 'wp_head', 'wp_custom_css_cb', 101 );
 
 					$custom_css  = wp_get_custom_css();
-					$custom_css .= wp_get_global_styles_custom_css();
+					$custom_css .= wp_get_global_stylesheet( [ 'custom-css' ] );
 					return $custom_css ?: null;
 				},
 			],
@@ -101,25 +96,5 @@ final class GlobalStyles extends AbstractObject {
 				},
 			],
 		];
-	}
-
-	/**
-	 * Gets the individual global styles for blocks.
-	 *
-	 * Mimics the behavior of `wp_add_global_styles_for_blocks()`.
-	 *
-	 * @see wp_add_global_styles_for_blocks()
-	 */
-	private function get_global_styles_for_blocks(): string {
-		$block_css = '';
-
-		$tree        = \WP_Theme_JSON_Resolver::get_merged_data();
-		$block_nodes = $tree->get_styles_block_nodes();
-
-		foreach ( $block_nodes as $metadata ) {
-			$block_css .= $tree->get_styles_for_block( $metadata );
-		}
-
-		return $block_css;
 	}
 }
