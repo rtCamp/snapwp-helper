@@ -98,8 +98,9 @@ class BlockMediaItemConnection implements GraphQLType {
 						return null;
 					}
 
+					$args['where']['id'] = $media_id;
+
 					$resolver = new PostObjectConnectionResolver( $source, $args, $context, $info, 'attachment' );
-					$resolver->set_query_arg( 'p', (int) $source['attrs']['id'] );
 
 					return $resolver->one_to_one()->get_connection();
 				},
