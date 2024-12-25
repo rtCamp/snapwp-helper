@@ -28,17 +28,8 @@ class GlobalStylesQueryTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase 
 	}
 
 	public function testGlobalStylesQuery(): void {
-		/**
-		 * Handle WP 6.7+ deprecations for global styles functions.
-		 *
-		 * @todo Confirm correct replacement for wp_get_global_styles_custom_css
-		*/
-		$this->setExpectedDeprecated( 'wp_get_global_styles_custom_css' );
-		$this->setExpectedDeprecated( 'WP_Theme_JSON::get_custom_css' );
-
 		$query = 'query testGlobalStyles {
 			globalStyles {
-				blockStyles
 				customCss
 				renderedFontFaces
 				stylesheet
@@ -56,7 +47,6 @@ class GlobalStylesQueryTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase 
 				$this->expectedObject(
 					'globalStyles',
 					[
-						$this->expectedField( 'blockStyles', self::NOT_FALSY ),
 						$this->expectedField( 'customCss', self::NOT_FALSY ),
 						$this->expectedField( 'renderedFontFaces', self::NOT_FALSY ),
 						$this->expectedField( 'stylesheet', self::NOT_FALSY ),
@@ -71,14 +61,6 @@ class GlobalStylesQueryTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase 
 	}
 
 	public function testFontFacesQuery(): void {
-		/**
-		 * Handle WP 6.7+ deprecations for global styles functions.
-		 *
-		 * @todo Confirm correct replacement for wp_get_global_styles_custom_css
-		*/
-		$this->setExpectedDeprecated( 'wp_get_global_styles_custom_css' );
-		$this->setExpectedDeprecated( 'WP_Theme_JSON::get_custom_css' );
-
 		$query = 'query testFontFaces {
 			globalStyles {
 				fontFaces {
