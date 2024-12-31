@@ -10,7 +10,6 @@ declare( strict_types = 1 );
 namespace SnapWP\Helper\Modules\GraphQL;
 
 use SnapWP\Helper\Interfaces\Registrable;
-use SnapWP\Helper\Modules\GraphQL\Data\ContentBlocksResolver;
 use SnapWP\Helper\Modules\GraphQL\Model\RenderedTemplate;
 use WPGraphQL;
 
@@ -37,11 +36,10 @@ final class SchemaFilters implements Registrable {
 	 */
 	public function register_hooks(): void {
 		// No need to check for dependencies, since missing filters will just be ignored.
-		add_filter( 'graphql_object_fields', [ $this, 'overload_content_blocks_resolver' ], 10 );
 		add_filter( 'wpgraphql_content_blocks_resolver_content', [ $this, 'get_content_from_model' ], 10, 2 );
 
 		// Cache rendered blocks.
-		add_filter( 'pre_render_block', [ $this, 'get_cached_rendered_block' ], 11, 2 ); // @todo: this should be as early priority as possible
+		add_filter( 'pre_render_block', [ $this, 'get_cached_rendered_block' ], 10, 2 ); // @todo: this should be as early priority as possible
 		// We want to cache the rendered block as late as possible to ensure we're caching the final output.
 		add_filter( 'render_block', [ $this, 'cache_rendered_block' ], PHP_INT_MAX - 1, 2 );
 	}
@@ -58,27 +56,6 @@ final class SchemaFilters implements Registrable {
 		}
 
 		return $content;
-	}
-
-	/**
-	 * Overloads the content blocks resolver to use ourn own resolver.
-	 *
-	 * @todo This is necessary because WPGraphQL Content Blocks' resolver is broken.
-	 *
-	 * @param array<string,mixed> $fields The config for the interface type.
-	 *
-	 * @return array<string,mixed>
-	 */
-	public function overload_content_blocks_resolver( array $fields ): array {
-		if ( ! isset( $fields['editorBlocks'] ) ) {
-			return $fields;
-		}
-
-		$fields['editorBlocks']['resolve'] = static function ( $node, $args ) {
-			return ContentBlocksResolver::resolve_content_blocks( $node, $args );
-		};
-
-		return $fields;
 	}
 
 	/**
