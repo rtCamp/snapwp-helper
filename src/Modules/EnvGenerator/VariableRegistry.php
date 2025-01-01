@@ -50,8 +50,7 @@ class VariableRegistry {
 	 * Constructor
 	 */
 	public function __construct() {
-		// @todo make filterable and allow for conditionals.
-		$this->variables = self::VARIABLES;
+		$this->variables = apply_filters( 'snapwp_variable_registry_variables', self::VARIABLES );
 	}
 
 	/**
