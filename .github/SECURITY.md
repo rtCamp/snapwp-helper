@@ -27,10 +27,10 @@ If you discover any security vulnerability in **`SnapWP-Helper`**, please follow
 4. **Resolution and Disclosure:**
    We will work to either resolve the vulnerability or provide mitigation steps. Once a fix is published or the issue is otherwise addressed, we will inform you. You may then publicly disclose the vulnerability after receiving our confirmation.
 
-   Please **do not disclose the vulnerability** publicly until the fix is released or we have given you the go-ahead.
+   Please **do not disclose the vulnerability** publicly until the fix is released, or we have given you the go-ahead.
 
 5. **Credit:**
-   If you are the first to report the issue and you request recognition, we will credit you in the security advisory.
+   If you are the first to report the issue, and you request recognition, we will credit you in the security advisory.
 
 ## Preferred Languages
 
