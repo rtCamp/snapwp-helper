@@ -338,6 +338,6 @@ This project uses [Semantic Versioning](https://semver.org/). When making a rele
 > [!NOTE]
 > Versioning is a machine tool for developers. It is not a marketing tool for users - that's what [changelogs](CHANGELOG.md) and release announcements are for. So, don't worry too much about version numbers. Just follow the rules above.
 
-As will all other Code Contributions, the release process is managed through Pull Requests. When you are ready to make a release, create a new branch from `develop` and make the necessary changes to update the version number (in readme, plugin header, constants, etc) and the changelog.
+As will all other Code Contributions, the release process is managed through Pull Requests. When you are ready to make a release, create a new branch from `develop` and make the necessary changes to update the version number (in README, plugin header, constants, etc.) and the changelog.
 
-One the changes are made and the PR is merged, you should push a copy of the `develop` branch to the `main` branch, and then create a new GitHub release with the version number and a summary of the changes.
+One the changes are made, and the PR is merged, you should push a copy of the `develop` branch to the `main` branch, and then create a new GitHub release with the version number and a summary of the changes.
