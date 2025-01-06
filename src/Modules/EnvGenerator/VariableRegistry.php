@@ -50,12 +50,13 @@ class VariableRegistry {
 	 * Constructor
 	 */
 	public function __construct() {
+		// @todo Allow for conditionals.
 		/**
 		 * Filters the list of environment variables used in the VariableRegistry class.
 		 *
 		 * @param array<string,array{description:string,default:string,required:bool}> $variables The default environment variables.
 		 */
-		$this->variables = (array) apply_filters( 'snapwp_helper/env_generator/variables', self::VARIABLES );
+		$this->variables = (array) apply_filters( 'snapwp_helper/env/variables', self::VARIABLES );
 	}
 
 	/**

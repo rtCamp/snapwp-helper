@@ -17,10 +17,10 @@
   - [Lifecycle](#lifecycle)
     - [`snapwp_helper/init/module_classes`](#snapwp_helperinitmodule_classes)
     - [`snapwp_helper/dependencies/registered_dependencies`](#snapwp_helperdependenciesregistered_dependencies)
+   - [Environment Variables](#environment-variables)
+     - [`snapwp_helper/env/variables`](#snapwp_helperenvvariables)
    - [Plugin Updater](#plugin-updater)
      - [`snapwp_helper/plugin_updater/plugins`](#snapwp_helperplugin_updaterplugins)
-   - [Variable Registry](#variable-registry)
-     - [`snapwp_helper/env_generator/variables`](#snapwp_helperenv_generatorvariables)
 
 ## Action Hooks
 
@@ -143,6 +143,24 @@ apply_filters( 'snapwp_helper/dependencies/registered_dependencies', array $depe
 	 - `name` _(string)_: The pretty name of the dependency used in the admin notice.
 	 - `check_callback` _(`callable(): true|\WP_Error`)_: A callable that returns true if the dependency is met, or a `WP_Error` object (with an explicit error message) if the dependency is not met.
 
+### Environment Variables
+
+#### `snapwp_helper/env/variables`
+
+This filter allows you to modify the list of environment variables used for configuration in your headless application.
+
+```php
+apply_filters( 'snapwp_helper/env/variables', array $variables );
+```
+
+##### Parameters
+
+- `$variables` _(array<string,array{description:string,default:string,required:bool}>)_: This array contains the details of the environment variables. Each element provides the following information:
+
+   - `description` _(string)_: A brief explanation of what the variable controls or configures.
+   - `default` _(string)_: The default value assigned to the variable if not set explicitly.
+   - `required` _(bool)_: Indicates if this variable is mandatory for proper functionality.
+
 ### Plugin Updater
 
 #### `snapwp_helper/plugin_updater/plugins`
@@ -159,21 +177,3 @@ apply_filters( 'snapwp_helper/plugin_updater/plugins', array $plugins );
 
    - `slug` _(string)_: The qualified plugin slug with its folder. E.g. 'wp-graphql-my-plugin/wp-graphql-my-plugin.php'.
    - `update_uri` _(string)_: The URI used to check for plugin updates.
-
-### Variable Registry
-
-#### `snapwp_helper/env_generator/variables`
-
-Filters the list of environment variables used in the VariableRegistry class.
-
-```php
-apply_filters( 'snapwp_helper/env_generator/variables', array $variables );
-```
-
-##### Parameters
-
-- `$variables` _(array<string,array{description:string,default:string,required:bool}>)_: An array of environment variables with their details. Each element has the following keys:
-
-   - `description` _(string)_: A description of the variable.
-   - `default` _(string)_: The default value for the variable.
-   - `required` _(bool)_: Whether the variable is required.
