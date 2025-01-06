@@ -147,7 +147,7 @@ apply_filters( 'snapwp_helper/dependencies/registered_dependencies', array $depe
 
 #### `snapwp_helper/env/variables`
 
-This filter allows you to modify the list of environment variables used for configuration in your headless application.
+This filter allows you to modify the list of environment variables used by SnapWP's frontend framework.
 
 ```php
 apply_filters( 'snapwp_helper/env/variables', array $variables );
@@ -155,11 +155,11 @@ apply_filters( 'snapwp_helper/env/variables', array $variables );
 
 ##### Parameters
 
-- `$variables` _(array<string,array{description:string,default:string,required:bool}>)_: This array contains the details of the environment variables. Each element provides the following information:
+- `$variables` _(array<string,array{description:string,default:string,required:bool}>)_: This array contains the details of the environment variables, keyed to the variable name. Each item provides the following information:
 
    - `description` _(string)_: A brief explanation of what the variable controls or configures.
    - `default` _(string)_: The default value assigned to the variable if not set explicitly.
-   - `required` _(bool)_: Indicates if this variable is mandatory for proper functionality.
+   - `required` _(bool)_: Whether the variable is mandatory for proper functionality.
 
 ### Plugin Updater
 
