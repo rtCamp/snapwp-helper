@@ -14,6 +14,8 @@ class VariableRegistry {
 	/**
 	 * Array of environment variables.
 	 *
+	 * @todo Support conditional variables.
+	 *
 	 * @var array<string,array{description:string,default:string,required:bool}>
 	 */
 	private const VARIABLES = [
@@ -50,8 +52,12 @@ class VariableRegistry {
 	 * Constructor
 	 */
 	public function __construct() {
-		// @todo make filterable and allow for conditionals.
-		$this->variables = self::VARIABLES;
+		/**
+		 * Filters the list of environment variables recognized by SnapWP.
+		 *
+		 * @param array<string,array{description:string,default:string,required:bool}> $variables The default environment variables, keyed by name.
+		 */
+		$this->variables = (array) apply_filters( 'snapwp_helper/env/variables', self::VARIABLES );
 	}
 
 	/**
