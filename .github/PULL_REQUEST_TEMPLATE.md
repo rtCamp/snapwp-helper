@@ -25,7 +25,7 @@ Please make sure to review the [Contribution Guidelines](../DEVELOPMENT.md) befo
 <!-- 3. etc. -->
 
 ## Screenshots
-<!-- Include relevant screenshots proving the PR works as indended. -->
+<!-- Include relevant screenshots proving the PR works as intended. -->
 
 ## Additional Info
 <!-- Please include any relevant logs, error output, etc -->
@@ -34,7 +34,7 @@ Please make sure to review the [Contribution Guidelines](../DEVELOPMENT.md) befo
 <!-- We encourage you to complete this checklist to the best of your abilities. If you can't do everything, that's okay too. -->
 - [ ] I have read the [Contribution Guidelines](../DEVELOPMENT.md).
 - [ ] My code is tested to the best of my abilities.
-- [ ] My code passes all lints (PHPCS, PHPStan, ESLint, etc). <!-- See the Contributing Guidelines for linting instructions -->
+- [ ] My code passes all lints (PHPCS, PHPStan, ESLint, etc.). <!-- See the Contributing Guidelines for linting instructions -->
 - [ ] My code has detailed inline documentation. <!-- Guidelines: https://developer.wordpress.org/coding-standards/inline-documentation-standards/php/ -->
 - [ ] I have added unit tests to verify the code works as intended.
 - [ ] I have updated the project documentation accordingly.

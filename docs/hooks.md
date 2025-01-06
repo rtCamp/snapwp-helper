@@ -109,10 +109,10 @@ apply_filters( 'snapwp_helper/graphql/resolve_template_uri', mixed|null $node, s
 ##### Parameters
 
 - `$node` (mixed|null): The node, defaults to nothing.
-- `$uri` (string): The uri being searched.
+- `$uri` (string): The URI being searched.
 - `$content` (\WPGraphQL\AppContext): The app context.
 - `$wp` (\WP object): The WP object instance.
-- `$extra_query_vars` (array<string,mixed>|string): Any extra query vars to consider.
+- `$extra_query_vars` (array<string, mixed>|string): Any extra query vars to consider.
 
 ### Lifecycle
 
@@ -130,7 +130,7 @@ apply_filters( 'snapwp_helper/init/module_classes', array $module_classes );
 
 #### `snapwp_helper/dependencies/registered_dependencies`
 
-Filters the array of external dependencies (e.g. WordPress plugins ) required by the plugin.
+Filters the array of external dependencies (e.g. WordPress plugins) required by the plugin.
 
 ```php
 apply_filters( 'snapwp_helper/dependencies/registered_dependencies', array $dependencies );
@@ -155,9 +155,9 @@ apply_filters( 'snapwp_helper/plugin_updater/plugins', array $plugins );
 
 ##### Parameters
 
-- `$plugins` _(array{slug,update_uri}[])_: An array of plugins to be checked for updates. Each element in the array is an associative array with the following keys:
+- `$plugins` _(array{slug, update_uri}[])_: An array of plugins to be checked for updates. Each element in the array is an associative array with the following keys:
 
-   - `slug` _(string)_: The qualified plugin slug with it's folder. E.g. 'wp-graphql-my-plugin/wp-graphql-my-plugin.php'.
+   - `slug` _(string)_: The qualified plugin slug with its folder. E.g. 'wp-graphql-my-plugin/wp-graphql-my-plugin.php'.
    - `update_uri` _(string)_: The URI used to check for plugin updates.
 
 ### Variable Registry
