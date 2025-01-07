@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 use SnapWP\Helper\Modules\EnvGenerator\Generator;
 use SnapWP\Helper\Modules\EnvGenerator\VariableRegistry;
+use SnapWP\Helper\Modules\GraphQL\TokenManager;
 
 if ( ! function_exists( 'snapwp_helper_get_env_content' ) ) {
 	/**
@@ -63,6 +64,7 @@ if ( ! function_exists( 'snapwp_helper_get_env_variables' ) ) {
 			'NEXT_URL'                     => '',
 			'HOME_URL'                     => get_home_url(),
 			'GRAPHQL_ENDPOINT'             => graphql_get_endpoint(),
+			'INTROSPECTION_TOKEN'          => TokenManager::get_token(),
 		];
 	}
 }
