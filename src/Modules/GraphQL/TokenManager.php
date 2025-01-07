@@ -47,7 +47,7 @@ class TokenManager {
 	/**
 	 * Retrieve and decrypt the introspection token from the database.
 	 *
-	 * @return string|null The decrypted token, or null if not found.
+	 * @return string The decrypted token.
 	 */
 	public static function get_token(): ?string {
 		// Retrieve the encrypted token.
@@ -79,6 +79,10 @@ class TokenManager {
 
 		// Encrypt the token.
 		$encrypted_token = openssl_encrypt( $token, 'aes-256-cbc', $encryption_key, 0, $iv );
+
+		if ( false === $encrypted_token ) {
+			throw new \Exception( 'Failed to encrypt the token.' );
+		}
 		
 		return $encrypted_token;
 	}
@@ -97,6 +101,10 @@ class TokenManager {
 		$iv             = 'iv_1234567890123456';
 
 		$decrypted_token = openssl_decrypt( $encrypted_token, 'aes-256-cbc', $encryption_key, 0, $iv );
+
+		if ( false === $decrypted_token ) {
+			throw new \Exception( 'Failed to decrypt the token.' );
+		}
 
 		return $decrypted_token;
 	}

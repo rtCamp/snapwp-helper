@@ -167,7 +167,6 @@ class GraphQL implements Module {
 
 		if ( ! $introspection_token ) {
 			wp_send_json_error(['message' => 'No token found.']);
-			exit;
 		}
 
 		$headers = getallheaders();
@@ -179,6 +178,5 @@ class GraphQL implements Module {
 
 		// Reject the request if the token does not match.
 		wp_send_json_error(['message' => 'Invalid token']);
-		exit;
 	}
 }
