@@ -13,6 +13,7 @@ use SnapWP\Helper\Dependencies;
 use SnapWP\Helper\Interfaces\Module;
 use SnapWP\Helper\Modules\GraphQL\SchemaFilters;
 use SnapWP\Helper\Modules\GraphQL\TypeRegistry;
+use SnapWP\Helper\Modules\GraphQL\TokenManager;
 
 /**
  * Class - GraphQL
@@ -63,6 +64,8 @@ class GraphQL implements Module {
 				TypeRegistry::instance()->register_hooks();
 			}
 		);
+
+		add_action( 'do_graphql_request', [ $this, 'check_introspection_token' ] );
 	}
 
 	/**
@@ -151,5 +154,31 @@ class GraphQL implements Module {
 				return true;
 			},
 		];
+	}
+
+	/**
+	 * Check for the Introspection token and allow introspection if the token matches.
+	 * 
+	 * @return bool True if the token matches, false otherwise.
+	 */
+	protected function check_introspection_token() : bool {
+		// Get the decrypted introspection token from the database.
+		$introspection_token = TokenManager::get_token();
+
+		if ( ! $introspection_token ) {
+			wp_send_json_error(['message' => 'No token found.']);
+			exit;
+		}
+
+		$headers = getallheaders();
+
+		// Check if the Authorization header is set and the token matches.
+		if ( isset( $headers['Authorization'] ) && $headers['Authorization'] === "Bearer {$introspection_token}" ) {
+			return true;
+		}
+
+		// Reject the request if the token does not match.
+		wp_send_json_error(['message' => 'Invalid token']);
+		exit;
 	}
 }
