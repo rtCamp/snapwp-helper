@@ -13,13 +13,12 @@ namespace SnapWP\Helper\Modules\GraphQL;
  * Class - TokenManager
  */
 class TokenManager {
-
 	// Option name for storing the token.
-	const SNAPWP_INTROSPECTION_TOKEN = 'snapwp_helper_introspection_token';
+	private const SNAPWP_INTROSPECTION_TOKEN = 'snapwp_helper_introspection_token';
 
 	/**
 	 * Generate a new introspection token, encrypt it, and store it.
-	 * 
+	 *
 	 * @return string The generated token.
 	 */
 	public static function generate_token(): string {
@@ -67,9 +66,11 @@ class TokenManager {
 
 	/**
 	 * Encrypt the introspection token.
-	 * 
+	 *
 	 * @param string $token The token to encrypt.
-	 * 
+	 *
+	 * @throws \Exception If the token cannot be encrypted.
+	 *
 	 * @return string The encrypted token.
 	 */
 	private static function encrypt_token( string $token ): string {
@@ -83,15 +84,17 @@ class TokenManager {
 		if ( false === $encrypted_token ) {
 			throw new \Exception( 'Failed to encrypt the token.' );
 		}
-		
+
 		return $encrypted_token;
 	}
 
 	/**
 	 * Decrypt the introspection token.
-	 * 
+	 *
 	 * @param string $encrypted_token The encrypted token to decrypt.
-	 * 
+	 *
+	 * @throws \Exception If the token cannot be decrypted.
+	 *
 	 * @return string The decrypted token.
 	 */
 	private static function decrypt_token( string $encrypted_token ): string {
