@@ -59,12 +59,15 @@ if ( ! function_exists( 'snapwp_helper_get_env_variables' ) ) {
 			return new \WP_Error( 'graphql_not_found', 'WPGraphQL must be installed and activated.', [ 'status' => 500 ] );
 		}
 
+		// Get the introspection token.
+		$token = TokenManager::get_token() ?? '';
+
 		return [
 			'NODE_TLS_REJECT_UNAUTHORIZED' => '',
 			'NEXT_URL'                     => '',
 			'HOME_URL'                     => get_home_url(),
 			'GRAPHQL_ENDPOINT'             => graphql_get_endpoint(),
-			'INTROSPECTION_TOKEN'          => TokenManager::get_token(),
+			'INTROSPECTION_TOKEN'          => $token,
 		];
 	}
 }

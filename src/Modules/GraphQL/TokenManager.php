@@ -59,9 +59,7 @@ class TokenManager {
 		}
 
 		// Decrypt the token.
-		$decrypted_token = self::decrypt_token( $encrypted_token );
-
-		return $decrypted_token;
+		return self::decrypt_token( $encrypted_token );
 	}
 
 	/**

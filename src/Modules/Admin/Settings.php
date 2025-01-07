@@ -140,7 +140,7 @@ class Settings implements Registrable {
 		if ( isset( $_POST['regenerate_token'] ) && ! empty( $nonce ) && wp_verify_nonce( $nonce, 'regenerate_token_action' ) ) {
 			// Regenerate the introspection token.
 			TokenManager::generate_token();
-			$token = TokenManager::get_token();
+			$token = TokenManager::get_token() ?? '';
 
 			echo '<div class="updated"><p>' . esc_html__( 'Introspection token regenerated successfully.', 'snapwp-helper' ) . '</p></div>';
 			echo '<div class="updated"><p>' . esc_html__( 'New token: ', 'snapwp-helper' ) . esc_html( $token ) . '</p></div>';
