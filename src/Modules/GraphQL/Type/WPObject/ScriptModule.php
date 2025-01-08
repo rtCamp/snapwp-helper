@@ -41,6 +41,10 @@ final class ScriptModule extends AbstractObject implements TypeWithInterfaces {
 				'type'        => [ 'list_of' => ScriptModuleDependency::get_type_name() ],
 				'description' => __( 'The dependencies for the script module.', 'snapwp-helper' ),
 			],
+			'extraData'    => [
+				'type'        => 'String',
+				'description' => __( 'The (JSON-encoded) data object used by the script module.', 'snapwp-helper' ),
+			],
 			'handle'       => [
 				'type'        => 'String',
 				'description' => __( 'The handle for the script module.', 'snapwp-helper' ),

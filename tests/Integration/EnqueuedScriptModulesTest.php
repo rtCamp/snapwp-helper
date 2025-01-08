@@ -46,6 +46,7 @@ class EnqueuedScriptModulesTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestC
 							handle
 							id
 							src
+							extraData
 							dependencies {
 								importType
 								connectedScriptModule {
@@ -204,5 +205,54 @@ class EnqueuedScriptModulesTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestC
 		$this->assertNotEmpty( $grandparent_module['id'] );
 		$this->assertEquals( 'https://example.com/test-grandparent-dependency.js', $grandparent_module['src'] );
 		$this->assertEmpty( $grandparent_module['dependencies'] );
+	}
+
+	/**
+	 * Test enqueuing a script module with a data object.
+	 */
+	public function testEnqueuedScriptModuleWithData(): void {
+		$post_content = '<!-- wp:image {"lightbox":{"enabled":true},"id":767,"width":"300px","sizeSlug":"large","linkDestination":"none"} -->
+			<figure class="wp-block-image size-large is-resized"><img src="http://rt-headless.ddev.site/wp-content/uploads/2008/06/windmill-2.jpg" alt="" class="wp-image-767" style="width:300px"/></figure>
+		<!-- /wp:image -->';
+
+		$post_id = $this->factory()->post->create(
+			[
+				'post_content' => $post_content,
+			]
+		);
+
+		$post_url = get_permalink( $post_id );
+
+		$query     = $this->query();
+
+		$variables = [ 'uri' => wp_make_link_relative( $post_url ) ];
+
+		$actual = $this->graphql( compact( 'query', 'variables' ) );
+
+		$this->assertArrayNotHasKey( 'errors', $actual );
+		$this->assertArrayHasKey( 'data', $actual );
+
+		$handles = array_column( $actual['data']['templateByUri']['enqueuedScriptModules']['nodes'], 'handle' );
+
+		$this->assertContains( '@wordpress/interactivity', $handles );
+
+		$actual_dep = array_values(
+			array_filter(
+				$actual['data']['templateByUri']['enqueuedScriptModules']['nodes'],
+				static function ( $node ) {
+					return '@wordpress/interactivity' === $node['handle'];
+				}
+			)
+		)[0];
+	
+		$this->assertNotEmpty( $actual_dep['id'], 'Data should contain a valid ID' );
+		$this->assertNotEmpty( $actual_dep['extraData'], 'Data should contain a data object' );
+
+		$data = json_decode( $actual_dep['extraData'], true );
+
+		$this->assertIsArray( $data );
+		$this->assertArrayHasKey( 'state', $data, 'Data should contain a state object' );
+		$this->assertArrayHasKey( 'core/image', $data['state'], 'Data should contain a core/image state object' );
+		$this->assertNotEmpty( $data['state']['core/image']['metadata'], 'Data should contain core/image metadata' );
 	}
 }
