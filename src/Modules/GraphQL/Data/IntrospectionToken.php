@@ -23,16 +23,15 @@ class IntrospectionToken {
 	 */
 	public static function get_token() {
 		// Retrieve the encrypted token.
-		$encrypted_token = get_option( self::SNAPWP_INTROSPECTION_TOKEN );
+		$token = get_option( self::SNAPWP_INTROSPECTION_TOKEN );
 
-		// If the token is not found, generate a new one.
-		if ( empty( $encrypted_token ) ) {
-			$encrypted_token = self::generate_token();
-			$encrypted_token = get_option( self::SNAPWP_INTROSPECTION_TOKEN );
+		// If we have a token, decrypt it.
+		if ( ! empty( $token ) ) {
+			return self::decrypt_token( $token );
 		}
 
-		// Decrypt the token.
-		return self::decrypt_token( $encrypted_token );
+		// Otherwise, generate a new token.
+		return self::generate_token();
 	}
 
 	/**
@@ -40,27 +39,19 @@ class IntrospectionToken {
 	 *
 	 * @return string|\WP_Error The new token or an error object.
 	 */
-	private static function generate_token() {
-		// Delete token if it exists.
-		$delete_result = ( get_option( self::SNAPWP_INTROSPECTION_TOKEN ) ) ? self::delete_token() : true;
-
-		if ( is_wp_error( $delete_result ) ) {
-			// Return the WP_Error from the delete operation if it fails.
-			return $delete_result;
-		}
-
+	public static function generate_token() {
 		// Generate a new token.
-		$new_token = bin2hex( random_bytes( 32 ) );
+		$token = bin2hex( random_bytes( 32 ) );
 
 		// Store the new token in the database.
-		$updated = self::update_token( $new_token );
+		$updated = self::update_token( $token );
 
+		// Return the WP_Error if it fails.
 		if ( is_wp_error( $updated ) ) {
-			// Return the WP_Error from the store operation if it fails.
 			return $updated;
 		}
 
-		return $new_token;
+		return $token;
 	}
 
 	/**
@@ -88,26 +79,6 @@ class IntrospectionToken {
 	}
 
 	/**
-	 * Delete the existing token from the database.
-	 *
-	 * @return true|\WP_Error True on success, WP_Error on failure.
-	 */
-	private static function delete_token() {
-		$delete = delete_option( self::SNAPWP_INTROSPECTION_TOKEN );
-
-		if ( false === $delete ) {
-			// Return an error if the token could not be deleted.
-			return new \WP_Error(
-				'token_deletion_failed',
-				__( 'Failed to delete the existing token. It may not exist.', 'snapwp-helper' )
-			);
-		}
-
-		// Return true if the token was successfully deleted or didn't exist.
-		return true;
-	}
-
-	/**
 	 * Encrypt the introspection token.
 	 *
 	 * @param string $token The token to encrypt.
@@ -115,36 +86,115 @@ class IntrospectionToken {
 	 * @return string|\WP_Error The encrypted token or an error object.
 	 */
 	private static function encrypt_token( string $token ) {
-		$encryption_key = defined( 'ENCRYPTION_KEY' ) ? ENCRYPTION_KEY : '';
-		$iv             = defined( 'ENCRYPTION_IV' ) ? ENCRYPTION_IV : '';
-
-		// Encrypt the token.
-		$encrypted_token = openssl_encrypt( $token, 'aes-256-cbc', $encryption_key, 0, $iv );
-
-		if ( false === $encrypted_token ) {
-			return new \WP_Error( 'token_encryption_failed', 'Failed to encrypt the token.' );
+		// Bail if the server doesn't support openssl.
+		if ( ! extension_loaded( 'openssl' ) ) {
+			return $token;
 		}
 
-		return $encrypted_token;
+		// CTR is faster than CBC.
+		$method    = 'aes-256-ctr';
+		$iv_length = (int) openssl_cipher_iv_length( $method );
+		$iv        = (string) openssl_random_pseudo_bytes( $iv_length );
+
+		$encrypted_value = openssl_encrypt(
+			// Make it salty.
+			$token . self::get_encryption_salt(),
+			$method,
+			self::get_encryption_key(),
+			0,
+			$iv
+		);
+
+		if ( false === $encrypted_value ) {
+			return new \WP_Error( 'token_encryption_failed', __( 'Failed to encrypt the token.', 'snapwp-helper' ) );
+		}
+
+		return base64_encode( $iv . $encrypted_value ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode -- This ensures the encrypted value is transmittable.
 	}
 
 	/**
 	 * Decrypt the introspection token.
 	 *
-	 * @param string $encrypted_token The encrypted token to decrypt.
+	 * @param string $token The encrypted token to decrypt.
 	 *
 	 * @return string|\WP_Error The decrypted token or an error object.
 	 */
-	private static function decrypt_token( string $encrypted_token ) {
-		$encryption_key = defined( 'ENCRYPTION_KEY' ) ? ENCRYPTION_KEY : '';
-		$iv             = defined( 'ENCRYPTION_IV' ) ? ENCRYPTION_IV : '';
-
-		$decrypted_token = openssl_decrypt( $encrypted_token, 'aes-256-cbc', $encryption_key, 0, $iv );
-
-		if ( false === $decrypted_token ) {
-			return new \WP_Error( 'token_decryption_failed', 'Failed to decrypt the token.' );
+	private static function decrypt_token( string $token ) {
+		// Bail if the server doesn't support openssl.
+		if ( ! extension_loaded( 'openssl' ) ) {
+			return $token;
 		}
 
-		return $decrypted_token;
+		$token = base64_decode( $token, true ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_decode -- Encoded in ::encrypt_token().
+
+		if ( false === $token ) {
+			// Obfuscate the error message to prevent leaking sensitive information.
+			return new \WP_Error( 'token_decryption_failed', __( 'Failed to decrypt the token.', 'snapwp-helper' ) );
+		}
+
+		$method    = 'aes-256-ctr';
+		$iv_length = (int) openssl_cipher_iv_length( 'aes-256-ctr' );
+
+		// Get the token and IV out of the encrypted value.
+		$iv    = substr( $token, 0, $iv_length );
+		$token = substr( $token, $iv_length );
+
+		$decrypted_value = openssl_decrypt(
+			$token,
+			$method,
+			self::get_encryption_key(),
+			0,
+			$iv
+		);
+
+		if ( false === $decrypted_value ) {
+			return new \WP_Error( 'token_decryption_failed', __( 'Failed to decrypt the token.', 'snapwp-helper' ) );
+		}
+
+		$salt = self::get_encryption_salt();
+
+		// Ensure it's salted.
+		if ( substr( $decrypted_value, -strlen( $salt ) ) !== $salt ) {
+			return new \WP_Error( 'token_decryption_failed', __( 'Failed to decrypt the token.', 'snapwp-helper' ) );
+		}
+
+		// Return it unsalted.
+		return substr( $decrypted_value, 0, -strlen( $salt ) );
+	}
+
+	/**
+	 * Gets the encryption key to use.
+	 */
+	private static function get_encryption_key(): string {
+		// Use a custom key if defined.
+		if ( defined( 'SNAPWP_ENCRYPTION_KEY' ) && '' !== SNAPWP_ENCRYPTION_KEY ) {
+			return SNAPWP_ENCRYPTION_KEY;
+		}
+
+		// Reuse the LOGGED_IN_KEY if it's defined.
+		if ( defined( 'LOGGED_IN_KEY' ) && '' !== LOGGED_IN_KEY ) {
+			return LOGGED_IN_KEY;
+		}
+
+		// If there's no key, you probably have a security issue.
+		return 'can-you-keep-a-secret';
+	}
+
+	/**
+	 * Gets the salt to use for encryption.
+	 */
+	private static function get_encryption_salt(): string {
+		// Use a custom salt if defined.
+		if ( defined( 'SNAPWP_ENCRYPTION_SALT' ) && '' !== SNAPWP_ENCRYPTION_SALT ) {
+			return SNAPWP_ENCRYPTION_SALT;
+		}
+
+		// Reuse the LOGGED_IN_SALT if it's defined.
+		if ( defined( 'LOGGED_IN_SALT' ) && '' !== LOGGED_IN_SALT ) {
+			return LOGGED_IN_SALT;
+		}
+
+		// If there's no salt, you probably have a security issue.
+		return 'please-pass-the-salt';
 	}
 }
