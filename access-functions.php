@@ -9,7 +9,7 @@ declare(strict_types=1);
 
 use SnapWP\Helper\Modules\EnvGenerator\Generator;
 use SnapWP\Helper\Modules\EnvGenerator\VariableRegistry;
-use SnapWP\Helper\Modules\GraphQL\TokenManager;
+use SnapWP\Helper\Modules\GraphQL\Data\IntrospectionToken;
 
 if ( ! function_exists( 'snapwp_helper_get_env_content' ) ) {
 	/**
@@ -60,7 +60,12 @@ if ( ! function_exists( 'snapwp_helper_get_env_variables' ) ) {
 		}
 
 		// Get the introspection token.
-		$token = TokenManager::get_token() ?? '';
+		$token = IntrospectionToken::get_token();
+
+		// If there was an error retrieving the token, set it to an empty string.
+		if ( is_wp_error( $token ) ) {
+			$token = '';
+		}
 
 		return [
 			'NODE_TLS_REJECT_UNAUTHORIZED' => '',
