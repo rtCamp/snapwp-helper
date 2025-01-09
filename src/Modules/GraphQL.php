@@ -12,7 +12,6 @@ namespace SnapWP\Helper\Modules;
 use SnapWP\Helper\Dependencies;
 use SnapWP\Helper\Interfaces\Module;
 use SnapWP\Helper\Modules\GraphQL\SchemaFilters;
-use SnapWP\Helper\Modules\GraphQL\TokenManager;
 use SnapWP\Helper\Modules\GraphQL\TypeRegistry;
 
 /**
@@ -154,27 +153,5 @@ class GraphQL implements Module {
 				return true;
 			},
 		];
-	}
-
-	/**
-	 * Check for the Introspection token and allow introspection if the token matches.
-	 */
-	protected function check_introspection_token(): void {
-		// Get the decrypted introspection token from the database.
-		$introspection_token = TokenManager::get_token();
-
-		if ( ! $introspection_token ) {
-			wp_send_json_error( [ 'message' => 'No token found.' ] );
-		}
-
-		$headers = getallheaders();
-
-		// Check if the Authorization header is set and the token matches.
-		if ( isset( $headers['Authorization'] ) && "Bearer {$introspection_token}" === $headers['Authorization'] ) {
-			return;
-		}
-
-		// Reject the request if the token does not match.
-		wp_send_json_error( [ 'message' => 'Invalid token' ] );
 	}
 }
