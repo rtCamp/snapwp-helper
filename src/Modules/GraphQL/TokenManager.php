@@ -67,20 +67,17 @@ class TokenManager {
 	 *
 	 * @param string $token The token to encrypt.
 	 *
-	 * @throws \Exception If the token cannot be encrypted.
-	 *
-	 * @return string The encrypted token.
+	 * @return string|\WP_Error The encrypted token or an error object.
 	 */
-	private static function encrypt_token( string $token ): string {
-		// Encryption key and initialization vector (IV).
-		$encryption_key = 'rtcamp_snapwp_helper';
-		$iv             = 'iv_1234567890123456';
+	private static function encrypt_token( string $token ) {
+		$encryption_key = defined( 'ENCRYPTION_KEY' ) ? ENCRYPTION_KEY : '';
+		$iv             = defined( 'ENCRYPTION_IV' ) ? ENCRYPTION_IV : '';
 
 		// Encrypt the token.
 		$encrypted_token = openssl_encrypt( $token, 'aes-256-cbc', $encryption_key, 0, $iv );
 
 		if ( false === $encrypted_token ) {
-			throw new \Exception( 'Failed to encrypt the token.' );
+			return new \WP_Error( 'token_encryption_failed', 'Failed to encrypt the token.' );
 		}
 
 		return $encrypted_token;
@@ -91,20 +88,16 @@ class TokenManager {
 	 *
 	 * @param string $encrypted_token The encrypted token to decrypt.
 	 *
-	 * @throws \Exception If the token cannot be decrypted.
-	 *
-	 * @return string The decrypted token.
+	 * @return string|\WP_Error The decrypted token or an error object.
 	 */
-	private static function decrypt_token( string $encrypted_token ): string {
-
-		// Decrypt the token.
-		$encryption_key = 'rtcamp_snapwp_helper';
-		$iv             = 'iv_1234567890123456';
+	private static function decrypt_token( string $encrypted_token ) {
+		$encryption_key = defined( 'ENCRYPTION_KEY' ) ? ENCRYPTION_KEY : '';
+		$iv             = defined( 'ENCRYPTION_IV' ) ? ENCRYPTION_IV : '';
 
 		$decrypted_token = openssl_decrypt( $encrypted_token, 'aes-256-cbc', $encryption_key, 0, $iv );
 
 		if ( false === $decrypted_token ) {
-			throw new \Exception( 'Failed to decrypt the token.' );
+			return new \WP_Error( 'token_decryption_failed', 'Failed to decrypt the token.' );
 		}
 
 		return $decrypted_token;
