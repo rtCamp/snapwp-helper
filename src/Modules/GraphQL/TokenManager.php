@@ -19,41 +19,66 @@ class TokenManager {
 	/**
 	 * Generate a new introspection token, encrypt it, and store it.
 	 *
-	 * @return string The generated token.
+	 * @return string|\WP_Error The new token or an error object.
 	 */
-	public static function generate_token(): string {
-		// Generate a random token.
-		$token = bin2hex( random_bytes( 32 ) );
+	private static function generate_token() {
+		// Delete token if it exists.
+		$delete_result = ( get_option( self::SNAPWP_INTROSPECTION_TOKEN ) ) ? self::delete_token() : true;
 
-		// Encrypt and store the token in the database.
-		self::store_token( $token );
+		if ( is_wp_error( $delete_result ) ) {
+			// Return the WP_Error from the delete operation if it fails.
+			return $delete_result;
+		}
 
-		return $token;
+		// Generate a new token.
+		$new_token = bin2hex( random_bytes( 32 ) );
+
+		// Store the new token in the database.
+		$updated = self::update_token( $new_token );
+
+		if ( is_wp_error( $updated ) ) {
+			// Return the WP_Error from the store operation if it fails.
+			return $updated;
+		}
+
+		return $new_token;
 	}
 
 	/**
 	 * Store the encrypted introspection token in the database.
 	 *
 	 * @param string $token The token to store.
+	 *
+	 * @return true|\WP_Error True on success, WP_Error on failure.
 	 */
-	private static function store_token( string $token ): void {
+	private static function update_token( string $token ) {
 		$encrypted_token = self::encrypt_token( $token );
 
+		if ( is_wp_error( $encrypted_token ) ) {
+			return $encrypted_token;
+		}
+
 		// Store the encrypted token in the options table.
-		update_option( self::SNAPWP_INTROSPECTION_TOKEN, $encrypted_token );
+		$updated = update_option( self::SNAPWP_INTROSPECTION_TOKEN, $encrypted_token );
+
+		if ( ! $updated ) {
+			return new \WP_Error( 'token_update_failed', __( 'Failed to update the introspection token.', 'snapwp-helper' ) );
+		}
+
+		return true;
 	}
 
 	/**
 	 * Retrieve and decrypt the introspection token from the database.
 	 *
-	 * @return string The decrypted token.
+	 * @return string|\WP_Error The decrypted token or an error object.
 	 */
-	public static function get_token(): ?string {
+	public static function get_token() {
 		// Retrieve the encrypted token.
 		$encrypted_token = get_option( self::SNAPWP_INTROSPECTION_TOKEN );
 
 		// If the token is not found, generate a new one.
-		if ( ! $encrypted_token ) {
+		if ( empty( $encrypted_token ) ) {
 			$encrypted_token = self::generate_token();
 			$encrypted_token = get_option( self::SNAPWP_INTROSPECTION_TOKEN );
 		}
