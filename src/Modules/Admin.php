@@ -11,6 +11,7 @@ namespace SnapWP\Helper\Modules;
 
 use SnapWP\Helper\Interfaces\Module;
 use SnapWP\Helper\Modules\Admin\Settings;
+use SnapWP\Helper\Modules\GraphQL\Data\IntrospectionToken;
 
 /**
  * Class - Admin
@@ -68,6 +69,8 @@ class Admin implements Module {
 			[ $this, 'render_menu' ],
 			999
 		);
+
+		add_action( 'admin_init', [ $this, 'handle_token_regeneration' ] );
 	}
 
 	/**
@@ -140,6 +143,15 @@ class Admin implements Module {
 				</table>
 			<?php endif; ?>
 
+			<h3><?php esc_html_e( 'Regenerate Introspection Token', 'snapwp-helper' ); ?></h3>
+			<p>
+				<?php esc_html_e( 'The introspection token is used by SnapWP\'s frontend to authenticate with your WordPress backend.', 'snapwp-helper' ); ?>
+			</p>
+			<form method="POST">
+				<?php wp_nonce_field( 'regenerate_token_action', 'regenerate_token_nonce' ); ?>
+				<input type="submit" name="regenerate_token" class="button-primary" value="<?php esc_attr_e( 'Regenerate Token', 'snapwp-helper' ); ?>">
+			</form>
+
 			<h3><?php esc_html_e( 'SnapWP Frontend Setup Guide', 'snapwp-helper' ); ?></h3>
 
 			<p>
@@ -189,5 +201,30 @@ class Admin implements Module {
 			</ol>
 		</div>
 		<?php
+	}
+
+	/**
+	 * Handle the token regeneration.
+	 */
+	public function handle_token_regeneration(): void {
+		$nonce = isset( $_POST['regenerate_token_nonce'] ) ? sanitize_text_field( $_POST['regenerate_token_nonce'] ) : '';
+
+		if ( isset( $_POST['regenerate_token'] ) && ! empty( $nonce ) && wp_verify_nonce( $nonce, 'regenerate_token_action' ) ) {
+			IntrospectionToken::get_token() ?? '';
+
+			add_action(
+				'admin_notices',
+				static function () {
+					echo '<div class="updated"><p>' . esc_html__( 'Introspection token regenerated successfully.', 'snapwp-helper' ) . '</p></div>';
+				}
+			);
+		} elseif ( isset( $_POST['regenerate_token'] ) ) {
+			add_action(
+				'admin_notices',
+				static function () {
+					echo '<div class="error"><p>' . esc_html__( 'Nonce verification failed.', 'snapwp-helper' ) . '</p></div>';
+				}
+			);
+		}
 	}
 }
