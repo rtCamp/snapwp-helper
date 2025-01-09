@@ -11,6 +11,7 @@ namespace SnapWP\Helper\Modules;
 
 use SnapWP\Helper\Dependencies;
 use SnapWP\Helper\Interfaces\Module;
+use SnapWP\Helper\Modules\GraphQL\CustomDisableIntrospection;
 use SnapWP\Helper\Modules\GraphQL\SchemaFilters;
 use SnapWP\Helper\Modules\GraphQL\TypeRegistry;
 
@@ -64,7 +65,15 @@ class GraphQL implements Module {
 			}
 		);
 
-		add_action( 'do_graphql_request', [ $this, 'check_introspection_token' ] );
+		// Register custom validation rule for introspection.
+		add_filter(
+			'graphql_validation_rules',
+			static function ( $rules ) {
+				// Replace the default DisableIntrospection rule with CustomDisableIntrospection.
+				$rules['disable_introspection'] = new CustomDisableIntrospection();
+				return $rules;
+			}
+		);
 	}
 
 	/**
