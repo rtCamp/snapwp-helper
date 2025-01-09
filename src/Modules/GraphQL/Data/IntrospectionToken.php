@@ -1,20 +1,39 @@
 <?php
 /**
- * Token manager for generating and storing introspection tokens.
+ * Introspection token manager for generating and storing tokens.
  *
  * @package SnapWP\Helper\Modules\GraphQL
  */
 
 declare( strict_types = 1 );
 
-namespace SnapWP\Helper\Modules\GraphQL;
+namespace SnapWP\Helper\Modules\GraphQL\Data;
 
 /**
- * Class - TokenManager
+ * Class - IntrospectionToken
  */
-class TokenManager {
+class IntrospectionToken {
 	// Option name for storing the token.
 	private const SNAPWP_INTROSPECTION_TOKEN = 'snapwp_helper_introspection_token';
+
+	/**
+	 * Retrieve and decrypt the introspection token from the database.
+	 *
+	 * @return string|\WP_Error The decrypted token or an error object.
+	 */
+	public static function get_token() {
+		// Retrieve the encrypted token.
+		$encrypted_token = get_option( self::SNAPWP_INTROSPECTION_TOKEN );
+
+		// If the token is not found, generate a new one.
+		if ( empty( $encrypted_token ) ) {
+			$encrypted_token = self::generate_token();
+			$encrypted_token = get_option( self::SNAPWP_INTROSPECTION_TOKEN );
+		}
+
+		// Decrypt the token.
+		return self::decrypt_token( $encrypted_token );
+	}
 
 	/**
 	 * Generate a new introspection token, encrypt it, and store it.
@@ -69,22 +88,23 @@ class TokenManager {
 	}
 
 	/**
-	 * Retrieve and decrypt the introspection token from the database.
+	 * Delete the existing token from the database.
 	 *
-	 * @return string|\WP_Error The decrypted token or an error object.
+	 * @return true|\WP_Error True on success, WP_Error on failure.
 	 */
-	public static function get_token() {
-		// Retrieve the encrypted token.
-		$encrypted_token = get_option( self::SNAPWP_INTROSPECTION_TOKEN );
+	private static function delete_token() {
+		$delete = delete_option( self::SNAPWP_INTROSPECTION_TOKEN );
 
-		// If the token is not found, generate a new one.
-		if ( empty( $encrypted_token ) ) {
-			$encrypted_token = self::generate_token();
-			$encrypted_token = get_option( self::SNAPWP_INTROSPECTION_TOKEN );
+		if ( false === $delete ) {
+			// Return an error if the token could not be deleted.
+			return new \WP_Error(
+				'token_deletion_failed',
+				__( 'Failed to delete the existing token. It may not exist.', 'snapwp-helper' )
+			);
 		}
 
-		// Decrypt the token.
-		return self::decrypt_token( $encrypted_token );
+		// Return true if the token was successfully deleted or didn't exist.
+		return true;
 	}
 
 	/**
@@ -126,25 +146,5 @@ class TokenManager {
 		}
 
 		return $decrypted_token;
-	}
-
-	/**
-	 * Delete the existing token from the database.
-	 *
-	 * @return true|\WP_Error True on success, WP_Error on failure.
-	 */
-	private static function delete_token() {
-		$delete = delete_option( self::SNAPWP_INTROSPECTION_TOKEN );
-
-		if ( false === $delete ) {
-			// Return an error if the token could not be deleted.
-			return new \WP_Error(
-				'token_deletion_failed',
-				__( 'Failed to delete the existing token. It may not exist.', 'snapwp-helper' )
-			);
-		}
-
-		// Return true if the token was successfully deleted or didn't exist.
-		return true;
 	}
 }
