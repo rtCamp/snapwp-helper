@@ -102,4 +102,24 @@ class TokenManager {
 
 		return $decrypted_token;
 	}
+
+	/**
+	 * Delete the existing token from the database.
+	 *
+	 * @return true|\WP_Error True on success, WP_Error on failure.
+	 */
+	private static function delete_token() {
+		$delete = delete_option( self::SNAPWP_INTROSPECTION_TOKEN );
+
+		if ( false === $delete ) {
+			// Return an error if the token could not be deleted.
+			return new \WP_Error(
+				'token_deletion_failed',
+				__( 'Failed to delete the existing token. It may not exist.', 'snapwp-helper' )
+			);
+		}
+
+		// Return true if the token was successfully deleted or didn't exist.
+		return true;
+	}
 }
