@@ -136,21 +136,22 @@ class Admin implements Module {
 							?>
 							<tr>
 								<td><?php echo esc_html( $key ); ?></td>
-								<td><?php echo esc_html( $value ); ?></td>
+								<td>
+									<?php echo esc_html( $value ); ?>
+
+									<?php if ( 'INTROSPECTION_TOKEN' === $key ) : ?>
+										<form method="POST">
+											<?php wp_nonce_field( 'regenerate_token_action', 'regenerate_token_nonce' ); ?>
+											<input type="submit" name="regenerate_token" class="button-primary" value="<?php esc_attr_e( 'Regenerate Token', 'snapwp-helper' ); ?>">
+										</form>
+										
+									<?php endif; ?>
+								</td>
 							</tr>
 						<?php endforeach; ?>
 					</tbody>
 				</table>
 			<?php endif; ?>
-
-			<h3><?php esc_html_e( 'Regenerate Introspection Token', 'snapwp-helper' ); ?></h3>
-			<p>
-				<?php esc_html_e( 'The introspection token is used by SnapWP\'s frontend to authenticate with your WordPress backend.', 'snapwp-helper' ); ?>
-			</p>
-			<form method="POST">
-				<?php wp_nonce_field( 'regenerate_token_action', 'regenerate_token_nonce' ); ?>
-				<input type="submit" name="regenerate_token" class="button-primary" value="<?php esc_attr_e( 'Regenerate Token', 'snapwp-helper' ); ?>">
-			</form>
 
 			<h3><?php esc_html_e( 'SnapWP Frontend Setup Guide', 'snapwp-helper' ); ?></h3>
 
@@ -207,24 +208,50 @@ class Admin implements Module {
 	 * Handle the token regeneration.
 	 */
 	public function handle_token_regeneration(): void {
+		if ( ! isset( $_GET['page'] ) || 'snapwp-helper' !== $_GET['page'] ) {
+			// Exit if not on our admin screen.
+			return;
+		}
+
+		if ( ! isset( $_POST['regenerate_token'] ) ) {
+			// Nothing to process if the regenerate_token action isn't triggered.
+			return;
+		}
+
 		$nonce = isset( $_POST['regenerate_token_nonce'] ) ? sanitize_text_field( $_POST['regenerate_token_nonce'] ) : '';
 
-		if ( isset( $_POST['regenerate_token'] ) && ! empty( $nonce ) && wp_verify_nonce( $nonce, 'regenerate_token_action' ) ) {
-			IntrospectionToken::get_token() ?? '';
-
-			add_action(
-				'admin_notices',
-				static function () {
-					echo '<div class="updated"><p>' . esc_html__( 'Introspection token regenerated successfully.', 'snapwp-helper' ) . '</p></div>';
-				}
+		if ( empty( $nonce ) || ! wp_verify_nonce( $nonce, 'regenerate_token_action' ) ) {
+			wp_admin_notice(
+				__( 'Nonce verification failed.', 'snapwp-helper' ),
+				[
+					'type' => 'error',
+				]
 			);
-		} elseif ( isset( $_POST['regenerate_token'] ) ) {
-			add_action(
-				'admin_notices',
-				static function () {
-					echo '<div class="error"><p>' . esc_html__( 'Nonce verification failed.', 'snapwp-helper' ) . '</p></div>';
-				}
-			);
+			return;
 		}
+
+		$introspection_token = IntrospectionToken::generate_token();
+
+		// Check is wp error.
+		if ( is_wp_error( $introspection_token ) ) {
+			wp_admin_notice(
+				sprintf(
+					// translators: %s is the error message.
+					__( 'Could not regenerate introspection token: %s', 'snapwp-helper' ),
+					$introspection_token->get_error_message()
+				),
+				[
+					'type' => 'error',
+				]
+			);
+			return;
+		}
+
+		wp_admin_notice(
+			__( 'Introspection token regenerated successfully.', 'snapwp-helper' ),
+			[
+				'type' => 'success',
+			]
+		);
 	}
 }

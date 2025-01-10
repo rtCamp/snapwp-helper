@@ -11,6 +11,7 @@ namespace SnapWP\Helper\Modules\GraphQL;
 
 use SnapWP\Helper\Interfaces\Registrable;
 use SnapWP\Helper\Modules\GraphQL\Data\ContentBlocksResolver;
+use SnapWP\Helper\Modules\GraphQL\DisableIntrospection;
 use SnapWP\Helper\Modules\GraphQL\Model\RenderedTemplate;
 use WPGraphQL;
 
@@ -44,6 +45,25 @@ final class SchemaFilters implements Registrable {
 		add_filter( 'pre_render_block', [ $this, 'get_cached_rendered_block' ], 11, 2 ); // @todo: this should be as early priority as possible
 		// We want to cache the rendered block as late as possible to ensure we're caching the final output.
 		add_filter( 'render_block', [ $this, 'cache_rendered_block' ], PHP_INT_MAX - 1, 2 );
+
+		// Register custom validation rule for introspection.
+		add_filter(
+			'graphql_validation_rules',
+			[ $this, 'add_custom_validation_rule' ]
+		);
+	}
+
+	/**
+	 * Adds a custom validation rule for introspection.
+	 *
+	 * @param array<int|string,\GraphQL\Validator\Rules\ValidationRule> $rules The existing validation rules.
+	 *
+	 * @return array<int|string,\GraphQL\Validator\Rules\ValidationRule> The modified validation rules.
+	 */
+	public function add_custom_validation_rule( array $rules ): array {
+		// Replace the default DisableIntrospection rule with DisableIntrospection.
+		$rules['disable_introspection'] = new DisableIntrospection();
+		return $rules;
 	}
 
 	/**

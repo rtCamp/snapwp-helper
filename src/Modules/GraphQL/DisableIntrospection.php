@@ -13,9 +13,9 @@ use SnapWP\Helper\Modules\GraphQL\Data\IntrospectionToken;
 use WPGraphQL\Server\ValidationRules\DisableIntrospection as ValidationRulesDisableIntrospection;
 
 /**
- * Class - CustomDisableIntrospection
+ * Class - DisableIntrospection
  */
-class CustomDisableIntrospection extends ValidationRulesDisableIntrospection {
+class DisableIntrospection extends ValidationRulesDisableIntrospection {
 	/**
 	 * Override the isEnabled method to add custom token validation.
 	 *
@@ -30,15 +30,15 @@ class CustomDisableIntrospection extends ValidationRulesDisableIntrospection {
 
 		if ( is_wp_error( $introspection_token ) ) {
 			// If there was an error retrieving the token, return the original value.
-			return $enabled;
+			return false;
 		}
 
 		// Retrieve the custom "Introspection-Token" header from $_SERVER.
-		$introspection_token_header = isset( $_SERVER['HTTP_INTROSPECTION_TOKEN'] ) ? sanitize_text_field( $_SERVER['HTTP_INTROSPECTION_TOKEN'] ) : '';
+		$introspection_token_header = isset( $_SERVER['HTTP_AUTHORIZATION'] ) ? sanitize_text_field( $_SERVER['HTTP_AUTHORIZATION'] ) : '';
 
 		// Check if the provided token matches the one stored in the database.
-		if ( ! empty( $introspection_token_header ) && $introspection_token_header === $introspection_token ) {
-			$enabled = true;
+		if ( ! empty( $introspection_token_header ) && hash_equals( $introspection_token_header, $introspection_token ) ) {
+			return true;
 		}
 
 		return $enabled;

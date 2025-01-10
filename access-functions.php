@@ -64,7 +64,8 @@ if ( ! function_exists( 'snapwp_helper_get_env_variables' ) ) {
 
 		// If there was an error retrieving the token, set it to an empty string.
 		if ( is_wp_error( $token ) ) {
-			$token = '';
+			// Return the error.
+			return $token;
 		}
 
 		return [
