@@ -23,14 +23,14 @@ class DisableIntrospectionRule extends ValidationRulesDisableIntrospection {
 	 */
 	public function isEnabled() {
 		// Check the original conditions first.
-		$enabled = parent::isEnabled();
+		$is_rule_enabled = parent::isEnabled();
 
 		// Get the authorization header.
 		$introspection_token_header = isset( $_SERVER['HTTP_AUTHORIZATION'] ) ? sanitize_text_field( $_SERVER['HTTP_AUTHORIZATION'] ) : '';
 
-		// Bail early if the header is empty or introspection is already enabled.
-		if ( empty( $introspection_token_header ) || $enabled ) {
-			return $enabled;
+		// Bail early if the header is empty or introspection is already allowed.
+		if ( empty( $introspection_token_header ) || ! $is_rule_enabled ) {
+			return $is_rule_enabled;
 		}
 
 		// Get the introspection token from the database.
