@@ -1,21 +1,21 @@
 <?php
 /**
- * Custom validation rules for the WPGraphQL server.
+ * Extends the DisableIntrospection validation rule to check for an introspection token.
  *
- * @package SnapWP\Helper\Modules\GraphQL
+ * @package SnapWP\Helper\Modules\GraphQL\Server
  */
 
 declare( strict_types = 1 );
 
-namespace SnapWP\Helper\Modules\GraphQL;
+namespace SnapWP\Helper\Modules\GraphQL\Server;
 
 use SnapWP\Helper\Modules\GraphQL\Data\IntrospectionToken;
 use WPGraphQL\Server\ValidationRules\DisableIntrospection as ValidationRulesDisableIntrospection;
 
 /**
- * Class - DisableIntrospection
+ * Class - DisableIntrospectionRule
  */
-class DisableIntrospection extends ValidationRulesDisableIntrospection {
+class DisableIntrospectionRule extends ValidationRulesDisableIntrospection {
 	/**
 	 * {@inheritDoc}
 	 *
