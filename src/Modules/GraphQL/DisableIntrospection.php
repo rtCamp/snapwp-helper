@@ -17,6 +17,8 @@ use WPGraphQL\Server\ValidationRules\DisableIntrospection as ValidationRulesDisa
  */
 class DisableIntrospection extends ValidationRulesDisableIntrospection {
 	/**
+	 * {@inheritDoc}
+	 *
 	 * Overridden to validate the introspection token.
 	 *
 	 * @return bool
