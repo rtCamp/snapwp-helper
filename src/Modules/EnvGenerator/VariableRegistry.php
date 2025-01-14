@@ -42,7 +42,7 @@ class VariableRegistry {
 		'INTROSPECTION_TOKEN'          => [
 			'description' => 'Token used for authenticating GraphQL introspection queries',
 			'default'     => '',
-			'required'    => false,
+			'required'    => true,
 		],
 	];
 
