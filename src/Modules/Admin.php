@@ -211,7 +211,7 @@ class Admin implements Module {
 		$current_screen = get_current_screen();
 
 		// Check if the current screen is null or doesn't match our admin screen.
-		if ( is_null( $current_screen ) || 'graphql_page_snapwp-helper' !== $current_screen->id ) {
+		if ( ! $current_screen || 'graphql_page_snapwp-helper' !== $current_screen->id ) {
 			return;
 		}
 
@@ -220,7 +220,7 @@ class Admin implements Module {
 			return;
 		}
 
-		if ( isset( $_POST['regenerate_token_nonce'] ) && ! wp_verify_nonce( sanitize_key( $_POST['regenerate_token_nonce'] ), 'regenerate_token_action' ) ) {
+		if ( ! isset( $_POST['regenerate_token_nonce'] ) || ! wp_verify_nonce( sanitize_key( $_POST['regenerate_token_nonce'] ), 'regenerate_token_action' ) ) {
 			wp_admin_notice(
 				__( 'Could not regenerate the introspection token: nonce verification failed.', 'snapwp-helper' ),
 				[
