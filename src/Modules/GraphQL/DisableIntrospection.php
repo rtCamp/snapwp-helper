@@ -20,8 +20,6 @@ class DisableIntrospection extends ValidationRulesDisableIntrospection {
 	 * {@inheritDoc}
 	 *
 	 * Overridden to validate the introspection token.
-	 *
-	 * @return bool
 	 */
 	public function isEnabled() {
 		// Check the original conditions first.
