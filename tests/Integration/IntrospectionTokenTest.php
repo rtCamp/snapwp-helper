@@ -7,7 +7,7 @@
 
 namespace SnapWP\Helper\Tests\Integration;
 
-use PHPUnit\Framework\TestCase;
+use lucatume\WPBrowser\TestCase\WPTestCase;
 use SnapWP\Helper\Modules\GraphQL\Data\IntrospectionToken;
 
 /**
@@ -15,7 +15,7 @@ use SnapWP\Helper\Modules\GraphQL\Data\IntrospectionToken;
  *
  * @group integration
  */
-class IntrospectionTokenTest extends TestCase {
+class IntrospectionTokenTest extends WPTestCase {
 	/**
 	 * Option key for storing the token.
 	 */
