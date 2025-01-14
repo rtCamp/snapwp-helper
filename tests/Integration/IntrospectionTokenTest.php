@@ -12,8 +12,6 @@ use SnapWP\Helper\Modules\GraphQL\Data\IntrospectionToken;
 
 /**
  * Class - IntrospectionTokenTest
- *
- * @group integration
  */
 class IntrospectionTokenTest extends WPTestCase {
 	/**
@@ -26,13 +24,6 @@ class IntrospectionTokenTest extends WPTestCase {
 	 */
 	protected function setUp(): void {
 		parent::setUp();
-
-		global $wpdb;
-
-		if ( ! $wpdb->dbh ) {
-			// Reconnect to the database if it's closed.
-			$wpdb->db_connect();
-		}
 
 		// Clear the token option before each test.
 		delete_option( self::TOKEN_OPTION_KEY );

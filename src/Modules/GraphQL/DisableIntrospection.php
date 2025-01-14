@@ -17,7 +17,7 @@ use WPGraphQL\Server\ValidationRules\DisableIntrospection as ValidationRulesDisa
  */
 class DisableIntrospection extends ValidationRulesDisableIntrospection {
 	/**
-	 * Override the isEnabled method to add custom token validation.
+	 * Overridden to validate the introspection token.
 	 *
 	 * @return bool
 	 */
@@ -25,22 +25,23 @@ class DisableIntrospection extends ValidationRulesDisableIntrospection {
 		// Check the original conditions first.
 		$enabled = parent::isEnabled();
 
+		// Get the authorization header.
+		$introspection_token_header = isset( $_SERVER['HTTP_AUTHORIZATION'] ) ? sanitize_text_field( $_SERVER['HTTP_AUTHORIZATION'] ) : '';
+
+		// Bail early if the header is empty or introspection is already enabled.
+		if ( empty( $introspection_token_header ) || $enabled ) {
+			return $enabled;
+		}
+
 		// Get the introspection token from the database.
 		$introspection_token = IntrospectionToken::get_token();
 
+		// If there was an error retrieving the token, return the original value.
 		if ( is_wp_error( $introspection_token ) ) {
-			// If there was an error retrieving the token, return the original value.
 			return false;
 		}
 
-		// Retrieve the custom "Introspection-Token" header from $_SERVER.
-		$introspection_token_header = isset( $_SERVER['HTTP_AUTHORIZATION'] ) ? sanitize_text_field( $_SERVER['HTTP_AUTHORIZATION'] ) : '';
-
 		// Check if the provided token matches the one stored in the database.
-		if ( ! empty( $introspection_token_header ) && hash_equals( $introspection_token_header, $introspection_token ) ) {
-			return true;
-		}
-
-		return $enabled;
+		return hash_equals( $introspection_token_header, $introspection_token );
 	}
 }

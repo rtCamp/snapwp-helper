@@ -62,9 +62,8 @@ if ( ! function_exists( 'snapwp_helper_get_env_variables' ) ) {
 		// Get the introspection token.
 		$token = IntrospectionToken::get_token();
 
-		// If there was an error retrieving the token, set it to an empty string.
+		// Bail if we couldn't get the token.
 		if ( is_wp_error( $token ) ) {
-			// Return the error.
 			return $token;
 		}
 

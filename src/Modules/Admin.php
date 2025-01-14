@@ -208,8 +208,10 @@ class Admin implements Module {
 	 * Handle the token regeneration.
 	 */
 	public function handle_token_regeneration(): void {
-		if ( ! isset( $_GET['page'] ) || 'snapwp-helper' !== $_GET['page'] ) {
-			// Exit if not on our admin screen.
+		$current_screen = get_current_screen();
+
+		// Check if the current screen is null or doesn't match our admin screen.
+		if ( is_null( $current_screen ) || ! in_array( $current_screen->id, [ 'tools_page_snapwp-helper', 'graphiql-ide_page_snapwp-helper' ], true ) ) {
 			return;
 		}
 
@@ -218,11 +220,9 @@ class Admin implements Module {
 			return;
 		}
 
-		$nonce = isset( $_POST['regenerate_token_nonce'] ) ? sanitize_text_field( $_POST['regenerate_token_nonce'] ) : '';
-
-		if ( empty( $nonce ) || ! wp_verify_nonce( $nonce, 'regenerate_token_action' ) ) {
+		if ( isset( $_POST['regenerate_token_nonce'] ) && ! wp_verify_nonce( sanitize_key( $_POST['regenerate_token_nonce'] ), 'regenerate_token_action' ) ) {
 			wp_admin_notice(
-				__( 'Nonce verification failed.', 'snapwp-helper' ),
+				__( 'Could not regenerate the introspection token: nonce verification failed.', 'snapwp-helper' ),
 				[
 					'type' => 'error',
 				]
@@ -230,9 +230,10 @@ class Admin implements Module {
 			return;
 		}
 
+		// Generate a new introspection token.
 		$introspection_token = IntrospectionToken::generate_token();
 
-		// Check is wp error.
+		// Check is WP_Error.
 		if ( is_wp_error( $introspection_token ) ) {
 			wp_admin_notice(
 				sprintf(
@@ -248,7 +249,7 @@ class Admin implements Module {
 		}
 
 		wp_admin_notice(
-			__( 'Introspection token regenerated successfully.', 'snapwp-helper' ),
+			__( 'Introspection token regenerated successfully. Please make sure to update your `.env` file.', 'snapwp-helper' ),
 			[
 				'type' => 'success',
 			]

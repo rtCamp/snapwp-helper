@@ -8,6 +8,7 @@
 namespace SnapWP\Helper\Tests\Integration;
 
 use lucatume\WPBrowser\TestCase\WPTestCase;
+use SnapWP\Helper\Modules\GraphQL\Data\IntrospectionToken;
 
 /**
  * Tests the RestController class.
@@ -86,7 +87,7 @@ class RestControllerTest extends WPTestCase {
 		$this->assertNotEmpty( $actual_data['content'] );
 		$search   = '\n';
 		$replace  = '';
-		$expected = "\n# Enable if connecting to a self-signed cert\n# NODE_TLS_REJECT_UNAUTHORIZED='0'\n# The headless frontend domain URL\n# NEXT_URL='0'\n# The WordPress \"frontend\" domain URL\nHOME_URL=" . get_home_url() . "\n# The WordPress GraphQL endpoint\nGRAPHQL_ENDPOINT=" . graphql_get_endpoint();
+		$expected = "\n# Enable if connecting to a self-signed cert\n# NODE_TLS_REJECT_UNAUTHORIZED='0'\n# The headless frontend domain URL\n# NEXT_URL='0'\n# The WordPress \"frontend\" domain URL\nHOME_URL=" . get_home_url() . "\n# The WordPress GraphQL endpoint\nGRAPHQL_ENDPOINT=" . graphql_get_endpoint() . "\n# Token used for authenticating GraphQL introspection queries\nINTROSPECTION_TOKEN=" . IntrospectionToken::get_token();
 
 		$this->assertEquals( $expected, str_replace( $search, $replace, $actual_data['content'] ) );
 
