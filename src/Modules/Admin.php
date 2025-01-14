@@ -70,7 +70,7 @@ class Admin implements Module {
 			999
 		);
 
-		add_action( 'admin_init', [ $this, 'handle_token_regeneration' ] );
+		add_action( 'current_screen', [ $this, 'handle_token_regeneration' ] );
 	}
 
 	/**
@@ -211,7 +211,7 @@ class Admin implements Module {
 		$current_screen = get_current_screen();
 
 		// Check if the current screen is null or doesn't match our admin screen.
-		if ( is_null( $current_screen ) || ! in_array( $current_screen->id, [ 'tools_page_snapwp-helper', 'graphiql-ide_page_snapwp-helper' ], true ) ) {
+		if ( is_null( $current_screen ) || 'graphql_page_snapwp-helper' !== $current_screen->id ) {
 			return;
 		}
 
