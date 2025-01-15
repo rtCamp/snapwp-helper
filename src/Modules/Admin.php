@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Registers wp-admin functionality.
  *

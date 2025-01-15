@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Global functions for the SnapWP Helper plugin.
  *

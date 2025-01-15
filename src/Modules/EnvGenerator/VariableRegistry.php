@@ -1,5 +1,4 @@
 <?php
-
 /**
  * VariableRegistry class to manage environment variables with descriptions and default values.
  *

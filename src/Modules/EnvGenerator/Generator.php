@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Generator class to create a .env file programmatically.
  *
