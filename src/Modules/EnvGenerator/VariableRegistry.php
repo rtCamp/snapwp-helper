@@ -16,51 +16,45 @@ class VariableRegistry {
 	 *
 	 * @todo Support conditional variables.
 	 *
-	 * @var array<string,array{description:string,default:string,required:bool,commented:bool}>
+	 * @var array<string,array{description:string,default:string,required:bool}>
 	 */
 	private const VARIABLES = [
 		'NODE_TLS_REJECT_UNAUTHORIZED'          => [
 			'description' => 'Enable if connecting to a self-signed cert',
 			'default'     => '0',
 			'required'    => false,
-			'commented'   => true,
 		],
 		'NEXT_PUBLIC_URL'                       => [
 			'description' => 'The headless frontend domain URL',
 			'default'     => 'http://localhost:3000',
 			'required'    => false,
-			'commented'   => false,
 		],
 		'NEXT_PUBLIC_WORDPRESS_URL'             => [
 			'description' => 'The WordPress "frontend" domain URL',
 			'default'     => '',
 			'required'    => true,
-			'commented'   => false,
 		],
 		'NEXT_PUBLIC_GRAPHQL_ENDPOINT'          => [
 			'description' => 'The WordPress GraphQL endpoint',
 			'default'     => 'graphql',
 			'required'    => false,
-			'commented'   => false,
 		],
 		'NEXT_PUBLIC_WORDPRESS_UPLOADS_PATH'    => [
 			'description' => 'WordPress Uploads Directory Path',
-			'default'     => '',
+			'default'     => 'wp-content/uploads',
 			'required'    => false,
-			'commented'   => true,
 		],
 		'NEXT_PUBLIC_WORDPRESS_REST_URL_PREFIX' => [
 			'description' => 'WordPress REST URL Prefix',
-			'default'     => '',
+			'default'     => 'wp-json',
 			'required'    => false,
-			'commented'   => true,
 		],
 	];
 
 	/**
 	 * Array to store registered environment variables with details.
 	 *
-	 * @var array<string,array{description:string,default:string,required:bool,commented:bool}>
+	 * @var array<string,array{description:string,default:string,required:bool}>
 	 */
 	private array $variables;
 
@@ -71,7 +65,7 @@ class VariableRegistry {
 		/**
 		 * Filters the list of environment variables recognized by SnapWP.
 		 *
-		 * @param array<string,array{description:string,default:string,required:bool,commented:bool}> $variables The default environment variables, keyed by name.
+		 * @param array<string,array{description:string,default:string,required:bool}> $variables The default environment variables, keyed by name.
 		 */
 		$this->variables = (array) apply_filters( 'snapwp_helper/env/variables', self::VARIABLES );
 	}
@@ -81,7 +75,7 @@ class VariableRegistry {
 	 *
 	 * @param string $name The name of the variable to retrieve.
 	 *
-	 * @return ?array{description:string,default:string,required:bool,commented:bool} The details of the variable or null if not found.
+	 * @return ?array{description:string,default:string,required:bool} The details of the variable or null if not found.
 	 */
 	public function get_variable_config( string $name ) {
 		return $this->variables[ $name ] ?? null;

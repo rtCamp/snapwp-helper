@@ -64,7 +64,7 @@ if ( ! function_exists( 'snapwp_helper_get_env_variables' ) ) {
 			'NEXT_PUBLIC_URL'                       => '',
 			'NEXT_PUBLIC_WORDPRESS_URL'             => get_home_url(),
 			'NEXT_PUBLIC_GRAPHQL_ENDPOINT'          => graphql_get_endpoint(),
-			'NEXT_PUBLIC_WORDPRESS_UPLOADS_PATH'    => str_replace( ABSPATH, '/', $upload_dir['basedir'] ),
+			'NEXT_PUBLIC_WORDPRESS_UPLOADS_PATH'    => str_replace( ABSPATH, '', $upload_dir['basedir'] ),
 			'NEXT_PUBLIC_WORDPRESS_REST_URL_PREFIX' => rest_get_url_prefix(),
 		];
 	}

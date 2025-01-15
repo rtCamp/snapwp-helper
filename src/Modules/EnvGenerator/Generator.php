@@ -86,7 +86,7 @@ class Generator {
 		$description = isset( $variable['description'] ) && is_string( $variable['description'] ) ? $variable['description'] : '';
 		$default     = isset( $variable['default'] ) && is_string( $variable['default'] ) ? $variable['default'] : '';
 		$required    = ! empty( $variable['required'] );
-		$commented   = ! empty( $variable['commented'] );
+		$commented   = false;
 
 		// Check if a required variable has a value.
 		if ( $required && empty( $value ) ) {
@@ -95,6 +95,9 @@ class Generator {
 
 		// Determine the final value to output.
 		$resolved_value = ! empty( $value ) ? $value : $default;
+		if ( ! $required && $resolved_value === $default ) {
+			$commented = true;
+		}
 
 		$comment = ! empty( $description ) ? sprintf( "\n# %s\n", $description ) : '';
 		$output  = $commented ? sprintf( '# %s=%s\n', $name, $resolved_value ) : sprintf( '%s=%s\n', $name, $resolved_value );
