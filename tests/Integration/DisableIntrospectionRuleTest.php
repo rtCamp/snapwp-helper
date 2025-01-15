@@ -6,81 +6,150 @@
  */
 
 use lucatume\WPBrowser\TestCase\WPTestCase;
-use SnapWP\Helper\Modules\GraphQL\Data\IntrospectionToken;
-use SnapWP\Helper\Modules\GraphQL\Server\DisableIntrospectionRule;
+// use SnapWP\Helper\Modules\GraphQL\Data\IntrospectionToken;
+// use SnapWP\Helper\Modules\GraphQL\Server\DisableIntrospectionRule;
 
-use function Codeception\Extension\codecept_log;
+// use function Codeception\Extension\codecept_log;
+use WPGraphQL;
 
 /**
  * Tests the DisableIntrospectionRule class.
  */
-class DisableIntrospectionRuleTest extends WPTestCase {
-	protected function setUp(): void {
+class DisableIntrospectionRuleTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase {
+	
+	public $admin;
+	public $subscriber;
+
+	public function setUp(): void {
 		parent::setUp();
 
-		// Clear introspection token.
-		delete_option('snapwp_helper_introspection_token');
+		// Create an admin user for testing.
+		$this->admin = $this->factory()->user->create([
+			'role' => 'administrator',
+		]);
+
+		// Create a subscriber user for testing.
+		$this->subscriber = $this->factory()->user->create([
+			'role' => 'subscriber',
+		]);
+
+		// Enable public introspection by default.
+		$settings = get_option('graphql_general_settings');
+		$settings['public_introspection_enabled'] = 'on';
+		update_option('graphql_general_settings', $settings);
 	}
 
-	protected function tearDown(): void {
-		// Clean up the introspection token after tests.
-		delete_option('snapwp_helper_introspection_token');
+	public function tearDown(): void {
+		// Cleanup: Reset the graphql_general_settings option.
+		$settings = get_option('graphql_general_settings');
+		unset($settings['public_introspection_enabled']);
+		update_option('graphql_general_settings', $settings);
 
 		parent::tearDown();
 	}
 
 	/**
-	 * Test: Public disabled + no token returns an error response.
+	 * Helper to execute a GraphQL introspection query.
 	 */
-	public function testPublicDisabledNoToken(): void {
-
-		$rule = new DisableIntrospectionRule();
-
-		codecept_debug($rule->isEnabled());
-		codecept_debug($rule);
-
-		$_SERVER['HTTP_AUTHORIZATION'] = '';
-
-		$this->assertFalse($rule->isEnabled(), 'Introspection should be disabled when no token is provided, and public introspection is off.');
+	private function introspectionQuery(): string {
+		return '
+			query IntrospectionQuery {
+				__schema {
+					queryType {
+						name
+					}
+				}
+			}
+		';
 	}
 
-	/**
-	 * Test: Public disabled + invalid token returns an error response.
-	 */
-	public function testPublicDisabledInvalidToken(): void {
-		update_option('snapwp_helper_introspection_token', 'valid-token');
+	public function testPublicDisabledNoTokenReturnsError() {
+		// Disable public introspection.
+		 $current_setting = get_graphql_setting('public_introspection_enabled', 'on');
+		 codecept_debug("Current setting: ");
+		 codecept_debug($current_setting);
+   		 update_option('graphql_general_settings', ['public_introspection_enabled' => 'off']);
+		 $new_setting = get_graphql_setting('public_introspection_enabled', 'on');
+		 codecept_debug("New setting: ");
+		 codecept_debug($new_setting);
 
-		$rule = new DisableIntrospectionRule();
+		 // Log in as subscriber.
+		 wp_set_current_user($this->subscriber);
 
-		$_SERVER['HTTP_AUTHORIZATION'] = 'invalid-token'; // Invalid token.
+ 
+		 // Execute the GraphQL introspection query without a token.
+		 $query = $this->introspectionQuery();
+		 $actual = $this->graphql(['query' => $query]);
 
-		$this->assertFalse($rule->isEnabled(), 'Introspection should be disabled when an invalid token is provided, and public introspection is off.');
+		 codecept_debug($actual);
+ 
+		 // Assert response contains an error.
+		 $this->assertArrayHasKey('errors', $actual);
+		 $this->assertStringContainsString('Introspection is not allowed', $actual['errors'][0]['message']);
+
+		 update_option('graphql_general_settings', ['public_introspection_enabled' => $current_setting]);
 	}
 
-	/**
-	 * Test: Public disabled + admin user + no token returns a successful response.
-	 */
-	public function testPublicDisabledAdminUser(): void {
+	public function testPublicDisabledInvalidTokenReturnsError() {
+		// Disable public introspection.
+		$settings = get_option('graphql_general_settings');
+		$settings['public_introspection_enabled'] = 'off';
+		update_option('graphql_general_settings', $settings);
 
-		// Simulate admin user.
-		wp_set_current_user($this->factory()->user->create(['role' => 'administrator'])); // create in setup and assign here
+		// Simulate invalid token in the authorization header.
+		$_SERVER['HTTP_AUTHORIZATION'] = 'invalid_token';
 
-		$rule = new DisableIntrospectionRule();
+		// Log in as subscriber.
+		wp_set_current_user($this->subscriber);
 
-		$_SERVER['HTTP_AUTHORIZATION'] = '';
+		// Execute the GraphQL introspection query.
+		$query = $this->introspectionQuery();
+		$actual = $this->graphql(['query' => $query]);
 
-		$this->assertTrue($rule->isEnabled(), 'Introspection should be allowed for admin users, even with no token, when public introspection is off.');
+		codecept_debug($actual);
+
+		// Assert response contains an error.
+		$this->assertArrayHasKey('errors', $actual);
+		$this->assertStringContainsString('Introspection is not allowed', $actual['errors'][0]['message']);
 	}
 
-	/**
-	 * Test: Public enabled + no token returns a successful response.
-	 */
-	public function testPublicEnabledNoToken(): void {
+	public function testPublicDisabledAdminUserNoTokenReturnsSuccess() {
+		// Disable public introspection.
+		  $settings = get_option('graphql_general_settings');
+		  $settings['public_introspection_enabled'] = 'off';
+		  update_option('graphql_general_settings', $settings);
+  
+		  // Log in as admin.
+		  wp_set_current_user($this->admin);
+  
+		  // Execute the GraphQL introspection query without a token.
+		  $query = $this->introspectionQuery();
+		  $actual = $this->graphql(['query' => $query]);
 
-		$rule = new DisableIntrospectionRule();
+		  codecept_debug($actual);
+  
+		  // Assert response does not contain an error.
+		  $this->assertArrayNotHasKey('errors', $actual);
+		  $this->assertArrayHasKey('data', $actual);
+	}
 
-		$_SERVER['HTTP_AUTHORIZATION'] = '';
+	public function testPublicEnabledNoTokenReturnsSuccess() {
+		// Enable public introspection.
+		$settings = get_option('graphql_general_settings');
+		$settings['public_introspection_enabled'] = 'on';
+		update_option('graphql_general_settings', $settings);
 
-		$this->assertTrue($rule->isEnabled(), 'Introspection should be allowed when public introspection is enabled, even with no token.');
+		// Log in as subscriber.
+		wp_set_current_user($this->subscriber);
+
+		// Execute the GraphQL introspection query without a token.
+		$query = $this->introspectionQuery();
+		$actual = $this->graphql(['query' => $query]);
+
+		codecept_debug($actual);
+
+		// Assert response does not contain an error.
+		$this->assertArrayNotHasKey('errors', $actual);
+		$this->assertArrayHasKey('data', $actual);
 	}
 }
