@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Generator class to create a .env file programmatically.
  *
@@ -86,6 +87,7 @@ class Generator {
 		$description = isset( $variable['description'] ) && is_string( $variable['description'] ) ? $variable['description'] : '';
 		$default     = isset( $variable['default'] ) && is_string( $variable['default'] ) ? $variable['default'] : '';
 		$required    = ! empty( $variable['required'] );
+		$commented   = ! empty( $variable['commented'] );
 
 		// Check if a required variable has a value.
 		if ( $required && empty( $value ) ) {
@@ -94,12 +96,9 @@ class Generator {
 
 		// Determine the final value to output.
 		$resolved_value = ! empty( $value ) ? $value : $default;
-		if ( empty( $resolved_value ) ) {
-			$resolved_value = null;
-		}
 
 		$comment = ! empty( $description ) ? sprintf( "\n# %s\n", $description ) : '';
-		$output  = null !== $resolved_value ? sprintf( '%s=%s\n', $name, $resolved_value ) : sprintf( '# %s=\'0\'\n', $name );
+		$output  = $commented ? sprintf( '# %s=%s\n', $name, $resolved_value ) : sprintf( '%s=%s\n', $name, $resolved_value );
 
 		return $comment . $output;
 	}
