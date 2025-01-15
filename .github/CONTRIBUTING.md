@@ -26,11 +26,11 @@ In general, we recommend you adhere to the GitHub issue templates included in th
 > [!TIP]
 > **Note**: Before opening a new issue, please search the [GitHub Issues](https://github.com/rtCamp/snapwp-helper/issues) to see if a similar issue has already been reported.
 > 
-> If you find an existing issue that matches your concern, you can upvote the isssue or add a comment to provide additional context, reproduction steps, or any other relevant information to help advance.
+> If you find an existing issue that matches your concern, you can upvote the issue or add a comment to provide additional context, reproduction steps, or any other relevant information to help advance.
 
 ### Submitting Code
 
-1. **Fork the repository**: Click the "`Fork`" button on the top right corner of the repository page to create your own copy of the project.
+1. **Fork the repository**: Click the "`Fork`" button in the top right corner of the repository page to create your own copy of the project.
 
 2. **Make your changes**: Implement the changes you'd like to contribute. Ensure that your code adheres to the project's [coding standards and guidelines](../DEVELOPMENT.md#code-quality--code-standards).
 
@@ -46,7 +46,7 @@ In general, we recommend you adhere to the GitHub issue templates included in th
 
 #### Review Process
 
-1. Your pull request will be reviewed by a maintainer. We'll review all PRs, and make suggestionrs or changes as needed.
+1. Your pull request will be reviewed by a maintainer. We'll review all PRs, and make suggestions or changes as needed.
 2. Once approved, your PR will be squashed and merged into the `develop` branch.
 
 ### Contributing Documentation

@@ -14,11 +14,13 @@
   - [GraphQL](#graphql)
     - [`snapwp_helper/graphql/init/registered_{type}_classes`](#snapwp_helpergraphqlinitregistered_type_classes)
     - [`snapwp_helper/graphql/resolve_template_uri`](#snapwp_helpergraphqlresolvetemplateuri)
- - [Lifecycle](#lifecycle)
+  - [Lifecycle](#lifecycle)
     - [`snapwp_helper/init/module_classes`](#snapwp_helperinitmodule_classes)
     - [`snapwp_helper/dependencies/registered_dependencies`](#snapwp_helperdependenciesregistered_dependencies)
-  - [Plugin Updater](#plugin-updater)
-    - [`snapwp_helper/plugin_updater/plugins`](#snapwp_helperplugin_updaterplugins)
+   - [Environment Variables](#environment-variables)
+     - [`snapwp_helper/env/variables`](#snapwp_helperenvvariables)
+   - [Plugin Updater](#plugin-updater)
+     - [`snapwp_helper/plugin_updater/plugins`](#snapwp_helperplugin_updaterplugins)
 
 ## Action Hooks
 
@@ -107,10 +109,10 @@ apply_filters( 'snapwp_helper/graphql/resolve_template_uri', mixed|null $node, s
 ##### Parameters
 
 - `$node` (mixed|null): The node, defaults to nothing.
-- `$uri` (string): The uri being searched.
+- `$uri` (string): The URI being searched.
 - `$content` (\WPGraphQL\AppContext): The app context.
 - `$wp` (\WP object): The WP object instance.
-- `$extra_query_vars` (array<string,mixed>|string): Any extra query vars to consider.
+- `$extra_query_vars` (array<string, mixed>|string): Any extra query vars to consider.
 
 ### Lifecycle
 
@@ -128,7 +130,7 @@ apply_filters( 'snapwp_helper/init/module_classes', array $module_classes );
 
 #### `snapwp_helper/dependencies/registered_dependencies`
 
-Filters the array of external dependencies (e.g. WordPress plugins ) required by the plugin.
+Filters the array of external dependencies (e.g. WordPress plugins) required by the plugin.
 
 ```php
 apply_filters( 'snapwp_helper/dependencies/registered_dependencies', array $dependencies );
@@ -140,6 +142,24 @@ apply_filters( 'snapwp_helper/dependencies/registered_dependencies', array $depe
    - `slug` _(string)_: A unique slug to identify the dependency. E.g. Plugin slug.
 	 - `name` _(string)_: The pretty name of the dependency used in the admin notice.
 	 - `check_callback` _(`callable(): true|\WP_Error`)_: A callable that returns true if the dependency is met, or a `WP_Error` object (with an explicit error message) if the dependency is not met.
+
+### Environment Variables
+
+#### `snapwp_helper/env/variables`
+
+This filter allows you to modify the list of environment variables used by SnapWP's frontend framework.
+
+```php
+apply_filters( 'snapwp_helper/env/variables', array $variables );
+```
+
+##### Parameters
+
+- `$variables` _(array<string,array{description:string,default:string,required:bool}>)_: This array contains the details of the environment variables, keyed to the variable name. Each item provides the following information:
+
+   - `description` _(string)_: A brief explanation of what the variable controls or configures.
+   - `default` _(string)_: The default value assigned to the variable if not set explicitly.
+   - `required` _(bool)_: Whether the variable is mandatory for proper functionality.
 
 ### Plugin Updater
 
@@ -153,7 +173,7 @@ apply_filters( 'snapwp_helper/plugin_updater/plugins', array $plugins );
 
 ##### Parameters
 
-- `$plugins` _(array{slug,update_uri}[])_: An array of plugins to be checked for updates. Each element in the array is an associative array with the following keys:
+- `$plugins` _(array{slug, update_uri}[])_: An array of plugins to be checked for updates. Each element in the array is an associative array with the following keys:
 
-   - `slug` _(string)_: The qualified plugin slug with it's folder. E.g. 'wp-graphql-my-plugin/wp-graphql-my-plugin.php'.
+   - `slug` _(string)_: The qualified plugin slug with its folder. E.g. 'wp-graphql-my-plugin/wp-graphql-my-plugin.php'.
    - `update_uri` _(string)_: The URI used to check for plugin updates.
