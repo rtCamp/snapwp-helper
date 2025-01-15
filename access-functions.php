@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Global functions for the SnapWP Helper plugin.
  *
@@ -57,12 +58,15 @@ if ( ! function_exists( 'snapwp_helper_get_env_variables' ) ) {
 		if ( ! function_exists( 'graphql_get_endpoint' ) ) {
 			return new \WP_Error( 'graphql_not_found', 'WPGraphQL must be installed and activated.', [ 'status' => 500 ] );
 		}
+		$upload_dir = wp_get_upload_dir();
 
 		return [
-			'NODE_TLS_REJECT_UNAUTHORIZED' => '',
-			'NEXT_URL'                     => '',
-			'HOME_URL'                     => get_home_url(),
-			'GRAPHQL_ENDPOINT'             => graphql_get_endpoint(),
+			'NODE_TLS_REJECT_UNAUTHORIZED'          => '',
+			'NEXT_PUBLIC_URL'                       => '',
+			'NEXT_PUBLIC_WORDPRESS_URL'             => get_home_url(),
+			'NEXT_PUBLIC_GRAPHQL_ENDPOINT'          => graphql_get_endpoint(),
+			'NEXT_PUBLIC_WORDPRESS_UPLOADS_PATH'    => str_replace( ABSPATH, '/', $upload_dir['basedir'] ),
+			'NEXT_PUBLIC_WORDPRESS_REST_URL_PREFIX' => rest_get_url_prefix(),
 		];
 	}
 }
