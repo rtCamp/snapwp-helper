@@ -57,7 +57,24 @@ class GeneratorTest extends WPTestCase {
 		// Generate the .env content.
 		$content = $generator->generate();
 
-		$expectedContent = "\n# Enable if connecting to a self-signed cert\nNODE_TLS_REJECT_UNAUTHORIZED=5\\n\n# The headless frontend domain URL\n# NEXT_PUBLIC_URL=http://localhost:3000\\n\n# The WordPress \"frontend\" domain URL\nNEXT_PUBLIC_WORDPRESS_URL=https://headless-demo.local\\n\n# The WordPress GraphQL endpoint\nNEXT_PUBLIC_GRAPHQL_ENDPOINT=/test_endpoint\\n\n# WordPress Uploads Directory Path\nNEXT_PUBLIC_WORDPRESS_UPLOADS_PATH=uploads\\n\n# WordPress REST URL Prefix\nNEXT_PUBLIC_WORDPRESS_REST_URL_PREFIX=api\\n";
+		$expectedContent = '
+# Enable if connecting to a self-signed cert
+NODE_TLS_REJECT_UNAUTHORIZED=5
+
+# The headless frontend domain URL
+# NEXT_PUBLIC_URL=http://localhost:3000
+
+# The WordPress "frontend" domain URL
+NEXT_PUBLIC_WORDPRESS_URL=https://headless-demo.local
+
+# The WordPress GraphQL endpoint
+NEXT_PUBLIC_GRAPHQL_ENDPOINT=/test_endpoint
+
+# The WordPress Uploads directory path
+NEXT_PUBLIC_WORDPRESS_UPLOADS_PATH=uploads
+
+# The WordPress REST URL Prefix
+NEXT_PUBLIC_WORDPRESS_REST_URL_PREFIX=api';
 
 		$this->assertSame( $expectedContent, $content );
 	}
@@ -108,7 +125,24 @@ class GeneratorTest extends WPTestCase {
 		$content = $generator->generate();
 
 		// Define expected content.
-		$expectedContent = "\n# Enable if connecting to a self-signed cert\n# NODE_TLS_REJECT_UNAUTHORIZED=0\\n\n# The headless frontend domain URL\n# NEXT_PUBLIC_URL=http://localhost:3000\\n\n# The WordPress \"frontend\" domain URL\nNEXT_PUBLIC_WORDPRESS_URL=https://headless-demo.local\\n\n# The WordPress GraphQL endpoint\nNEXT_PUBLIC_GRAPHQL_ENDPOINT=/test_endpoint\\n\n# WordPress Uploads Directory Path\n# NEXT_PUBLIC_WORDPRESS_UPLOADS_PATH=wp-content/uploads\\n\n# WordPress REST URL Prefix\n# NEXT_PUBLIC_WORDPRESS_REST_URL_PREFIX=wp-json\\n";
+		$expectedContent = '
+# Enable if connecting to a self-signed cert
+# NODE_TLS_REJECT_UNAUTHORIZED=0
+
+# The headless frontend domain URL
+# NEXT_PUBLIC_URL=http://localhost:3000
+
+# The WordPress "frontend" domain URL
+NEXT_PUBLIC_WORDPRESS_URL=https://headless-demo.local
+
+# The WordPress GraphQL endpoint
+NEXT_PUBLIC_GRAPHQL_ENDPOINT=/test_endpoint
+
+# The WordPress Uploads directory path
+# NEXT_PUBLIC_WORDPRESS_UPLOADS_PATH=wp-content/uploads
+
+# The WordPress REST URL Prefix
+# NEXT_PUBLIC_WORDPRESS_REST_URL_PREFIX=wp-json';
 
 		$this->assertSame( $expectedContent, $content );
 
@@ -125,7 +159,18 @@ class GeneratorTest extends WPTestCase {
 		// Generate the .env content.
 		$content = $generator->generate();
 
-		$expectedContent = "\n# Enable if connecting to a self-signed cert\n# NODE_TLS_REJECT_UNAUTHORIZED=0\\n\n# The headless frontend domain URL\n# NEXT_PUBLIC_URL=http://localhost:3000\\n\n# The WordPress \"frontend\" domain URL\nNEXT_PUBLIC_WORDPRESS_URL=https://headless-demo.local\\n\n# The WordPress GraphQL endpoint\n# NEXT_PUBLIC_GRAPHQL_ENDPOINT=graphql\\n";
+		$expectedContent = '
+# Enable if connecting to a self-signed cert
+# NODE_TLS_REJECT_UNAUTHORIZED=0
+
+# The headless frontend domain URL
+# NEXT_PUBLIC_URL=http://localhost:3000
+
+# The WordPress "frontend" domain URL
+NEXT_PUBLIC_WORDPRESS_URL=https://headless-demo.local
+
+# The WordPress GraphQL endpoint
+# NEXT_PUBLIC_GRAPHQL_ENDPOINT=graphql';
 
 		$this->assertSame( $expectedContent, $content );
 	}
