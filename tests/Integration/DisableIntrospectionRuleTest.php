@@ -74,6 +74,7 @@ class DisableIntrospectionRuleTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTe
 	 * @todo : This test is failing. Need to investigate why the response is giving data even when the public introspection and debug mode is disabled.
 	 */
 	public function testPublicDisabledNoTokenReturnsError() {
+		$this->assertFalse(\WPGraphQL::debug(), 'GraphQL debugging should be disabled during this test.' );
 		// Disable debug mode.
 		get_graphql_setting('debug_mode_enabled', 'off');
 		update_option('graphql_general_settings', ['debug_mode_enabled' => 'off']);
@@ -101,6 +102,7 @@ class DisableIntrospectionRuleTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTe
 	 * @todo : This test is failing. Need to investigate why the response is giving data even when the public introspection and debug mode is disabled.
 	 */
 	public function testPublicDisabledInvalidTokenReturnsError() {
+		$this->assertFalse(\WPGraphQL::debug(), 'GraphQL debugging should be disabled during this test.' );
 		// Disable public introspection.
 		$settings = get_option('graphql_general_settings');
 		$settings['public_introspection_enabled'] = 'off';
