@@ -133,7 +133,7 @@ class Admin implements Module {
 							?>
 							<tr>
 								<td><?php echo esc_html( $key ); ?></td>
-								<td><?php echo esc_html( $value ); ?></td>
+								<td><?php echo wp_kses_post( sprintf( '<code>%s</code>', $value ) ); ?></td>
 							</tr>
 						<?php endforeach; ?>
 					</tbody>
@@ -164,7 +164,7 @@ class Admin implements Module {
 						<?php
 						printf(
 							// translators: %s is the command, wrapped in code tags.
-							esc_html__( 'Then update the %s variable with the URL of your WordPress site.', 'snapwp-helper' ),
+							esc_html__( 'Then update the %s variable with the URL for your headless frontend.', 'snapwp-helper' ),
 							'<code>NEXT_PUBLIC_URL</code>'
 						);
 						?>

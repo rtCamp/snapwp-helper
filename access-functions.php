@@ -57,6 +57,7 @@ if ( ! function_exists( 'snapwp_helper_get_env_variables' ) ) {
 		if ( ! function_exists( 'graphql_get_endpoint' ) ) {
 			return new \WP_Error( 'graphql_not_found', 'WPGraphQL must be installed and activated.', [ 'status' => 500 ] );
 		}
+
 		$upload_dir = wp_get_upload_dir();
 
 		return [

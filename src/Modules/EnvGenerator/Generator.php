@@ -59,9 +59,16 @@ class Generator {
 		foreach ( $variables as $name => $value ) {
 			$variable_output = $this->prepare_variable( $name, $value );
 
-			if ( null !== $variable_output ) {
-				$output .= $variable_output;
+			if ( empty( $variable_output ) ) {
+				continue;
 			}
+
+			// Add a newline if there's already content.
+			if ( ! empty( $output ) ) {
+				$output .= "\n";
+			}
+
+			$output .= $variable_output;
 		}
 
 		return $output ?: null;
@@ -86,7 +93,6 @@ class Generator {
 		$description = isset( $variable['description'] ) && is_string( $variable['description'] ) ? $variable['description'] : '';
 		$default     = isset( $variable['default'] ) && is_string( $variable['default'] ) ? $variable['default'] : '';
 		$required    = ! empty( $variable['required'] );
-		$commented   = false;
 
 		// Check if a required variable has a value.
 		if ( $required && empty( $value ) ) {
@@ -95,13 +101,16 @@ class Generator {
 
 		// Determine the final value to output.
 		$resolved_value = ! empty( $value ) ? $value : $default;
+
+		// Prepare the output.
+		$comment    = ! empty( $description ) ? sprintf( "\n# %s\n", $description ) : '';
+		$env_output = sprintf( '%s=%s', $name, $resolved_value );
+
+		// Comment out variables if they're not required and have the default value.
 		if ( ! $required && $resolved_value === $default ) {
-			$commented = true;
+			$env_output = '# ' . $env_output;
 		}
 
-		$comment = ! empty( $description ) ? sprintf( "\n# %s\n", $description ) : '';
-		$output  = $commented ? sprintf( '# %s=%s\n', $name, $resolved_value ) : sprintf( '%s=%s\n', $name, $resolved_value );
-
-		return $comment . $output;
+		return $comment . $env_output;
 	}
 }

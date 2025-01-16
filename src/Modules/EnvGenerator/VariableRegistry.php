@@ -40,12 +40,12 @@ class VariableRegistry {
 			'required'    => false,
 		],
 		'NEXT_PUBLIC_WORDPRESS_UPLOADS_PATH'    => [
-			'description' => 'WordPress Uploads Directory Path',
+			'description' => 'The WordPress Uploads directory path',
 			'default'     => 'wp-content/uploads',
 			'required'    => false,
 		],
 		'NEXT_PUBLIC_WORDPRESS_REST_URL_PREFIX' => [
-			'description' => 'WordPress REST URL Prefix',
+			'description' => 'The WordPress REST URL Prefix',
 			'default'     => 'wp-json',
 			'required'    => false,
 		],
