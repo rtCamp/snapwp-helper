@@ -91,7 +91,7 @@ class DisableIntrospectionRuleTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTe
 
 		// Assert response contains an error.
 		$this->assertArrayHasKey('errors', $actual);
-		$this->assertStringContainsString('Introspection is not allowed', $actual['errors'][0]['message']);
+		$this->assertStringContainsString('introspection is not allowed', $actual['errors'][0]['message']);
 
 		update_option('graphql_general_settings', ['public_introspection_enabled' => $current_setting]);
 	}
