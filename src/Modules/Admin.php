@@ -128,12 +128,12 @@ class Admin implements Module {
 					<tbody>
 						<?php foreach ( $variables as $key => $value ) : ?>
 							<?php
-							if ( in_array( $key, [ 'NODE_TLS_REJECT_UNAUTHORIZED', 'NEXT_URL' ], true ) ) {
+							if ( in_array( $key, [ 'NODE_TLS_REJECT_UNAUTHORIZED', 'NEXT_PUBLIC_URL' ], true ) ) {
 								continue; }
 							?>
 							<tr>
 								<td><?php echo esc_html( $key ); ?></td>
-								<td><?php echo esc_html( $value ); ?></td>
+								<td><?php echo wp_kses_post( sprintf( '<code>%s</code>', $value ) ); ?></td>
 							</tr>
 						<?php endforeach; ?>
 					</tbody>
@@ -164,8 +164,8 @@ class Admin implements Module {
 						<?php
 						printf(
 							// translators: %s is the command, wrapped in code tags.
-							esc_html__( 'Then update the %s variable with the URL of your WordPress site.', 'snapwp-helper' ),
-							'<code>NEXT_URL</code>'
+							esc_html__( 'Then update the %s variable with the URL for your headless frontend.', 'snapwp-helper' ),
+							'<code>NEXT_PUBLIC_URL</code>'
 						);
 						?>
 					</p>
@@ -180,7 +180,7 @@ class Admin implements Module {
 						<?php
 							printf(
 								// Translators: %1$s and %2$s are the commands, wrapped in code tags.
-								esc_html__( 'Run %1$s (for development) or %2$s (for production) and visit the `NEXT_URL` from `.env` (updated in Step 2), in your browser to see SnapWP in action!.', 'snapwp-helper' ),
+								esc_html__( 'Run %1$s (for development) or %2$s (for production) and visit the `NEXT_PUBLIC_URL` from `.env` (updated in Step 2), in your browser to see SnapWP in action!.', 'snapwp-helper' ),
 								'<code>npm run dev</code>',
 								'<code>npm run build && npm run start</code>'
 							);
