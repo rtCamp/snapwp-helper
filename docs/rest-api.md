@@ -21,12 +21,14 @@ curl -X GET \
 
 ### Parameters
 
-This endpoint does not require any parameters to be passed in the request body. The .env file content is generated based on WordPress settings.
+This endpoint does not require any parameters to be passed in the request body. The .env file content is generated based on WordPress settings. Unchanged variables will be commented out.
 
-  - `NEXT_URL` (Required): The headless frontend domain URL.
-  - `HOME_URL` (Required): The WordPress "frontend" domain URL.
-  - `GRAPHQL_ENDPOINT`: The WordPress GraphQL endpoint. (Default: `graphql`)
-  - `NODE_TLS_REJECT_UNAUTHORIZED`: Enable if connecting to a self-signed cert. (Default: commented out)
+  - `NODE_TLS_REJECT_UNAUTHORIZED`: Enable if connecting to a self-signed cert. (Default: `0`)
+  - `NEXT_PUBLIC_URL` (Required): The headless frontend domain URL. (Default: `http://localhost:3000`)
+  - `NEXT_PUBLIC_WORDPRESS_URL` (Required): The WordPress "frontend" domain URL.
+  - `NEXT_PUBLIC_GRAPHQL_ENDPOINT`: The WordPress GraphQL endpoint. (Default: `graphql`)
+  - `NEXT_PUBLIC_WORDPRESS_UPLOADS_PATH`: The WordPress Uploads directory path. (Default: `wp-content/uploads`)
+  - `NEXT_PUBLIC_WORDPRESS_REST_URL_PREFIX`: The WordPress REST URL Prefix. (Default: `wp-json`)
 
 Note: This endpoint requires authentication with administrator privileges.
 

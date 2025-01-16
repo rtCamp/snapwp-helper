@@ -59,9 +59,16 @@ class Generator {
 		foreach ( $variables as $name => $value ) {
 			$variable_output = $this->prepare_variable( $name, $value );
 
-			if ( null !== $variable_output ) {
-				$output .= $variable_output;
+			if ( empty( $variable_output ) ) {
+				continue;
 			}
+
+			// Add a newline if there's already content.
+			if ( ! empty( $output ) ) {
+				$output .= "\n";
+			}
+
+			$output .= $variable_output;
 		}
 
 		return $output ?: null;
@@ -94,13 +101,16 @@ class Generator {
 
 		// Determine the final value to output.
 		$resolved_value = ! empty( $value ) ? $value : $default;
-		if ( empty( $resolved_value ) ) {
-			$resolved_value = null;
+
+		// Prepare the output.
+		$comment    = ! empty( $description ) ? sprintf( "\n# %s\n", $description ) : '';
+		$env_output = sprintf( '%s=%s', $name, $resolved_value );
+
+		// Comment out variables if they're not required and have the default value.
+		if ( ! $required && $resolved_value === $default ) {
+			$env_output = '# ' . $env_output;
 		}
 
-		$comment = ! empty( $description ) ? sprintf( "\n# %s\n", $description ) : '';
-		$output  = null !== $resolved_value ? sprintf( '%s=%s\n', $name, $resolved_value ) : sprintf( '# %s=\'0\'\n', $name );
-
-		return $comment . $output;
+		return $comment . $env_output;
 	}
 }

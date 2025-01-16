@@ -19,24 +19,34 @@ class VariableRegistry {
 	 * @var array<string,array{description:string,default:string,required:bool}>
 	 */
 	private const VARIABLES = [
-		'NODE_TLS_REJECT_UNAUTHORIZED' => [
+		'NODE_TLS_REJECT_UNAUTHORIZED'          => [
 			'description' => 'Enable if connecting to a self-signed cert',
-			'default'     => '',
+			'default'     => '0',
 			'required'    => false,
 		],
-		'NEXT_URL'                     => [
+		'NEXT_PUBLIC_URL'                       => [
 			'description' => 'The headless frontend domain URL',
-			'default'     => '',
+			'default'     => 'http://localhost:3000',
 			'required'    => false,
 		],
-		'HOME_URL'                     => [
+		'NEXT_PUBLIC_WORDPRESS_URL'             => [
 			'description' => 'The WordPress "frontend" domain URL',
 			'default'     => '',
 			'required'    => true,
 		],
-		'GRAPHQL_ENDPOINT'             => [
+		'NEXT_PUBLIC_GRAPHQL_ENDPOINT'          => [
 			'description' => 'The WordPress GraphQL endpoint',
 			'default'     => 'graphql',
+			'required'    => false,
+		],
+		'NEXT_PUBLIC_WORDPRESS_UPLOADS_PATH'    => [
+			'description' => 'The WordPress Uploads directory path',
+			'default'     => 'wp-content/uploads',
+			'required'    => false,
+		],
+		'NEXT_PUBLIC_WORDPRESS_REST_URL_PREFIX' => [
+			'description' => 'The WordPress REST URL Prefix',
+			'default'     => 'wp-json',
 			'required'    => false,
 		],
 	];

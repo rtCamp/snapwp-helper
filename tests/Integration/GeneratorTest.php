@@ -7,9 +7,9 @@
 
 namespace SnapWP\Helper\Tests\Integration;
 
-use lucatume\WPBrowser\TestCase\WPTestCase;
 use SnapWP\Helper\Modules\EnvGenerator\Generator;
 use SnapWP\Helper\Modules\EnvGenerator\VariableRegistry;
+use lucatume\WPBrowser\TestCase\WPTestCase;
 
 /**
  * Class GeneratorTest
@@ -24,10 +24,12 @@ class GeneratorTest extends WPTestCase {
 		$registry = new VariableRegistry();
 
 		$values = [
-			'NODE_TLS_REJECT_UNAUTHORIZED' => '',
-			'NEXT_URL'                     => 'http://localhost:3000',
-			'HOME_URL'                     => 'https://headless-demo.local',
-			'GRAPHQL_ENDPOINT'             => '',
+			'NODE_TLS_REJECT_UNAUTHORIZED'          => '',
+			'NEXT_PUBLIC_URL'                       => 'http://localhost:3000',
+			'NEXT_PUBLIC_WORDPRESS_URL'             => 'https://headless-demo.local',
+			'NEXT_PUBLIC_GRAPHQL_ENDPOINT'          => '',
+			'NEXT_PUBLIC_WORDPRESS_UPLOADS_PATH'    => '',
+			'NEXT_PUBLIC_WORDPRESS_REST_URL_PREFIX' => '',
 		];
 
 		$generator = new Generator( $values, $registry );
@@ -41,11 +43,13 @@ class GeneratorTest extends WPTestCase {
 	public function testGenerateEnvContent(): void {
 		$registry = new VariableRegistry();
 		$values   = [
-			'NODE_TLS_REJECT_UNAUTHORIZED' => '5',
-			'NEXT_URL'                     => 'http://localhost:3000',
-			'HOME_URL'                     => 'https://headless-demo.local',
-			'GRAPHQL_ENDPOINT'             => '/test_endpoint',
-			'INVALID_VARIABLE'             => 'should-not-be-included', // This should not be included in the output.
+			'NODE_TLS_REJECT_UNAUTHORIZED'          => '5',
+			'NEXT_PUBLIC_URL'                       => 'http://localhost:3000',
+			'NEXT_PUBLIC_WORDPRESS_URL'             => 'https://headless-demo.local',
+			'NEXT_PUBLIC_GRAPHQL_ENDPOINT'          => '/test_endpoint',
+			'NEXT_PUBLIC_WORDPRESS_UPLOADS_PATH'    => 'uploads',
+			'NEXT_PUBLIC_WORDPRESS_REST_URL_PREFIX' => 'api',
+			'INVALID_VARIABLE'                      => 'should-not-be-included', // This should not be included in the output.
 		];
 
 		$generator = new Generator( $values, $registry );
@@ -53,7 +57,24 @@ class GeneratorTest extends WPTestCase {
 		// Generate the .env content.
 		$content = $generator->generate();
 
-		$expectedContent = "\n# Enable if connecting to a self-signed cert\nNODE_TLS_REJECT_UNAUTHORIZED=5\\n\n# The headless frontend domain URL\nNEXT_URL=http://localhost:3000\\n\n# The WordPress \"frontend\" domain URL\nHOME_URL=https://headless-demo.local\\n\n# The WordPress GraphQL endpoint\nGRAPHQL_ENDPOINT=/test_endpoint\\n";
+		$expectedContent = '
+# Enable if connecting to a self-signed cert
+NODE_TLS_REJECT_UNAUTHORIZED=5
+
+# The headless frontend domain URL
+# NEXT_PUBLIC_URL=http://localhost:3000
+
+# The WordPress "frontend" domain URL
+NEXT_PUBLIC_WORDPRESS_URL=https://headless-demo.local
+
+# The WordPress GraphQL endpoint
+NEXT_PUBLIC_GRAPHQL_ENDPOINT=/test_endpoint
+
+# The WordPress Uploads directory path
+NEXT_PUBLIC_WORDPRESS_UPLOADS_PATH=uploads
+
+# The WordPress REST URL Prefix
+NEXT_PUBLIC_WORDPRESS_REST_URL_PREFIX=api';
 
 		$this->assertSame( $expectedContent, $content );
 	}
@@ -64,10 +85,12 @@ class GeneratorTest extends WPTestCase {
 	public function testMissingRequiredValuesEnvContent(): void {
 		$registry = new VariableRegistry();
 		$values   = [
-			'NODE_TLS_REJECT_UNAUTHORIZED' => '',
-			'NEXT_URL'                     => '',
-			'HOME_URL'                     => '',
-			'GRAPHQL_ENDPOINT'             => '',
+			'NODE_TLS_REJECT_UNAUTHORIZED'          => '',
+			'NEXT_PUBLIC_URL'                       => '',
+			'NEXT_PUBLIC_WORDPRESS_URL'             => '',
+			'NEXT_PUBLIC_GRAPHQL_ENDPOINT'          => '',
+			'NEXT_PUBLIC_WORDPRESS_UPLOADS_PATH'    => '',
+			'NEXT_PUBLIC_WORDPRESS_REST_URL_PREFIX' => '',
 		];
 
 		$generator = new Generator( $values, $registry );
@@ -88,10 +111,12 @@ class GeneratorTest extends WPTestCase {
 
 		// CASE : For NODE_TLS_REJECT_UNAUTHORIZED with no default value, Generator class should comment out the variable in .ENV content.
 		$values = [
-			'NODE_TLS_REJECT_UNAUTHORIZED' => '',
-			'NEXT_URL'                     => 'http://localhost:3000',
-			'HOME_URL'                     => 'https://headless-demo.local',
-			'GRAPHQL_ENDPOINT'             => '/test_endpoint',
+			'NODE_TLS_REJECT_UNAUTHORIZED'          => '',
+			'NEXT_PUBLIC_URL'                       => '',
+			'NEXT_PUBLIC_WORDPRESS_URL'             => 'https://headless-demo.local',
+			'NEXT_PUBLIC_GRAPHQL_ENDPOINT'          => '/test_endpoint',
+			'NEXT_PUBLIC_WORDPRESS_UPLOADS_PATH'    => '',
+			'NEXT_PUBLIC_WORDPRESS_REST_URL_PREFIX' => '',
 		];
 
 		$generator = new Generator( $values, $registry );
@@ -100,16 +125,33 @@ class GeneratorTest extends WPTestCase {
 		$content = $generator->generate();
 
 		// Define expected content.
-		$expectedContent = "\n# Enable if connecting to a self-signed cert\n# NODE_TLS_REJECT_UNAUTHORIZED='0'\\n\n# The headless frontend domain URL\nNEXT_URL=http://localhost:3000\\n\n# The WordPress \"frontend\" domain URL\nHOME_URL=https://headless-demo.local\\n\n# The WordPress GraphQL endpoint\nGRAPHQL_ENDPOINT=/test_endpoint\\n";
+		$expectedContent = '
+# Enable if connecting to a self-signed cert
+# NODE_TLS_REJECT_UNAUTHORIZED=0
+
+# The headless frontend domain URL
+# NEXT_PUBLIC_URL=http://localhost:3000
+
+# The WordPress "frontend" domain URL
+NEXT_PUBLIC_WORDPRESS_URL=https://headless-demo.local
+
+# The WordPress GraphQL endpoint
+NEXT_PUBLIC_GRAPHQL_ENDPOINT=/test_endpoint
+
+# The WordPress Uploads directory path
+# NEXT_PUBLIC_WORDPRESS_UPLOADS_PATH=wp-content/uploads
+
+# The WordPress REST URL Prefix
+# NEXT_PUBLIC_WORDPRESS_REST_URL_PREFIX=wp-json';
 
 		$this->assertSame( $expectedContent, $content );
 
 		// CASE : For GRAPHQL_ENDPOINT, Generator should use the default value of the variable.
 		$values = [
 			'NODE_TLS_REJECT_UNAUTHORIZED' => '',
-			'NEXT_URL'                     => 'http://localhost:3000',
-			'HOME_URL'                     => 'https://headless-demo.local',
-			'GRAPHQL_ENDPOINT'             => '',
+			'NEXT_PUBLIC_URL'              => 'http://localhost:3000',
+			'NEXT_PUBLIC_WORDPRESS_URL'    => 'https://headless-demo.local',
+			'NEXT_PUBLIC_GRAPHQL_ENDPOINT' => '',
 		];
 
 		$generator = new Generator( $values, $registry );
@@ -117,7 +159,18 @@ class GeneratorTest extends WPTestCase {
 		// Generate the .env content.
 		$content = $generator->generate();
 
-		$expectedContent = "\n# Enable if connecting to a self-signed cert\n# NODE_TLS_REJECT_UNAUTHORIZED='0'\\n\n# The headless frontend domain URL\nNEXT_URL=http://localhost:3000\\n\n# The WordPress \"frontend\" domain URL\nHOME_URL=https://headless-demo.local\\n\n# The WordPress GraphQL endpoint\nGRAPHQL_ENDPOINT=graphql\\n";
+		$expectedContent = '
+# Enable if connecting to a self-signed cert
+# NODE_TLS_REJECT_UNAUTHORIZED=0
+
+# The headless frontend domain URL
+# NEXT_PUBLIC_URL=http://localhost:3000
+
+# The WordPress "frontend" domain URL
+NEXT_PUBLIC_WORDPRESS_URL=https://headless-demo.local
+
+# The WordPress GraphQL endpoint
+# NEXT_PUBLIC_GRAPHQL_ENDPOINT=graphql';
 
 		$this->assertSame( $expectedContent, $content );
 	}

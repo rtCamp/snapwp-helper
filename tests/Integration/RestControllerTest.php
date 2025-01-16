@@ -64,6 +64,7 @@ class RestControllerTest extends WPTestCase {
 
 	/**
 	 * Tests if the endpoint is accessible, and the env content in response is correct.
+	 * Assuming standard default values.
 	 */
 	public function testGenerateEnvEndpoint(): void {
 
@@ -86,7 +87,7 @@ class RestControllerTest extends WPTestCase {
 		$this->assertNotEmpty( $actual_data['content'] );
 		$search   = '\n';
 		$replace  = '';
-		$expected = "\n# Enable if connecting to a self-signed cert\n# NODE_TLS_REJECT_UNAUTHORIZED='0'\n# The headless frontend domain URL\n# NEXT_URL='0'\n# The WordPress \"frontend\" domain URL\nHOME_URL=" . get_home_url() . "\n# The WordPress GraphQL endpoint\nGRAPHQL_ENDPOINT=" . graphql_get_endpoint();
+		$expected = "\n# Enable if connecting to a self-signed cert\n# NODE_TLS_REJECT_UNAUTHORIZED=0\n\n# The headless frontend domain URL\n# NEXT_PUBLIC_URL=http://localhost:3000\n\n# The WordPress \"frontend\" domain URL\nNEXT_PUBLIC_WORDPRESS_URL=" . get_home_url() . "\n\n# The WordPress GraphQL endpoint\n# NEXT_PUBLIC_GRAPHQL_ENDPOINT=" . graphql_get_endpoint() . "\n\n# The WordPress Uploads directory path\n# NEXT_PUBLIC_WORDPRESS_UPLOADS_PATH=" . str_replace( ABSPATH, '', wp_get_upload_dir()['basedir'] ) . "\n\n# The WordPress REST URL Prefix\n# NEXT_PUBLIC_WORDPRESS_REST_URL_PREFIX=" . rest_get_url_prefix();
 
 		$this->assertEquals( $expected, str_replace( $search, $replace, $actual_data['content'] ) );
 
