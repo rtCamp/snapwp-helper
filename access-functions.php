@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 use SnapWP\Helper\Modules\EnvGenerator\Generator;
 use SnapWP\Helper\Modules\EnvGenerator\VariableRegistry;
+use SnapWP\Helper\Modules\GraphQL\Data\IntrospectionToken;
 
 if ( ! function_exists( 'snapwp_helper_get_env_content' ) ) {
 	/**
@@ -58,6 +59,14 @@ if ( ! function_exists( 'snapwp_helper_get_env_variables' ) ) {
 			return new \WP_Error( 'graphql_not_found', 'WPGraphQL must be installed and activated.', [ 'status' => 500 ] );
 		}
 
+		// Get the introspection token.
+		$token = IntrospectionToken::get_token();
+
+		// Bail if we couldn't get the token.
+		if ( is_wp_error( $token ) ) {
+			return $token;
+		}
+
 		$upload_dir = wp_get_upload_dir();
 
 		return [
@@ -67,6 +76,7 @@ if ( ! function_exists( 'snapwp_helper_get_env_variables' ) ) {
 			'NEXT_PUBLIC_GRAPHQL_ENDPOINT'          => graphql_get_endpoint(),
 			'NEXT_PUBLIC_WORDPRESS_UPLOADS_PATH'    => snapwp_helper_sanitize_path( str_replace( ABSPATH, '', $upload_dir['basedir'] ) ),
 			'NEXT_PUBLIC_WORDPRESS_REST_URL_PREFIX' => snapwp_helper_sanitize_path( rest_get_url_prefix() ),
+			'INTROSPECTION_TOKEN'                   => $token,
 		];
 	}
 

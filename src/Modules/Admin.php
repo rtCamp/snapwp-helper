@@ -11,6 +11,7 @@ namespace SnapWP\Helper\Modules;
 
 use SnapWP\Helper\Interfaces\Module;
 use SnapWP\Helper\Modules\Admin\Settings;
+use SnapWP\Helper\Modules\GraphQL\Data\IntrospectionToken;
 
 /**
  * Class - Admin
@@ -68,6 +69,8 @@ class Admin implements Module {
 			[ $this, 'render_menu' ],
 			999
 		);
+
+		add_action( 'current_screen', [ $this, 'handle_token_regeneration' ] );
 	}
 
 	/**
@@ -133,7 +136,17 @@ class Admin implements Module {
 							?>
 							<tr>
 								<td><?php echo esc_html( $key ); ?></td>
-								<td><?php echo wp_kses_post( sprintf( '<code>%s</code>', $value ) ); ?></td>
+								<td>
+									<?php echo wp_kses_post( sprintf( '<code>%s</code>', $value ) ); ?>
+
+									<?php if ( 'INTROSPECTION_TOKEN' === $key ) : ?>
+										<form method="POST">
+											<?php wp_nonce_field( 'regenerate_token_action', 'regenerate_token_nonce' ); ?>
+											<input type="submit" name="regenerate_token" class="button-primary" value="<?php esc_attr_e( 'Regenerate Token', 'snapwp-helper' ); ?>">
+										</form>
+										
+									<?php endif; ?>
+								</td>
 							</tr>
 						<?php endforeach; ?>
 					</tbody>
@@ -189,5 +202,57 @@ class Admin implements Module {
 			</ol>
 		</div>
 		<?php
+	}
+
+	/**
+	 * Handle the token regeneration.
+	 */
+	public function handle_token_regeneration(): void {
+		$current_screen = get_current_screen();
+
+		// Check if the current screen is null or doesn't match our admin screen.
+		if ( ! $current_screen || 'graphql_page_snapwp-helper' !== $current_screen->id ) {
+			return;
+		}
+
+		if ( ! isset( $_POST['regenerate_token'] ) ) {
+			// Nothing to process if the regenerate_token action isn't triggered.
+			return;
+		}
+
+		if ( ! isset( $_POST['regenerate_token_nonce'] ) || ! wp_verify_nonce( sanitize_key( $_POST['regenerate_token_nonce'] ), 'regenerate_token_action' ) ) {
+			wp_admin_notice(
+				__( 'Could not regenerate the introspection token: nonce verification failed.', 'snapwp-helper' ),
+				[
+					'type' => 'error',
+				]
+			);
+			return;
+		}
+
+		// Generate a new introspection token.
+		$introspection_token = IntrospectionToken::generate_token();
+
+		// Check is WP_Error.
+		if ( is_wp_error( $introspection_token ) ) {
+			wp_admin_notice(
+				sprintf(
+					// translators: %s is the error message.
+					__( 'Could not regenerate introspection token: %s', 'snapwp-helper' ),
+					$introspection_token->get_error_message()
+				),
+				[
+					'type' => 'error',
+				]
+			);
+			return;
+		}
+
+		wp_admin_notice(
+			__( 'Introspection token regenerated successfully. Please make sure to update your `.env` file.', 'snapwp-helper' ),
+			[
+				'type' => 'success',
+			]
+		);
 	}
 }

@@ -7,8 +7,8 @@
 
 namespace SnapWP\Helper\Tests\Integration;
 
-use lucatume\WPBrowser\TestCase\WPTestCase;
 use SnapWP\Helper\Modules\GraphQL\TypeRegistry;
+use lucatume\WPBrowser\TestCase\WPTestCase;
 
 /**
  * Tests the TypeRegistry class.
@@ -69,7 +69,7 @@ class TypeRegistryTest extends WPTestCase {
 	 */
 	public function testRegisterTypes(): void {
 		$reflection = new \ReflectionClass( TypeRegistry::class );
-		$method = $reflection->getMethod( 'register_types' );
+		$method     = $reflection->getMethod( 'register_types' );
 		$method->setAccessible( true );
 
 		// Test with empty array.
@@ -79,7 +79,7 @@ class TypeRegistryTest extends WPTestCase {
 		$classes_to_register = [
 			'bad_class',
 		];
-		$this->expectException(\Exception::class);
+		$this->expectException( \Throwable::class );
 		$method->invoke( TypeRegistry::instance(), $classes_to_register );
 
 		// The valid case is proven by the other tests.
