@@ -117,7 +117,7 @@ class DisableIntrospectionRuleTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTe
 
 		// Assert response contains an error.
 		$this->assertArrayHasKey('errors', $actual);
-		$this->assertStringContainsString('Introspection is not allowed', $actual['errors'][0]['message']);
+		$this->assertStringContainsString('introspection is not allowed', $actual['errors'][0]['message']);
 	}
 
 	/**
@@ -125,20 +125,20 @@ class DisableIntrospectionRuleTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTe
 	 */
 	public function testPublicDisabledAdminUserNoTokenReturnsSuccess() {
 		// Disable public introspection.
-			$settings = get_option('graphql_general_settings');
-			$settings['public_introspection_enabled'] = 'off';
-			update_option('graphql_general_settings', $settings);
+		$settings = get_option('graphql_general_settings');
+		$settings['public_introspection_enabled'] = 'off';
+		update_option('graphql_general_settings', $settings);
 
-			// Set the current user to the admin user.
-			wp_set_current_user($this->admin);
+		// Set the current user to the admin user.
+		wp_set_current_user($this->admin);
 
-			// Execute the GraphQL introspection query without a token.
-			$query = $this->introspectionQuery();
-			$actual = $this->graphql(['query' => $query]);
+		// Execute the GraphQL introspection query without a token.
+		$query = $this->introspectionQuery();
+		$actual = $this->graphql(['query' => $query]);
 
-			// Assert response does not contain an error.
-			$this->assertArrayNotHasKey('errors', $actual);
-			$this->assertArrayHasKey('data', $actual);
+		// Assert response does not contain an error.
+		$this->assertArrayNotHasKey('errors', $actual);
+		$this->assertArrayHasKey('data', $actual);
 	}
 
 	/**
