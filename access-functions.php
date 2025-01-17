@@ -63,10 +63,39 @@ if ( ! function_exists( 'snapwp_helper_get_env_variables' ) ) {
 		return [
 			'NODE_TLS_REJECT_UNAUTHORIZED'          => '',
 			'NEXT_PUBLIC_URL'                       => '',
-			'NEXT_PUBLIC_WORDPRESS_URL'             => get_home_url(),
+			'NEXT_PUBLIC_WORDPRESS_URL'             => snapwp_helper_sanitize_url( get_home_url() ),
 			'NEXT_PUBLIC_GRAPHQL_ENDPOINT'          => graphql_get_endpoint(),
-			'NEXT_PUBLIC_WORDPRESS_UPLOADS_PATH'    => str_replace( ABSPATH, '', $upload_dir['basedir'] ),
-			'NEXT_PUBLIC_WORDPRESS_REST_URL_PREFIX' => rest_get_url_prefix(),
+			'NEXT_PUBLIC_WORDPRESS_UPLOADS_PATH'    => snapwp_helper_sanitize_path( str_replace( ABSPATH, '', $upload_dir['basedir'] ) ),
+			'NEXT_PUBLIC_WORDPRESS_REST_URL_PREFIX' => snapwp_helper_sanitize_path( rest_get_url_prefix() ),
 		];
+	}
+
+	/**
+	 * Ensure the URL has the correct protocol and trailing slash.
+	 *
+	 * @param string $url The URL to sanitize.
+	 *
+	 * @return string The sanitized URL.
+	 */
+	function snapwp_helper_sanitize_url( $url ) {
+		// Ensure the URL has a protocol.
+		if ( ! preg_match( '/^https?:\/\//', $url ) ) {
+			$url = 'http://' . ltrim( $url, '/' );
+		}
+
+		// Ensure the URL ends with a trailing slash.
+		return rtrim( $url, '/' ) . '/';
+	}
+
+	/**
+	 * Ensure the path is correctly formatted (no leading ABSPATH).
+	 *
+	 * @param string $path The path to sanitize.
+	 *
+	 * @return string The sanitized path.
+	 */
+	function snapwp_helper_sanitize_path( $path ) {
+		// Ensure the path is relative (remove ABSPATH prefix) with a leading slash.
+		return '/' . ltrim( str_replace( ABSPATH, '', $path ), '/' );
 	}
 }
