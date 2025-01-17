@@ -42,8 +42,6 @@ class DisableIntrospectionRule extends ValidationRulesDisableIntrospection {
 		}
 
 		// Check if the provided token matches the one stored in the database.
-		$res = ! hash_equals( $introspection_token_header, $introspection_token );
-
-		return $res;
+		return ! hash_equals( $introspection_token_header, $introspection_token );
 	}
 }

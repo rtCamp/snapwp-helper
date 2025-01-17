@@ -49,7 +49,7 @@ class VariableRegistry {
 			'default'     => 'wp-json',
 			'required'    => false,
 		],
-		'INTROSPECTION_TOKEN'          => [
+		'INTROSPECTION_TOKEN'                   => [
 			'description' => 'Token used for authenticating GraphQL introspection queries',
 			'default'     => '',
 			'required'    => true,
