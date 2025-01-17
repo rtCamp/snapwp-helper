@@ -36,12 +36,14 @@ class DisableIntrospectionRule extends ValidationRulesDisableIntrospection {
 		// Get the introspection token from the database.
 		$introspection_token = IntrospectionToken::get_token();
 
-		// If there was an error retrieving the token, return the original value.
+		// If there was an error retrieving the token, return true.
 		if ( is_wp_error( $introspection_token ) ) {
-			return false;
+			return true;
 		}
 
 		// Check if the provided token matches the one stored in the database.
-		return hash_equals( $introspection_token_header, $introspection_token );
+		$res = ! hash_equals( $introspection_token_header, $introspection_token );
+
+		return $res;
 	}
 }
