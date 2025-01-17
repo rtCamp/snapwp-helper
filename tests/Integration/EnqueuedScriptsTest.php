@@ -169,7 +169,7 @@ class EnqueuedScriptsTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase {
 		$this->assertArrayHasKey( 'data', $actual );
 
 		// Extract the 'handle' values from the response.
-		
+
 		// Get the index to test the 'test-content-script' handle.
 		$index = array_search( 'test-content-script', array_column( $actual['data']['templateByUri']['enqueuedScripts']['nodes'], 'handle' ) );
 		$this->assertNotFalse( $index );

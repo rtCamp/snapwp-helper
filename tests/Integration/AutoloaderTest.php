@@ -2,8 +2,8 @@
 
 namespace SnapWP\Helper\Tests\Integration;
 
-use lucatume\WPBrowser\TestCase\WPTestCase;
 use SnapWP\Helper\Autoloader;
+use lucatume\WPBrowser\TestCase\WPTestCase;
 
 class MockAutoloader extends Autoloader {
 	public static function reset() {
