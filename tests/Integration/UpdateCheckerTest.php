@@ -7,9 +7,9 @@
 
 namespace SnapWP\Helper\Tests\Integration;
 
+use SnapWP\Helper\Modules\PluginUpdater\UpdateChecker;
 use YahnisElsts\PluginUpdateChecker\v5p5\Plugin\Update;
 use lucatume\WPBrowser\TestCase\WPTestCase;
-use SnapWP\Helper\Modules\PluginUpdater\UpdateChecker;
 
 /**
  * Tests the Update Checker class.
