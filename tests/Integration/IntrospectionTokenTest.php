@@ -7,8 +7,8 @@
 
 namespace SnapWP\Helper\Tests\Integration;
 
-use lucatume\WPBrowser\TestCase\WPTestCase;
 use SnapWP\Helper\Modules\GraphQL\Data\IntrospectionToken;
+use lucatume\WPBrowser\TestCase\WPTestCase;
 
 /**
  * Class - IntrospectionTokenTest

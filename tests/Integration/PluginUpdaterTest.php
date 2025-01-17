@@ -7,8 +7,8 @@
 
 namespace SnapWP\Helper\Tests\Integration;
 
-use lucatume\WPBrowser\TestCase\WPTestCase;
 use SnapWP\Helper\Modules\PluginUpdater;
+use lucatume\WPBrowser\TestCase\WPTestCase;
 
 /**
  * Tests the PluginUpdater class.

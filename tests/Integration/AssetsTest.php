@@ -2,8 +2,8 @@
 
 namespace SnapWP\Helper\Tests\Integration;
 
-use lucatume\WPBrowser\TestCase\WPTestCase;
 use SnapWP\Helper\Modules\Assets;
+use lucatume\WPBrowser\TestCase\WPTestCase;
 
 class AssetsTest extends WPTestCase {
 	/**
