@@ -59,16 +59,6 @@ if ( ! function_exists( 'snapwp_helper_get_env_variables' ) ) {
 			return new \WP_Error( 'graphql_not_found', 'WPGraphQL must be installed and activated.', [ 'status' => 500 ] );
 		}
 
-		/**
-		 * Ensure the value has a leading slash for consistency.
-		 *
-		 * @param string $path The path.
-		 * @return string The path with a single leading slash.
-		 */
-		$add_leading_slash = static function ( $path ) {
-			return '/' . ltrim( $path, '/' );
-		};
-
 		// Get the introspection token.
 		$token = IntrospectionToken::get_token();
 
@@ -77,15 +67,17 @@ if ( ! function_exists( 'snapwp_helper_get_env_variables' ) ) {
 			return $token;
 		}
 
-		$upload_dir = wp_get_upload_dir();
+		// Ensure the upload path has a leading slash for consistency.
+		$upload_dir  = wp_get_upload_dir();
+		$upload_path = '/' . ltrim( str_replace( ABSPATH, '', $upload_dir['basedir'] ), '/' );
 
 		return [
 			'NODE_TLS_REJECT_UNAUTHORIZED'          => '',
 			'NEXT_PUBLIC_URL'                       => '',
 			'NEXT_PUBLIC_WORDPRESS_URL'             => get_home_url(),
 			'NEXT_PUBLIC_GRAPHQL_ENDPOINT'          => graphql_get_endpoint(),
-			'NEXT_PUBLIC_WORDPRESS_UPLOADS_PATH'    => $add_leading_slash( str_replace( ABSPATH, '', $upload_dir['basedir'] ) ),
-			'NEXT_PUBLIC_WORDPRESS_REST_URL_PREFIX' => $add_leading_slash( rest_get_url_prefix() ),
+			'NEXT_PUBLIC_WORDPRESS_UPLOADS_PATH'    => $upload_path,
+			'NEXT_PUBLIC_WORDPRESS_REST_URL_PREFIX' => '/' . rest_get_url_prefix(),
 			'INTROSPECTION_TOKEN'                   => $token,
 		];
 	}
