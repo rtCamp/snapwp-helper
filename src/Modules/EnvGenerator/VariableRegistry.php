@@ -41,12 +41,12 @@ class VariableRegistry {
 		],
 		'NEXT_PUBLIC_WORDPRESS_UPLOADS_PATH'    => [
 			'description' => 'The WordPress Uploads directory path',
-			'default'     => 'wp-content/uploads',
+			'default'     => '/wp-content/uploads',
 			'required'    => false,
 		],
 		'NEXT_PUBLIC_WORDPRESS_REST_URL_PREFIX' => [
 			'description' => 'The WordPress REST URL Prefix',
-			'default'     => 'wp-json',
+			'default'     => '/wp-json',
 			'required'    => false,
 		],
 		'INTROSPECTION_TOKEN'                   => [
