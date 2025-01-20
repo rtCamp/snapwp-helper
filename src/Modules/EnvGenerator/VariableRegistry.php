@@ -36,8 +36,8 @@ class VariableRegistry {
 		],
 		'NEXT_PUBLIC_GRAPHQL_ENDPOINT'          => [
 			'description' => 'The WordPress GraphQL endpoint',
-			'default'     => 'graphql',
-			'required'    => false,
+			'default'     => 'index.php?graphql',
+			'required'    => true,
 		],
 		'NEXT_PUBLIC_WORDPRESS_UPLOADS_PATH'    => [
 			'description' => 'The WordPress Uploads directory path',
