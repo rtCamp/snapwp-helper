@@ -17,6 +17,7 @@ use WPGraphQL\Model\Model;
  *
  * @property string $id The Global ID of the script module.
  * @property string $handle The handle of the script module.
+ * @property ?string $extraData The JSON-encoded data object for the script module.
  * @property ?string $src The source URL of the script module.
  * @property ?string $version The version of the script module.
  * @property ?array{id:string,import?:string} $dependencies The dependencies of the script module.
@@ -57,6 +58,7 @@ class ScriptModule extends Model {
 			$this->fields = [
 				'id'           => fn (): string => Relay::toGlobalId( 'script_module', $this->data['id'] ),
 				'handle'       => fn (): ?string => $this->data['id'] ?: null,
+				'extraData'    => fn (): ?string => ! empty( $this->data['extraData'] ) ? $this->data['extraData'] : null,
 				'src'          => fn (): ?string => $this->data['src'] ?: null,
 				'version'      => fn (): ?string => ! empty( $this->data['version'] ) ? $this->data['version'] : null,
 				'dependencies' => fn (): ?array => ! empty( $this->data['dependencies'] ) ? $this->data['dependencies'] : null,
