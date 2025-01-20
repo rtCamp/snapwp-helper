@@ -74,7 +74,7 @@ if ( ! function_exists( 'snapwp_helper_get_env_variables' ) ) {
 		return [
 			'NODE_TLS_REJECT_UNAUTHORIZED'          => '',
 			'NEXT_PUBLIC_URL'                       => '',
-			'NEXT_PUBLIC_WORDPRESS_URL'             => get_home_url(),
+			'NEXT_PUBLIC_WORDPRESS_URL'             => untrailingslashit( get_home_url() ),
 			'NEXT_PUBLIC_GRAPHQL_ENDPOINT'          => graphql_get_endpoint(),
 			'NEXT_PUBLIC_WORDPRESS_UPLOADS_PATH'    => $upload_path,
 			'NEXT_PUBLIC_WORDPRESS_REST_URL_PREFIX' => '/' . rest_get_url_prefix(),
