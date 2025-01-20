@@ -65,7 +65,7 @@ if ( ! function_exists( 'snapwp_helper_get_env_variables' ) ) {
 		 * @param string $path The path.
 		 * @return string The path with a single leading slash.
 		 */
-		$add_leading_slash = function ( $path ) {
+		$add_leading_slash = static function ( $path ) {
 			return '/' . ltrim( $path, '/' );
 		};
 
