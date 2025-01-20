@@ -139,10 +139,10 @@ NEXT_PUBLIC_WORDPRESS_URL=https://headless-demo.local
 NEXT_PUBLIC_GRAPHQL_ENDPOINT=/test_endpoint
 
 # The WordPress Uploads directory path
-# NEXT_PUBLIC_WORDPRESS_UPLOADS_PATH=wp-content/uploads
+# NEXT_PUBLIC_WORDPRESS_UPLOADS_PATH=/wp-content/uploads
 
 # The WordPress REST URL Prefix
-# NEXT_PUBLIC_WORDPRESS_REST_URL_PREFIX=wp-json';
+# NEXT_PUBLIC_WORDPRESS_REST_URL_PREFIX=/wp-json';
 
 		$this->assertSame( $expectedContent, $content );
 
