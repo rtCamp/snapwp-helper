@@ -25,7 +25,7 @@ class VariableRegistry {
 			'required'    => false,
 		],
 		'NEXT_PUBLIC_URL'                       => [
-			'description' => 'The headless frontend domain URL',
+			'description' => 'The headless frontend domain URL. Uncomment the line and update the URL if your app is running on a URL other than the default.',
 			'default'     => 'http://localhost:3000',
 			'required'    => false,
 		],
