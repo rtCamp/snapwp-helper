@@ -1,21 +1,21 @@
 #!/usr/bin/env bash
 
 function setup_wordpress_files() {
-  # Since it is a plugin deployment, iirc we skip this step
-  cd "$GITHUB_WORKSPACE"
-  build_root="$(pwd)"
-  export build_root
+	# Since it is a plugin deployment, we skip this step
+	cd "$GITHUB_WORKSPACE"
+	build_root="$(pwd)"
+	export build_root
 }
 
 function cleanup_node_modules() {
-  # Since it is a plugin deployment, iirc we skip this step
-  cd "$GITHUB_WORKSPACE"
-  # required to remove development dependencies used for building but not required for runtime
-  npm ci --omit dev
+	# Since it is a plugin deployment, we skip this step
+	cd "$GITHUB_WORKSPACE"
+	# required to remove development dependencies used for building but not required for runtime
+	npm ci --omit dev
 }
 
 function main() {
-    setup_hosts_file
+	setup_hosts_file
 	check_branch_in_hosts_file
 	setup_ssh_access
 	maybe_install_submodules
