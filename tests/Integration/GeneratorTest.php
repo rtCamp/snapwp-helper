@@ -61,7 +61,7 @@ class GeneratorTest extends WPTestCase {
 # Enable if connecting to a self-signed cert
 NODE_TLS_REJECT_UNAUTHORIZED=5
 
-# The headless frontend domain URL. Uncomment the line and update the URL if your app is running on a URL other than the default.
+# The headless frontend domain URL. Uncomment this line and ensure the value matches the URL used by your frontend app.
 # NEXT_PUBLIC_URL=http://localhost:3000
 
 # The WordPress "frontend" domain URL
@@ -129,7 +129,7 @@ NEXT_PUBLIC_WORDPRESS_REST_URL_PREFIX=api';
 # Enable if connecting to a self-signed cert
 # NODE_TLS_REJECT_UNAUTHORIZED=0
 
-# The headless frontend domain URL. Uncomment the line and update the URL if your app is running on a URL other than the default.
+# The headless frontend domain URL. Uncomment this line and ensure the value matches the URL used by your frontend app.
 # NEXT_PUBLIC_URL=http://localhost:3000
 
 # The WordPress "frontend" domain URL
