@@ -53,7 +53,7 @@ class TemplateResolver {
 	 * @param string                     $uri              The path to be used as an identifier for the resource.
 	 * @param array<string,mixed>|string $extra_query_vars Any extra query vars to consider
 	 *
-	 * @return ?array{renderedHtml:string,uri:string} The resolved template.
+	 * @return ?array{content:?string,uri:string} The resolved template.
 	 * @throws \GraphQL\Error\UserError If the query class does not exist.
 	 */
 	public function resolve_uri( string $uri, $extra_query_vars = '' ): ?array {
@@ -117,9 +117,8 @@ class TemplateResolver {
 		$this->wp->register_globals();
 
 		return [
-			'content'      => $this->get_rendered_template(),
-			'renderedHtml' => get_the_block_template_html(),
-			'uri'          => $uri,
+			'content' => $this->get_rendered_template(),
+			'uri'     => $uri,
 		];
 	}
 
@@ -585,6 +584,8 @@ class TemplateResolver {
 	 * Gets the block template content.
 	 *
 	 * Mimics get_the_block_template_html() without the do_blocks() call, which strips the block attributes.
+	 *
+	 * @see get_the_block_template_html()
 	 */
 	protected function get_the_block_template_content(): ?string {
 		global $_wp_current_template_content, $wp_embed;

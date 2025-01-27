@@ -8,6 +8,7 @@
 namespace SnapWP\Helper\Modules\GraphQL\Model;
 
 use GraphQLRelay\Relay;
+use SnapWP\Helper\Modules\GraphQL\Data\ContentBlocksResolver;
 use SnapWP\Helper\Modules\GraphQL\Utils\ScriptModuleUtils;
 use WPGraphQL\Model\Model;
 
@@ -25,9 +26,16 @@ class RenderedTemplate extends Model {
 	/**
 	 * {@inheritDoc}
 	 *
-	 * @var array{renderedHtml:string,uri:string,content:string}
+	 * @var array{uri:string,content:?string}
 	 */
 	protected $data;
+
+	/**
+	 * Store parsed blocks.
+	 *
+	 * @var array<mixed>
+	 */
+	public $parsed_blocks;
 
 	/**
 	 * Constructor.
@@ -48,13 +56,24 @@ class RenderedTemplate extends Model {
 			throw new \InvalidArgumentException( esc_html( sprintf( $error_message, 'content' ) ) );
 		}
 
-		if ( ! isset( $resolved_template_data['renderedHtml'] ) ) {
-			throw new \InvalidArgumentException( esc_html( sprintf( $error_message, 'renderedHtml' ) ) );
-		}
-
 		$this->data = $resolved_template_data;
 
+		// Resolve the content blocks early, so everything is ready when the hooks are called.
+		$this->parsed_blocks = $this->resolve_content_blocks();
+
 		parent::__construct();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function setup() {
+
+		// Simulate WP template rendering.
+		ob_start();
+		wp_head();
+		wp_footer();
+		ob_end_clean();
 	}
 
 	/**
@@ -76,13 +95,6 @@ class RenderedTemplate extends Model {
 				'enqueuedScriptsQueue'       => function () {
 					global $wp_scripts;
 
-					// Simulate WP template rendering.
-					ob_start();
-					do_action( 'wp_enqueue_scripts' ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
-					// Add missing 'wp_footer' from WP lifecycle.
-					wp_footer();
-					ob_end_clean();
-
 					// Get the list of enqueued scripts.
 					$enqueued_scripts = $wp_scripts->queue ?? [];
 
@@ -96,11 +108,6 @@ class RenderedTemplate extends Model {
 				},
 				'enqueuedScriptModulesQueue' => static function () {
 					// Simulate WP template rendering.
-					ob_start();
-					wp_head();
-					wp_footer();
-					ob_end_clean();
-
 					$script_modules = ScriptModuleUtils::get_enqueued_script_modules();
 
 					if ( empty( $script_modules ) ) {
@@ -122,11 +129,6 @@ class RenderedTemplate extends Model {
 				'enqueuedStylesheetsQueue'   => function () {
 					global $wp_styles;
 
-					// Prevent possible side effects printed to the output buffer.
-					ob_start();
-					do_action( 'wp_enqueue_scripts' ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
-					ob_end_clean();
-
 					// Get the list of enqueued styles.
 					$enqueued_styles = $wp_styles->queue ?? [];
 
@@ -139,10 +141,44 @@ class RenderedTemplate extends Model {
 
 					return $queue;
 				},
-				'renderedHtml'               => fn (): ?string => ! empty( $this->data['renderedHtml'] ) ? $this->data['renderedHtml'] : null,
 				'uri'                        => fn (): ?string => ! empty( $this->data['uri'] ) ? $this->data['uri'] : null,
 			];
 		}
+	}
+
+	/**
+	 * Resolves the content blocks.
+	 *
+	 * We use this instead of ::resolve_content_blocks() directly to ensure the global state is set correctly.
+	 *
+	 * @return array<mixed> The resolved content blocks.
+	 */
+	protected function resolve_content_blocks() {
+		global $_wp_current_template_id, $wp_query;
+
+		$blocks = [];
+
+		/**
+		 * Work around template files that don't enter the loop.
+		 *
+		 * @see get_the_block_template_html()
+		 */
+		if (
+			$_wp_current_template_id &&
+			str_starts_with( $_wp_current_template_id, get_stylesheet() . '//' ) &&
+			is_singular() &&
+			1 === $wp_query->post_count &&
+			have_posts()
+		) {
+			while ( have_posts() ) {
+				the_post();
+				$blocks = ContentBlocksResolver::resolve_content_blocks( $this->data, [] );
+			}
+		} else {
+			$blocks = ContentBlocksResolver::resolve_content_blocks( $this->data, [] );
+		}
+
+		return $blocks;
 	}
 
 	/**
@@ -153,7 +189,7 @@ class RenderedTemplate extends Model {
 	 *
 	 * @return array<string>
 	 */
-	public function flatten_enqueued_assets_list( array $queue, \WP_Dependencies $wp_dependencies ): array {
+	protected function flatten_enqueued_assets_list( array $queue, \WP_Dependencies $wp_dependencies ): array {
 		$registered_assets = $wp_dependencies->registered;
 		$handles           = [];
 

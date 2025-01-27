@@ -223,7 +223,7 @@ class EnqueuedScriptModulesTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestC
 
 		$post_url = get_permalink( $post_id );
 
-		$query     = $this->query();
+		$query = $this->query();
 
 		$variables = [ 'uri' => wp_make_link_relative( $post_url ) ];
 
@@ -244,7 +244,7 @@ class EnqueuedScriptModulesTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestC
 				}
 			)
 		)[0];
-	
+
 		$this->assertNotEmpty( $actual_dep['id'], 'Data should contain a valid ID' );
 		$this->assertNotEmpty( $actual_dep['extraData'], 'Data should contain a data object' );
 
