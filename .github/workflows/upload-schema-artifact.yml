@@ -4,6 +4,10 @@ on:
   release:
     types: [ published ]
 
+permissions:
+  contents: read
+  actions: write
+
 jobs:
   run:
     runs-on: ubuntu-latest
@@ -41,7 +45,7 @@ jobs:
 
       - name: Setup GraphQL Schema Linter
         run: npm install -g graphql-schema-linter@^3.0 graphql@^16
-      
+
       - name: Install Node.js dependencies
         run: npm ci
         env:

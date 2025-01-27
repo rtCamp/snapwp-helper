@@ -9,6 +9,7 @@ on:
     branches:
       - develop
       - main
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -77,7 +78,7 @@ jobs:
           for file in "$PHP_CHANGED_FILES"; do
             echo "$file was changed"
           done
-        
+
       - name: List all JS changed files
         if: steps.changed-files.outputs.js_any_changed == 'true'
         env:
@@ -193,9 +194,9 @@ jobs:
         php: [ '8.2' ] #, '8.1' ] @todo reenable when repo is made public
         wordpress: [ '6.7' ] #, '6.6' ]
         include:
-        - php: '8.2'
-          wordpress: '6.7'
-          coverage: 1
+          - php: '8.2'
+            wordpress: '6.7'
+            coverage: 1
       fail-fast: false
     steps:
       - name: Checkout
@@ -255,8 +256,24 @@ jobs:
           COVERAGE: ${{ matrix.coverage }}
           DEBUG: ${{ secrets.ACTIONS_STEP_DEBUG || matrix.debug }}
           SUITES: "Integration"
-      # Todo: Add coveralls + codeclimate
-
+          
+#      - name: Push coverage to Coveralls.io
+#        if: matrix.coverage == 1
+#        uses: coverallsapp/github-action@v2
+#        with:
+#          github-token: ${{ secrets.GITHUB_TOKEN }}
+#          path-to-lcov: tests/_output/coverage/lcov.info  # todo: verify path
+#
+#      - name: Push coverage to CodeClimate
+#        if: matrix.coverage == 1
+#        uses: paambaati/codeclimate-action@v9
+#        env:
+#          CC_TEST_REPORTER_ID: <code_climate_reporter_id>  # todo: add code climate reporter id
+#        with:
+#          debug: true
+#          coverageLocations: |
+#            ${{github.workspace}}/tests/_output/*.xml:clover  # todo: verify path
+  
   playwright:
     needs: pre-run
     if: needs.pre-run.outputs.changed-workflow == 'true' || needs.pre-run.outputs.changed-js == 'true'
@@ -296,7 +313,11 @@ jobs:
         run: npx playwright install --with-deps
 
       - name: Start wp-env
-        run: npm run wp-env -- start
+        run: |
+          npm run wp-env -- start
+          sleep 10
+          netstat -nltp
+          curl -iL http://localhost:8889
 
       - name: Run E2E tests
         run: npm run test:e2e
