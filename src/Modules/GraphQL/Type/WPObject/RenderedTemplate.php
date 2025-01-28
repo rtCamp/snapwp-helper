@@ -46,10 +46,6 @@ final class RenderedTemplate extends AbstractObject implements TypeWithConnectio
 				'type'        => 'String',
 				'description' => __( 'The content for the template. This is the serialized block markup and HTML.', 'snapwp-helper' ),
 			],
-			'renderedHtml'  => [
-				'type'        => 'String',
-				'description' => __( 'The rendered HTML for the template.', 'snapwp-helper' ),
-			],
 			'bodyClasses'   => [
 				'type'        => [ 'list_of' => 'String' ],
 				'description' => __( 'The css classes for the HTML `<body>` tag.', 'snapwp-helper' ),

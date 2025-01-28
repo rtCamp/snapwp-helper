@@ -50,11 +50,7 @@ query GetTemplateByUri( $uri: String! ) {
     isFrontPage
     isPostsPage
     isTermNode
-    renderedHtml # The fully rendered HTML content for the given URI
     uri
   }
 }
 ```
-
->[!WARNING]
-> `templateByUri.enqueuedScripts` currently does not return the correct data. This is a known issue in WPGraphQL core and will be fixed in a future release.

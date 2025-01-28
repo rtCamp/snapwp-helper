@@ -125,7 +125,6 @@ class TemplateByUriQueryTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase
 						name
 					}
 				}
-				renderedHtml
 			}
 		}';
 	}
@@ -157,7 +156,6 @@ class TemplateByUriQueryTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase
 		$this->assertNotEmpty( $actual['data']['templateByUri'], 'templateByUri should return the rendered 404 template' );
 		$this->assertContains( 'error404', $actual['data']['templateByUri']['bodyClasses'], 'bodyClasses should contain the error404 class' );
 		$this->assertNull( $actual['data']['templateByUri']['connectedNode'], 'connectedNode should be null' );
-		$this->assertStringContainsString( 'id="page-not-found"', $actual['data']['templateByUri']['renderedHtml'], 'renderedHtml should contain the Page not Found heading' );
 
 		// 2. Test a good URI.
 		$post_link = get_permalink( $post_id );
@@ -173,7 +171,6 @@ class TemplateByUriQueryTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase
 		$this->assertEquals( $expected_graphql_type, $actual['data']['templateByUri']['connectedNode']['__typename'], 'connectedNode should be a ' . $expected_graphql_type );
 		$this->assertEquals( $post_id, $actual['data']['templateByUri']['connectedNode']['databaseId'], 'connectedNode should have the correct databaseId' );
 		$this->assertEquals( 'Test postByUri', $actual['data']['templateByUri']['connectedNode']['title'], 'connectedNode should have the correct title' );
-		$this->assertStringContainsString( 'Test postByUri', $actual['data']['templateByUri']['renderedHtml'], 'renderedHtml should contain the post title' );
 	}
 
 	/**
@@ -214,7 +211,6 @@ class TemplateByUriQueryTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase
 		$this->assertNotEmpty( $actual['data']['templateByUri'], 'templateByUri should return the rendered 404 template' );
 		$this->assertContains( 'error404', $actual['data']['templateByUri']['bodyClasses'], 'bodyClasses should contain the error404 class' );
 		$this->assertNull( $actual['data']['templateByUri']['connectedNode'], 'connectedNode should be null' );
-		$this->assertStringContainsString( 'id="page-not-found"', $actual['data']['templateByUri']['renderedHtml'], 'renderedHtml should contain the Page not Found heading' );
 
 		// 2. Test a valid URI for the parent page.
 		$parent_page_link = get_permalink( $parent_page_id );
@@ -231,7 +227,6 @@ class TemplateByUriQueryTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase
 		$this->assertEquals( $expected_graphql_type, $actual['data']['templateByUri']['connectedNode']['__typename'], 'connectedNode should be a ' . $expected_graphql_type );
 		$this->assertEquals( $parent_page_id, $actual['data']['templateByUri']['connectedNode']['databaseId'], 'connectedNode should have the correct databaseId' );
 		$this->assertEquals( 'Parent Page', $actual['data']['templateByUri']['connectedNode']['title'], 'connectedNode should have the correct title' );
-		$this->assertStringContainsString( 'Parent Page', $actual['data']['templateByUri']['renderedHtml'], 'renderedHtml should contain the parent page title' );
 
 		// 3. Test an invalid child page URI under a valid parent.
 		$variables['uri'] = wp_make_link_relative( $parent_page_link ) . '/invalid-child-page'; // This URI should not exist.
@@ -242,7 +237,6 @@ class TemplateByUriQueryTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase
 		$this->assertNotEmpty( $actual['data']['templateByUri'], 'templateByUri should return the rendered 404 template' );
 		$this->assertContains( 'error404', $actual['data']['templateByUri']['bodyClasses'], 'bodyClasses should contain the error404 class' );
 		$this->assertNull( $actual['data']['templateByUri']['connectedNode'], 'connectedNode should be null' );
-		$this->assertStringContainsString( 'id="page-not-found"', $actual['data']['templateByUri']['renderedHtml'], 'renderedHtml should contain the Page not Found heading' );
 
 		// 4. Test a valid child page URI.
 		$child_page_link = get_permalink( $child_page_id );
@@ -259,7 +253,6 @@ class TemplateByUriQueryTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase
 		$this->assertEquals( $expected_graphql_type, $actual['data']['templateByUri']['connectedNode']['__typename'], 'connectedNode should be a ' . $expected_graphql_type );
 		$this->assertEquals( $child_page_id, $actual['data']['templateByUri']['connectedNode']['databaseId'], 'connectedNode should have the correct databaseId' );
 		$this->assertEquals( 'Child Page', $actual['data']['templateByUri']['connectedNode']['title'], 'connectedNode should have the correct title' );
-		$this->assertStringContainsString( 'Child Page', $actual['data']['templateByUri']['renderedHtml'], 'renderedHtml should contain the child page title' );
 	}
 
 	/**
@@ -291,7 +284,6 @@ class TemplateByUriQueryTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase
 		$this->assertContains( 'error404', $actual['data']['templateByUri']['bodyClasses'], 'bodyClasses should contain the error404 class' );
 		$this->assertNotEmpty( $actual['data']['templateByUri'], 'templateByUri should return the rendered 404 template' );
 		$this->assertNull( $actual['data']['templateByUri']['connectedNode'], 'connectedNode should be null' );
-		$this->assertStringContainsString( 'id="page-not-found"', $actual['data']['templateByUri']['renderedHtml'], 'renderedHtml should contain the Page not Found heading' );
 
 		// Test a good URI.
 		$cpt_link = get_permalink( $cpt_id );
@@ -307,7 +299,6 @@ class TemplateByUriQueryTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase
 		$this->assertEquals( $expected_graphql_type, $actual['data']['templateByUri']['connectedNode']['__typename'], 'connectedNode should be a ' . $expected_graphql_type );
 		$this->assertEquals( $cpt_id, $actual['data']['templateByUri']['connectedNode']['databaseId'], 'connectedNode should have the correct databaseId' );
 		$this->assertEquals( 'Test cptByUri', $actual['data']['templateByUri']['connectedNode']['title'], 'connectedNode should have the correct title' );
-		$this->assertStringContainsString( 'Test cptByUri', $actual['data']['templateByUri']['renderedHtml'], 'renderedHtml should contain the page title' );
 	}
 
 	/**
@@ -339,7 +330,6 @@ class TemplateByUriQueryTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase
 		$this->assertNotEmpty( $actual['data']['templateByUri'], 'templateByUri should return the rendered 404 template' );
 		$this->assertContains( 'error404', $actual['data']['templateByUri']['bodyClasses'], 'bodyClasses should contain the error404 class' );
 		$this->assertNull( $actual['data']['templateByUri']['connectedNode'], 'connectedNode should be null' );
-		$this->assertStringContainsString( 'id="page-not-found"', $actual['data']['templateByUri']['renderedHtml'], 'renderedHtml should contain the Page not Found heading' );
 
 		// Test a good URI.
 		$category_link = get_term_link( $category_id );
@@ -354,7 +344,6 @@ class TemplateByUriQueryTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase
 		$this->assertEquals( 'Category', $actual['data']['templateByUri']['connectedNode']['__typename'], 'connectedNode should be a Category' );
 		$this->assertEquals( $category_id, $actual['data']['templateByUri']['connectedNode']['databaseId'], 'connectedNode should have the correct databaseId' );
 		$this->assertEquals( 'Test Category', $actual['data']['templateByUri']['connectedNode']['name'], 'connectedNode should have the correct title' );
-		$this->assertStringContainsString( 'Test Category', $actual['data']['templateByUri']['renderedHtml'], 'renderedHtml should contain the category title' );
 	}
 
 	/**
@@ -386,7 +375,6 @@ class TemplateByUriQueryTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase
 		$this->assertNotEmpty( $actual['data']['templateByUri'], 'templateByUri should return the rendered 404 template' );
 		$this->assertContains( 'error404', $actual['data']['templateByUri']['bodyClasses'], 'bodyClasses should contain the error404 class' );
 		$this->assertNull( $actual['data']['templateByUri']['connectedNode'], 'connectedNode should be null' );
-		$this->assertStringContainsString( 'id="page-not-found"', $actual['data']['templateByUri']['renderedHtml'], 'renderedHtml should contain the Page not Found heading' );
 
 		// Test a good URI.
 		$tag_link = get_tag_link( $tag_id );
@@ -401,7 +389,6 @@ class TemplateByUriQueryTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase
 		$this->assertEquals( 'Tag', $actual['data']['templateByUri']['connectedNode']['__typename'], 'connectedNode should be a Tag' );
 		$this->assertEquals( $tag_id, $actual['data']['templateByUri']['connectedNode']['databaseId'], 'connectedNode should have the correct databaseId' );
 		$this->assertEquals( 'Test Tag', $actual['data']['templateByUri']['connectedNode']['name'], 'connectedNode should have the correct title' );
-		$this->assertStringContainsString( 'Test Tag', $actual['data']['templateByUri']['renderedHtml'], 'renderedHtml should contain the tag title' );
 	}
 
 	/**
@@ -432,7 +419,6 @@ class TemplateByUriQueryTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase
 		$this->assertNotEmpty( $actual['data']['templateByUri'], 'templateByUri should return the rendered 404 template' );
 		$this->assertContains( 'error404', $actual['data']['templateByUri']['bodyClasses'], 'bodyClasses should contain the error404 class' );
 		$this->assertNull( $actual['data']['templateByUri']['connectedNode'], 'connectedNode should be null' );
-		$this->assertStringContainsString( 'id="page-not-found"', $actual['data']['templateByUri']['renderedHtml'], 'renderedHtml should contain the Page not Found heading' );
 
 		// Test a good URI.
 		$term_link = get_term_link( $term_id );
@@ -447,7 +433,6 @@ class TemplateByUriQueryTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase
 		$this->assertEquals( 'CustomTax', $actual['data']['templateByUri']['connectedNode']['__typename'], 'connectedNode should be a CustomTax' );
 		$this->assertEquals( $term_id, $actual['data']['templateByUri']['connectedNode']['databaseId'], 'connectedNode should have the correct databaseId' );
 		$this->assertEquals( 'Test Custom Tax Term', $actual['data']['templateByUri']['connectedNode']['name'], 'connectedNode should have the correct title' );
-		$this->assertStringContainsString( 'Test Custom Tax Term', $actual['data']['templateByUri']['renderedHtml'], 'renderedHtml should contain the custom taxonomy term title' );
 	}
 
 	/**
@@ -512,7 +497,6 @@ class TemplateByUriQueryTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase
 		$this->assertNull( $actual['data']['templateByUri']['connectedNode'], 'connectedNode should be null' );
 		$this->assertNotEmpty( $actual['data']['templateByUri'], 'templateByUri should return the rendered 404 template' );
 		$this->assertContains( 'error404', $actual['data']['templateByUri']['bodyClasses'], 'bodyClasses should contain the error404 class' );
-		$this->assertStringContainsString( 'id="page-not-found"', $actual['data']['templateByUri']['renderedHtml'], 'renderedHtml should contain the Page not Found heading' );
 
 		// Test a good URI.
 		$archive_link = get_post_type_archive_link( 'non_hierarchical_cpt' );
@@ -525,7 +509,6 @@ class TemplateByUriQueryTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase
 		$this->assertContains( 'post-type-archive', $actual['data']['templateByUri']['bodyClasses'], 'bodyClasses should contain the post-type-archive class' );
 		$this->assertContains( 'post-type-archive-non_hierarchical_cpt', $actual['data']['templateByUri']['bodyClasses'], 'bodyClasses should contain the post-type-archive-# class' );
 		$this->assertEquals( 'ContentType', $actual['data']['templateByUri']['connectedNode']['__typename'], 'connectedNode should be a CustomTypeArchive' );
-		$this->assertStringContainsString( 'Archive', $actual['data']['templateByUri']['renderedHtml'], 'renderedHtml should contain the archive content' );
 	}
 
 	/**
@@ -567,7 +550,6 @@ class TemplateByUriQueryTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase
 		$this->assertNotEmpty( $actual['data']['templateByUri'], 'templateByUri should return the rendered 404 template' );
 		$this->assertContains( 'error404', $actual['data']['templateByUri']['bodyClasses'], 'bodyClasses should contain the error404 class' );
 		$this->assertNull( $actual['data']['templateByUri']['connectedNode'], 'connectedNode should be null' );
-		$this->assertStringContainsString( 'id="page-not-found"', $actual['data']['templateByUri']['renderedHtml'], 'renderedHtml should contain the Page not Found heading' );
 
 		// Test a good URI for the parent post archive.
 		$archive_link = get_post_type_archive_link( 'hierarchical_cpt' );
@@ -580,7 +562,6 @@ class TemplateByUriQueryTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase
 		$this->assertContains( 'post-type-archive', $actual['data']['templateByUri']['bodyClasses'], 'bodyClasses should contain the post-type-archive class' );
 		$this->assertContains( 'post-type-archive-hierarchical_cpt', $actual['data']['templateByUri']['bodyClasses'], 'bodyClasses should contain the post-type-archive-# class' );
 		$this->assertEquals( 'ContentType', $actual['data']['templateByUri']['connectedNode']['__typename'], 'connectedNode should be a CustomTypeArchive' );
-		$this->assertStringContainsString( 'Archive', $actual['data']['templateByUri']['renderedHtml'], 'renderedHtml should contain the archive content' );
 	}
 
 	/**
@@ -620,7 +601,6 @@ class TemplateByUriQueryTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase
 		$this->assertNotEmpty( $actual['data']['templateByUri'], 'templateByUri should return the rendered 404 template' );
 		$this->assertContains( 'error404', $actual['data']['templateByUri']['bodyClasses'], 'bodyClasses should contain the error404 class' );
 		$this->assertNull( $actual['data']['templateByUri']['connectedNode'], 'connectedNode should be null' );
-		$this->assertStringContainsString( 'id="page-not-found"', $actual['data']['templateByUri']['renderedHtml'], 'renderedHtml should contain the Page not Found heading' );
 
 		// Test invalid archive URIs.
 		$invalid_uris = [
@@ -636,7 +616,6 @@ class TemplateByUriQueryTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase
 			$this->assertNotEmpty( $actual['data']['templateByUri'], 'templateByUri should return the rendered 404 template' );
 			$this->assertContains( 'error404', $actual['data']['templateByUri']['bodyClasses'], 'bodyClasses should contain the error404 class' );
 			$this->assertNull( $actual['data']['templateByUri']['connectedNode'], 'connectedNode should be null' );
-			$this->assertStringContainsString( 'id="page-not-found"', $actual['data']['templateByUri']['renderedHtml'], 'renderedHtml should contain the Page not Found heading' );
 		}
 
 		// Test valid archive URIs.
@@ -653,7 +632,6 @@ class TemplateByUriQueryTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase
 			$this->assertArrayNotHasKey( 'errors', $actual );
 			$this->assertNotEmpty( $actual['data']['templateByUri'], 'templateByUri should return the rendered date archive template' );
 			$this->assertContains( 'date', $actual['data']['templateByUri']['bodyClasses'], 'bodyClasses should contain the date class' );
-			$this->assertStringContainsString( 'Day', $actual['data']['templateByUri']['renderedHtml'], 'renderedHtml should contain the archive content' );
 		}
 	}
 
@@ -685,7 +663,6 @@ class TemplateByUriQueryTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase
 		$this->assertNotEmpty( $actual['data']['templateByUri'], 'templateByUri should return the rendered 404 template' );
 		$this->assertContains( 'error404', $actual['data']['templateByUri']['bodyClasses'], 'bodyClasses should contain the error404 class' );
 		$this->assertNull( $actual['data']['templateByUri']['connectedNode'], 'connectedNode should be null' );
-		$this->assertStringContainsString( 'id="page-not-found"', $actual['data']['templateByUri']['renderedHtml'], 'renderedHtml should contain the Page not Found heading' );
 
 		// Test valid archive URIs.
 		$archive_uris = get_month_link( 2024, 2 ); // Same month as the third post.
@@ -696,7 +673,6 @@ class TemplateByUriQueryTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase
 		$this->assertArrayNotHasKey( 'errors', $actual );
 		$this->assertNotEmpty( $actual['data']['templateByUri'], 'templateByUri should return the rendered date archive template' );
 		$this->assertContains( 'date', $actual['data']['templateByUri']['bodyClasses'], 'bodyClasses should contain the date class' );
-		$this->assertStringContainsString( 'Month', $actual['data']['templateByUri']['renderedHtml'], 'renderedHtml should contain the archive content' );
 	}
 
 	/**
@@ -728,7 +704,6 @@ class TemplateByUriQueryTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase
 		$this->assertNotEmpty( $actual['data']['templateByUri'], 'templateByUri should return the rendered 404 template' );
 		$this->assertContains( 'error404', $actual['data']['templateByUri']['bodyClasses'], 'bodyClasses should contain the error404 class' );
 		$this->assertNull( $actual['data']['templateByUri']['connectedNode'], 'connectedNode should be null' );
-		$this->assertStringContainsString( 'id="page-not-found"', $actual['data']['templateByUri']['renderedHtml'], 'renderedHtml should contain the Page not Found heading' );
 
 		// Test valid archive URIs.
 		$archive_uris = [
@@ -741,7 +716,6 @@ class TemplateByUriQueryTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase
 		$this->assertArrayNotHasKey( 'errors', $actual );
 		$this->assertNotEmpty( $actual['data']['templateByUri'], 'templateByUri should return the rendered date archive template' );
 		$this->assertContains( 'date', $actual['data']['templateByUri']['bodyClasses'], 'bodyClasses should contain the date class' );
-		$this->assertStringContainsString( 'Year', $actual['data']['templateByUri']['renderedHtml'], 'renderedHtml should contain the archive content' );
 	}
 
 	/**
@@ -776,7 +750,6 @@ class TemplateByUriQueryTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase
 		$this->assertNotEmpty( $actual['data']['templateByUri'], 'templateByUri should return the rendered 404 template' );
 		$this->assertContains( 'error404', $actual['data']['templateByUri']['bodyClasses'], 'bodyClasses should contain the error404 class' );
 		$this->assertNull( $actual['data']['templateByUri']['connectedNode'], 'connectedNode should be null' );
-		$this->assertStringContainsString( 'id="page-not-found"', $actual['data']['templateByUri']['renderedHtml'], 'renderedHtml should contain the Page not Found heading' );
 	}
 
 	/**
@@ -812,7 +785,6 @@ class TemplateByUriQueryTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase
 		$this->assertEquals( 'User', $actual['data']['templateByUri']['connectedNode']['__typename'], 'connectedNode should be an Author' );
 		$this->assertEquals( $this->user_id, $actual['data']['templateByUri']['connectedNode']['databaseId'], 'connectedNode should have the correct databaseId' );
 		$this->assertEquals( get_the_author_meta( 'display_name', $this->user_id ), $actual['data']['templateByUri']['connectedNode']['name'], 'connectedNode should have the correct title' );
-		$this->assertStringContainsString( get_the_author_meta( 'display_name', $this->user_id ), $actual['data']['templateByUri']['renderedHtml'], 'renderedHtml should contain the author name' );
 	}
 
 	/**
@@ -846,7 +818,6 @@ class TemplateByUriQueryTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase
 		$this->assertEquals( 'User', $actual['data']['templateByUri']['connectedNode']['__typename'], 'connectedNode should be an Author' );
 		$this->assertEquals( $subscriber, $actual['data']['templateByUri']['connectedNode']['databaseId'], 'connectedNode should have the correct databaseId' );
 		$this->assertEquals( get_the_author_meta( 'display_name', $subscriber ), $actual['data']['templateByUri']['connectedNode']['name'], 'connectedNode should have the correct title' );
-		$this->assertStringContainsString( get_the_author_meta( 'display_name', $subscriber ), $actual['data']['templateByUri']['renderedHtml'], 'renderedHtml should contain the author name' );
 
 		// Clean up: Delete the subscriber user.
 		wp_delete_user( $subscriber );
@@ -882,7 +853,6 @@ class TemplateByUriQueryTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase
 		$this->assertNotEmpty( $actual['data']['templateByUri'], 'templateByUri should return the rendered author template' );
 		$this->assertContains( 'author', $actual['data']['templateByUri']['bodyClasses'], 'bodyClasses should contain the author class' );
 		$this->assertContains( 'author-' . $subscriber, $actual['data']['templateByUri']['bodyClasses'], 'bodyClasses should contain the author-id-# class' );
-		$this->assertStringContainsString( get_the_author_meta( 'display_name', $subscriber ), $actual['data']['templateByUri']['renderedHtml'], 'renderedHtml should contain the author name' );
 
 		$this->assertEmpty( $actual['data']['templateByUri']['connectedNode'], 'connectedNode should be null if a user has no published posts' );
 
@@ -933,7 +903,6 @@ class TemplateByUriQueryTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase
 		$this->assertEquals( 'Page', $actual['data']['templateByUri']['connectedNode']['__typename'], 'connectedNode should be a Page' );
 		$this->assertEquals( $home_page_id, $actual['data']['templateByUri']['connectedNode']['databaseId'], 'connectedNode should have the correct databaseId' );
 		$this->assertEquals( 'Home Page Test', $actual['data']['templateByUri']['connectedNode']['title'], 'connectedNode should have the correct title' );
-		$this->assertStringContainsString( 'Home Page Test', $actual['data']['templateByUri']['renderedHtml'], 'renderedHtml should contain the home page title' );
 
 		// Clean up: Restore the original options.
 		update_option( 'page_for_posts', $original_page_for_posts );
@@ -992,7 +961,6 @@ class TemplateByUriQueryTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase
 		$this->assertEquals( 'Page', $actual['data']['templateByUri']['connectedNode']['__typename'], 'connectedNode should be a Page' );
 		$this->assertEquals( $front_page_id, $actual['data']['templateByUri']['connectedNode']['databaseId'], 'connectedNode should have the correct databaseId' );
 		$this->assertEquals( 'Front Page Test', $actual['data']['templateByUri']['connectedNode']['title'], 'connectedNode should have the correct title' );
-		$this->assertStringContainsString( 'Front Page Test', $actual['data']['templateByUri']['renderedHtml'], 'renderedHtml should contain the front page title' );
 
 		// Test posts archive URI.
 		$posts_page_uri = wp_make_link_relative( get_permalink( $posts_page_id ) );
@@ -1007,7 +975,6 @@ class TemplateByUriQueryTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase
 		$this->assertEquals( 'Page', $actual['data']['templateByUri']['connectedNode']['__typename'], 'connectedNode should be a Page' );
 		$this->assertEquals( $posts_page_id, $actual['data']['templateByUri']['connectedNode']['databaseId'], 'connectedNode should have the correct databaseId' );
 		$this->assertEquals( 'Posts Archive Test', $actual['data']['templateByUri']['connectedNode']['title'], 'connectedNode should have the correct title' );
-		$this->assertStringContainsString( 'Posts Archive Test', $actual['data']['templateByUri']['renderedHtml'], 'renderedHtml should contain the posts archive title' );
 
 		// Clean up: Restore the original options.
 		update_option( 'page_on_front', $original_page_on_front );
@@ -1053,7 +1020,6 @@ class TemplateByUriQueryTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase
 		$this->assertContains( 'blog', $actual['data']['templateByUri']['bodyClasses'], 'bodyClasses should contain the blog class' );
 		$this->assertEquals( 'ContentType', $actual['data']['templateByUri']['connectedNode']['__typename'], 'connectedNode should be a PostsPage' );
 		$this->assertTrue( $actual['data']['templateByUri']['connectedNode']['isPostsPage'], 'connectedNode should be a posts page' );
-		$this->assertStringContainsString( 'Latest Post', $actual['data']['templateByUri']['renderedHtml'], 'renderedHtml should contain the title of Latest Post 1' );
 
 		// Clean up: Restore the original options.
 		update_option( 'page_on_front', $original_page_on_front );
