@@ -11,7 +11,7 @@ env:
 jobs:
   deploy:
     name: Deploy
-    runs-on: [ self-hosted, headless ]
+    runs-on: ubuntu-latest
     concurrency: 
       group: ${{ github.workflow }}
       cancel-in-progress: false
