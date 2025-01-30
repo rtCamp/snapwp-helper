@@ -12,7 +12,7 @@ Manages WPGraphQL extensions updates and discover.
 
 == Description ==
 
-A helper plugin used to power <a href="https://github.com/rtCamp/headless/ target="_blank">SnapWP</a>.
+A helper plugin used to power <a href="https://github.com/rtCamp/snapwp/ target="_blank">SnapWP</a>.
 
 For more info, see the <a href="https://github.com/rtCamp/snapwp-helper">SnapWP Helper GitHub repository</a>.
 
@@ -41,4 +41,4 @@ Once you're ready to send a pull request, please check out our <a href="https://
 
 == Changelog ==
 
-See the full list of changes in the <a href="https://github.com/rtcamp/headless/blob/main/wp/snapwp-helper/CHANGELOG.md" target="_blank">repository Changelog</a>.
+See the full list of changes in the <a href="https://github.com/rtCamp/snapwp-helper/blob/develop/CHANGELOG.md" target="_blank">repository Changelog</a>.
