@@ -122,7 +122,7 @@ class GraphQL implements Module {
 	 * @return array{slug:string,name:string,check_callback:callable():(true|\WP_Error)}
 	 */
 	protected function get_wpgraphql_content_blocks_dependency_args(): array {
-		$minimum_version = '4.3.2';
+		$minimum_version = '4.4.0';
 
 		return [
 			'slug'           => 'wp-graphql-content-blocks',

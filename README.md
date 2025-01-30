@@ -19,9 +19,9 @@ SnapWP Helper is a WordPress plugin that allows you to quickly install WPGraphQL
 ## System Requirements
 
 - **PHP** 7.4 or higher
-- **WordPress** 6.0 or higher
+- **WordPress** 6.7 or higher
 - **WPGraphQL** 1.28.0 or higher
-- **WPGraphQL Content Blocks** 4.1.0 or higher
+- **WPGraphQL Content Blocks** 4.4.0 or higher
 
 ## Getting Started
 

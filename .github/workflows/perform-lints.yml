@@ -191,8 +191,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        php: [ '8.2' ] #, '8.1' ] @todo reenable when repo is made public
-        wordpress: [ '6.7' ] #, '6.6' ]
+        php: [ '8.2', '8.1' ]
+        wordpress: [ '6.7' ] # @todo support older versions
         include:
           - php: '8.2'
             wordpress: '6.7'
