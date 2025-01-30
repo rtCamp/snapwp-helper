@@ -238,7 +238,25 @@ npm run lint:phpstan
 
 #### ESLint
 
-@todo - Add ESLint configuration
+This project uses [ESLint](https://eslint.org) through `@wordpress/scripts` and `@wordpress/eslint-plugin` for JavaScript linting, following WordPress coding standards and best practices.
+
+You can run ESLint on JavaScript files using:
+
+```bash
+npm run lint:js
+```
+
+To automatically fix JavaScript linting issues:
+
+```bash
+npm run lint:js:fix
+```
+
+You can also generate a detailed JSON report of linting issues:
+
+```bash
+npm run lint:js:report
+```
 
 ### Testing
 
