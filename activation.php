@@ -15,7 +15,7 @@ namespace SnapWP\Helper;
  * @return string
  */
 function min_wp_version() {
-	return '6.5';
+	return '6.7';
 }
 
 /**

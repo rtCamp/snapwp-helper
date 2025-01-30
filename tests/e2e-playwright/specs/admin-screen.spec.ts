@@ -7,10 +7,16 @@ test.describe( 'Plugin Admin Screen', () => {
 	test( 'Admin screen is present', async ( { page, admin } ) => {
 		await admin.visitAdminPage( 'admin.php?page=snapwp-helper' );
 
-		const heading = await page.locator( '#snapwp-admin > h1' ).innerText();
-		const pText = await page.locator( '#snapwp-admin > p' ).innerText();
+		const heading = await page.locator( '#snapwp-admin > h2' ).innerText();
+		const envHeading = await page
+			.locator( '#snapwp-admin > h3:nth-of-type(1)' )
+			.innerText();
+		const setupHeading = await page
+			.locator( '#snapwp-admin > h3:nth-of-type(2)' )
+			.innerText();
 
 		expect( heading ).toBe( 'SnapWP' );
-		expect( pText ).toBe( 'Welcome to SnapWP.' );
+		expect( envHeading ).toBe( 'Environment Variables' );
+		expect( setupHeading ).toBe( 'SnapWP Frontend Setup Guide' );
 	} );
 } );
