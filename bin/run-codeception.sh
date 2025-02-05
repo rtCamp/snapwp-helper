@@ -47,7 +47,7 @@ if [ -n "$(ls tests/_output)" ]; then
 	echo -e "$(status_message 'Setting result files permissions'.)"
 	container bash -c "chmod 777 -R wp-content/plugins/$PLUGIN_SLUG/tests/_output/*"
 
-	ls -la wp-content/plugins/$PLUGIN_SLUG/tests/_output
+	container bash -c "ls -la wp-content/plugins/$PLUGIN_SLUG/tests/_output"
 fi
 
 # Check results and exit accordingly.
