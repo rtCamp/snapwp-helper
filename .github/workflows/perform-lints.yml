@@ -243,7 +243,6 @@ jobs:
               env:
                   WP_VERSION: ${{ matrix.wordpress }}
                   PHP_VERSION: ${{ matrix.php }}
-                  COVERAGE: ${{ matrix.coverage }}
                   DEBUG: ${{ secrets.ACTIONS_STEP_DEBUG || matrix.debug }}
                   SUITES: 'Acceptance'
 
@@ -257,15 +256,10 @@ jobs:
                   DEBUG: ${{ secrets.ACTIONS_STEP_DEBUG || matrix.debug }}
                   SUITES: 'Integration'
 
-            - name: TMP- log coverage files
-              run: |
-                  ls -la tests/_output
-
             - name: Push coverage to Coveralls.io
               if: matrix.coverage == 1
               uses: coverallsapp/github-action@v2
               with:
-                  debug: true
                   github-token: ${{ secrets.GITHUB_TOKEN }}
                   file: tests/_output/Integration-coverage.xml
                   flag-name: Integration
@@ -277,9 +271,8 @@ jobs:
               env:
                   CC_TEST_REPORTER_ID: ${{ secrets.CODECLIMATE_REPORTER_ID }}
               with:
-                  debug: true
                   coverageLocations: |
-                      ${{github.workspace}}/tests/_output/*.xml:clover  # todo: verify path
+                      ${{github.workspace}}/tests/_output/Integration-coverage.xml:clover
                   prefix: '/var/www/html/wp-content/plugins/snapwp-helper'
 
     playwright:
