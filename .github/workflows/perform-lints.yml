@@ -257,13 +257,17 @@ jobs:
                   DEBUG: ${{ secrets.ACTIONS_STEP_DEBUG || matrix.debug }}
                   SUITES: 'Integration'
 
+            - name: TMP- log coverage files
+              run: |
+                  ls -la tests/_output
+
             - name: Push coverage to Coveralls.io
               if: matrix.coverage == 1
               uses: coverallsapp/github-action@v2
               with:
                   debug: true
                   github-token: ${{ secrets.GITHUB_TOKEN }}
-                  files: tests/_output/integration-coverage.xml
+                  file: tests/_output/Integration-coverage.xml
                   flag-name: Integration
                   format: clover
 

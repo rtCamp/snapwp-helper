@@ -44,14 +44,16 @@ run_tests $SUITES
 
 # Set public test result files permissions.
 if [ -n "$(ls tests/_output)" ]; then
-    echo -e "$(status_message 'Setting result files permissions'.)"
-    container bash -c "chmod 777 -R wp-content/plugins/$PLUGIN_SLUG/tests/_output/*"
+	echo -e "$(status_message 'Setting result files permissions'.)"
+	container bash -c "chmod 777 -R wp-content/plugins/$PLUGIN_SLUG/tests/_output/*"
+
+	ls -la wp-content/plugins/$PLUGIN_SLUG/tests/_output/*
 fi
 
 # Check results and exit accordingly.
 if [ -f "tests/_output/failed" ]; then
-    echo -e "$(error_message "Uh oh, Codeception tests failed.")"
-    exit 1
+	echo -e "$(error_message "Uh oh, Codeception tests failed.")"
+	exit 1
 else
-    echo -e "$(status_message "Woohoo! Codeception tests completed succesfully!")"
+	echo -e "$(status_message "Woohoo! Codeception tests completed succesfully!")"
 fi
