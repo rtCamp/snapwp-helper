@@ -5,25 +5,26 @@
 actor: IntegrationTester
 bootstrap: _bootstrap.php
 modules:
-  enabled:
-    - SnapWP\Helper\Tests\Helper\Integration
-    - lucatume\WPBrowser\Module\WPLoader
-  config:
-    lucatume\WPBrowser\Module\WPLoader:
-      loadOnly: false
-      wpRootFolder: "%WORDPRESS_ROOT_DIR%"
-      dbName: "%TEST_DB_NAME%"
-      dbHost: "%TEST_DB_HOST%"
-      dbUser: "%TEST_DB_USER%"
-      dbPassword: "%TEST_DB_PASSWORD%"
-      wpDebug: true
-      tablePrefix: "%TEST_TABLE_PREFIX%"
-      domain: "%WORDPRESS_DOMAIN%"
-      adminEmail: "admin@%WORDPRESS_DOMAIN%"
-      title: "Integration Tests"
-      plugins: [
-        "wp-graphql/wp-graphql.php",
-        "wp-graphql-content-blocks/wp-graphql-content-blocks.php",
-        "snapwp-helper/snapwp-helper.php"
-      ]
-      theme: "twentytwentyfour"
+    enabled:
+        - SnapWP\Helper\Tests\Helper\Integration
+        - lucatume\WPBrowser\Module\WPLoader
+    config:
+        lucatume\WPBrowser\Module\WPLoader:
+            loadOnly: false
+            wpRootFolder: '%WORDPRESS_ROOT_DIR%'
+            dbName: '%TEST_DB_NAME%'
+            dbHost: '%TEST_DB_HOST%'
+            dbUser: '%TEST_DB_USER%'
+            dbPassword: '%TEST_DB_PASSWORD%'
+            wpDebug: true
+            tablePrefix: '%TEST_TABLE_PREFIX%'
+            domain: '%WORDPRESS_DOMAIN%'
+            adminEmail: 'admin@%WORDPRESS_DOMAIN%'
+            title: 'Integration Tests'
+            plugins:
+                [
+                    'wp-graphql/wp-graphql.php',
+                    'wp-graphql-content-blocks/wp-graphql-content-blocks.php',
+                    'snapwp-helper/snapwp-helper.php',
+                ]
+            theme: 'twentytwentyfour'

@@ -257,23 +257,27 @@ jobs:
           DEBUG: ${{ secrets.ACTIONS_STEP_DEBUG || matrix.debug }}
           SUITES: "Integration"
           
-#      - name: Push coverage to Coveralls.io
-#        if: matrix.coverage == 1
-#        uses: coverallsapp/github-action@v2
-#        with:
-#          github-token: ${{ secrets.GITHUB_TOKEN }}
-#          path-to-lcov: tests/_output/coverage/lcov.info  # todo: verify path
-#
-#      - name: Push coverage to CodeClimate
-#        if: matrix.coverage == 1
-#        uses: paambaati/codeclimate-action@v9
-#        env:
-#          CC_TEST_REPORTER_ID: <code_climate_reporter_id>  # todo: add code climate reporter id
-#        with:
-#          debug: true
-#          coverageLocations: |
-#            ${{github.workspace}}/tests/_output/*.xml:clover  # todo: verify path
-  
+    - name: Push coverage to Coveralls.io
+      if: matrix.coverage == 1
+      uses: coverallsapp/github-action@v2
+      with:
+        debug: true
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        files: tests/_output/integration-coverage.xml
+        flag-name: Integration
+        format: clover
+
+    - name: Push coverage to CodeClimate
+      if: matrix.coverage == 1
+      uses: paambaati/codeclimate-action@v9
+      env:
+        CC_TEST_REPORTER_ID: ${{ secrets.CODECLIMATE_REPORTER_ID }}
+      with:
+        debug: true
+        coverageLocations: |
+          ${{github.workspace}}/tests/_output/*.xml:clover  # todo: verify path
+        prefix: '/var/www/html/wp-content/plugins/snapwp-helper'
+
   playwright:
     needs: pre-run
     if: needs.pre-run.outputs.changed-workflow == 'true' || needs.pre-run.outputs.changed-js == 'true'

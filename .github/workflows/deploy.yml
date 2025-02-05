@@ -1,40 +1,40 @@
 on:
-  push:
-    branches:
-      - main
-      - develop
-  workflow_dispatch:
+    push:
+        branches:
+            - main
+            - develop
+    workflow_dispatch:
 name: Deploying Headless Server
 env:
-  # Please keep in install-links to avoid npm install errors on the server
-  build-command: npm i --include-dev --install-links && npm run build:dist
+    # Please keep in install-links to avoid npm install errors on the server
+    build-command: npm i --include-dev --install-links && npm run build:dist
 jobs:
-  deploy:
-    name: Deploy
-    runs-on: ubuntu-latest
-    concurrency: 
-      group: ${{ github.workflow }}
-      cancel-in-progress: false
-    steps:
-      - uses: actions/checkout@v4
-      - name: Setup hosts file
-        run: |
-          cat <<EOF > '${{ github.workspace }}/.github/hosts.yml'
-          ${{ secrets.HOSTS_FILE }}
-          EOF
-      - name: Get node version
-        id: node-version
-        run: |
-          cd '${{ github.workspace }}'
-          NODE_VERSION="$(cat .nvmrc)"
-          echo "node_version=${NODE_VERSION}" >> "$GITHUB_ENV"
-      - name: Deploy
-        uses: rtCamp/action-deploy-wordpress@master
-        env:
-          SSH_PRIVATE_KEY: ${{ secrets.ED_DEPLOYMENT_KEY }}
-          NODE_VERSION: "${{ env.node_version }}"
-          NODE_BUILD_COMMAND: ${{ env.build-command }}
-          SSH_USER: ${{ secrets.SSH_USER }}
-          SSH_HOST: ${{ secrets.SSH_HOST }}
-      - if: always()
-        uses: rtCamp/action-cleanup@master
+    deploy:
+        name: Deploy
+        runs-on: ubuntu-latest
+        concurrency:
+            group: ${{ github.workflow }}
+            cancel-in-progress: false
+        steps:
+            - uses: actions/checkout@v4
+            - name: Setup hosts file
+              run: |
+                  cat <<EOF > '${{ github.workspace }}/.github/hosts.yml'
+                  ${{ secrets.HOSTS_FILE }}
+                  EOF
+            - name: Get node version
+              id: node-version
+              run: |
+                  cd '${{ github.workspace }}'
+                  NODE_VERSION="$(cat .nvmrc)"
+                  echo "node_version=${NODE_VERSION}" >> "$GITHUB_ENV"
+            - name: Deploy
+              uses: rtCamp/action-deploy-wordpress@master
+              env:
+                  SSH_PRIVATE_KEY: ${{ secrets.ED_DEPLOYMENT_KEY }}
+                  NODE_VERSION: '${{ env.node_version }}'
+                  NODE_BUILD_COMMAND: ${{ env.build-command }}
+                  SSH_USER: ${{ secrets.SSH_USER }}
+                  SSH_HOST: ${{ secrets.SSH_HOST }}
+            - if: always()
+              uses: rtCamp/action-cleanup@master
