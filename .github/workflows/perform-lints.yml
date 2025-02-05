@@ -1,470 +1,469 @@
 name: Lint & Test
 
 on:
-  push:
-    branches:
-      - develop
-      - main
-  pull_request:
-    branches:
-      - develop
-      - main
-  workflow_dispatch:
+    push:
+        branches:
+            - develop
+            - main
+    pull_request:
+        branches:
+            - develop
+            - main
+    workflow_dispatch:
 
 permissions:
-  contents: read
+    contents: read
 
 # Cancel previous workflow run groups that have not completed.
 concurrency:
-  # Group workflow runs by workflow name, along with the head branch ref of the pull request
-  # or otherwise the branch or tag ref.
-  group: ${{ github.workflow }}-${{ github.event_name == 'pull_request' && github.head_ref || github.ref }}
-  cancel-in-progress: true
+    # Group workflow runs by workflow name, along with the head branch ref of the pull request
+    # or otherwise the branch or tag ref.
+    group: ${{ github.workflow }}-${{ github.event_name == 'pull_request' && github.head_ref || github.ref }}
+    cancel-in-progress: true
 
 jobs:
-  pre-run:
-    name: "Pre run"
-    runs-on: ubuntu-latest
-
-    outputs:
-      changed-php: ${{ steps.changed-files.outputs.php_any_changed }}
-      changed-js: ${{ steps.changed-files.outputs.js_any_changed }}
-      changed-workflow: ${{ steps.changed-files.outputs.gha-workflow_any_changed }}
-
-    steps:
-      - name: Checkout including last 2 commits
-        # Fetch last 2 commits if it's not a PR, so that we can determine the list of modified files.
-        if: ${{ github.base_ref == null }}
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 2
-
-      - name: Checkout
-        # Do usual checkout if it's a PR.
-        if: ${{ github.base_ref != null }}
-        uses: actions/checkout@v4
-
-      - name: Fetch base branch
-        # Only fetch base ref if it's a PR.
-        if: ${{ github.base_ref != null }}
-        run: git fetch --depth=1 --no-tags origin ${{ github.base_ref }}
-
-      - name: Determine modified files for PR
-        id: changed-files
-        uses: tj-actions/changed-files@v44
-        with:
-          # We are only interested in PHP, JS, and workflow files.
-          files_yaml: |
-            php: 
-              - '**.php'
-              - 'composer.json'
-              - 'composer.lock'
-            gha-workflow:
-              - '**.yml'
-              - '**.yaml'
-            js:
-              - '**.js'
-              - '**.jsx'
-              - '**.ts'
-              - '**.tsx'
-              - 'package.json'
-              - 'package-lock.json'
-
-      - name: List all PHP changed files
-        if: steps.changed-files.outputs.php_any_changed == 'true'
-        env:
-          PHP_CHANGED_FILES: ${{ steps.changed-files.outputs.php_all_changed_files }}
-        run: |
-          for file in "$PHP_CHANGED_FILES"; do
-            echo "$file was changed"
-          done
-
-      - name: List all JS changed files
-        if: steps.changed-files.outputs.js_any_changed == 'true'
-        env:
-          JS_CHANGED_FILES: ${{ steps.changed-files.outputs.js_all_changed_files }}
-        run: |
-          for file in "$JS_CHANGED_FILES"; do
-            echo "$file was changed"
-          done
-
-      - name: List all Workflow changed files
-        if: steps.changed-files.outputs.gha-workflow_any_changed == 'true'
-        env:
-          GHA_CHANGED_FILES: ${{ steps.changed-files.outputs.gha-workflow_all_changed_files }}
-        run: |
-          for file in "$GHA_CHANGED_FILES"; do
-            echo "$file was changed"
-          done
-
-  phpcs:
-    needs: pre-run
-    if: needs.pre-run.outputs.changed-php == 'true' || needs.pre-run.outputs.changed-workflow == 'true'
-    name: PHP Coding Standards
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: "8.2"
-          coverage: none
-          tools: composer
-
-      # Install/cache composer dependencies
-      - name: Install dependencies
-        uses: ramsey/composer-install@v3
-        with:
-          composer-options: "--no-progress"
-
-      - name: Run PHP_CodeSniffer
-        run: composer run-script phpcs -- --report-full --report-checkstyle=./phpcs-report.xml
-
-  phpstan:
-    needs: pre-run
-    if: needs.pre-run.outputs.changed-php == 'true' || needs.pre-run.outputs.changed-workflow == 'true'
-    name: "PHP Static Analysis"
-    runs-on: ubuntu-latest
-    services:
-      mariadb:
-        image: mariadb:10
-        ports:
-          - 3306:3306
-        env:
-          MYSQL_ROOT_PASSWORD: password
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: "8.2"
-          extensions: mbstring, intl
-          coverage: none
-          tools: composer, wp-cli
-
-      # Install/cache composer dependencies
-      - name: Install dependencies
-        uses: ramsey/composer-install@v3
-        with:
-          composer-options: "--no-progress"
-
-      - name: Setup WordPress
-        run: |
-          cp .env.dist .env
-          npm run install-test-env
-
-      - name: Run PHPStan
-        working-directory: /tmp/wordpress/wp-content/plugins/snapwp-helper
-        run: composer run-script phpstan -- --error-format=github
-
-  lint-js:
-    name: 'Lint: JS'
-    needs: pre-run
-    if: needs.pre-run.outputs.changed-workflow == 'true' || needs.pre-run.outputs.changed-js == 'true'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-
-      - name: Install Node.js dependencies
-        run: npm ci
-        env:
-          CI: true
-
-      - name: Run ESLint
-        run: npm run lint:js
-
-  codeception:
-    needs: pre-run
-    if: needs.pre-run.outputs.changed-php == 'true' || needs.pre-run.outputs.changed-workflow == 'true'
-    name: "Tests - Codeception | PHP: ${{ matrix.php }} WP: ${{ matrix.wordpress }}"
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        php: [ '8.2', '8.1' ]
-        wordpress: [ '6.7' ] # @todo support older versions
-        include:
-          - php: '8.2'
-            wordpress: '6.7'
-            coverage: 1
-      fail-fast: false
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Install PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: ${{ matrix.php }}
-          extensions: json, mbstring
-          tools: composer:v2
-
-      # Install/cache composer dependencies
-      - name: Install dependencies
-        uses: ramsey/composer-install@v3
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-
-      - name: Install Node.js dependencies
-        run: npm ci
-        env:
-          CI: true
-
-      - name: Build JS assets
-        run: npm run build:js
-
-      - name: Copy .env file
-        run: cp .docker/.env.ci .env
-
-      - name: Start test environment
-        run: |
-          npm run docker:start
-          docker exec -e COVERAGE=${COVERAGE:-} $(docker compose ps -q wordpress) init-docker.sh
-        env:
-          WP_VERSION: ${{ matrix.wordpress }}
-          PHP_VERSION: ${{ matrix.php }}
-          COVERAGE: ${{ matrix.coverage }}
-
-      - name: Run acceptance tests
-        run: bash ./bin/run-codeception.sh
-        env:
-          WP_VERSION: ${{ matrix.wordpress }}
-          PHP_VERSION: ${{ matrix.php }}
-          COVERAGE: ${{ matrix.coverage }}
-          DEBUG: ${{ secrets.ACTIONS_STEP_DEBUG || matrix.debug }}
-          SUITES: "Acceptance"
-
-      - name: Run integration tests
-        working-directory: ${{ env.PROJECT_URI }}
-        run: bash ./bin/run-codeception.sh
-        env:
-          WP_VERSION: ${{ matrix.wordpress }}
-          PHP_VERSION: ${{ matrix.php }}
-          COVERAGE: ${{ matrix.coverage }}
-          DEBUG: ${{ secrets.ACTIONS_STEP_DEBUG || matrix.debug }}
-          SUITES: "Integration"
-          
-    - name: Push coverage to Coveralls.io
-      if: matrix.coverage == 1
-      uses: coverallsapp/github-action@v2
-      with:
-        debug: true
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        files: tests/_output/integration-coverage.xml
-        flag-name: Integration
-        format: clover
-
-    - name: Push coverage to CodeClimate
-      if: matrix.coverage == 1
-      uses: paambaati/codeclimate-action@v9
-      env:
-        CC_TEST_REPORTER_ID: ${{ secrets.CODECLIMATE_REPORTER_ID }}
-      with:
-        debug: true
-        coverageLocations: |
-          ${{github.workspace}}/tests/_output/*.xml:clover  # todo: verify path
-        prefix: '/var/www/html/wp-content/plugins/snapwp-helper'
-
-  playwright:
-    needs: pre-run
-    if: needs.pre-run.outputs.changed-workflow == 'true' || needs.pre-run.outputs.changed-js == 'true'
-    name: "E2E - Playwright"
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: "8.2"
-          coverage: none
-          tools: composer
-
-      - name: Install Composer dependencies
-        uses: ramsey/composer-install@v3
-        with:
-          composer-options: "--no-progress"
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-
-      - name: Install Node.js dependencies
-        run: npm ci
-        env:
-          CI: true
-
-      - name: Build assets
-        run: npm run build:dist
-
-      - name: Install Playwright dependencies
-        run: npx playwright install --with-deps
-
-      - name: Start wp-env
-        run: |
-          npm run wp-env -- start
-          sleep 10
-          netstat -nltp
-          curl -iL http://localhost:8889
-
-      - name: Run E2E tests
-        run: npm run test:e2e
-
-      - name: Upload tests artifacts
-        if: ${{ failure() }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: artifact
-          path: tests/_output/artifacts
-          retention-days: 7
-          if-no-files-found: error # 'warn' or 'ignore' are also available, defaults to `warn`
-
-      - name: Stop wp-env
-        if: ${{ always() }}
-        working-directory: ${{ env.PROJECT_URI }}
-        run: |
-          npm run wp-env -- stop || true
-          npm run wp-env -- destroy <<< 'y' || true  # this doesn't have a flag to skip prompt
-
-  graphql-schema:
-    needs: pre-run
-    if: needs.pre-run.outputs.changed-php == 'true' || needs.pre-run.outputs.changed-workflow == 'true'
-    name: "Lint WPGraphQL Schema"
-    runs-on: ubuntu-latest
-    services:
-      mariadb:
-        image: mariadb:10
-        ports:
-          - 3306:3306
-        env:
-          MYSQL_ROOT_PASSWORD: password
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup PHP w/ Composer & WP-CLI
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: 8.2
-          extensions: mbstring, intl, bcmath, exif, gd, mysqli, opcache, zip, pdo_mysql
-          coverage: none
-          tools: composer:v2, wp-cli
-
-      - name: Install Composer dependencies
-        uses: ramsey/composer-install@v3
-        with:
-          composer-options: "--no-progress"
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-
-      - name: Setup GraphQL Schema Linter
-        run: npm install -g graphql-schema-linter@^3.0 graphql@^16
-
-      - name: Install Node.js dependencies
-        run: npm ci
-        env:
-          CI: true
-
-      - name: Build JS assets
-        run: npm run build:js
-
-      - name: Setup WordPress
-        run: |
-          cp .env.dist .env
-          npm run install-test-env
-
-      - name: Generate the Static Schema
-        run: |
-          cd /tmp/wordpress/
-          # Output: /tmp/schema.graphql
-          wp graphql generate-static-schema --allow-root
-
-      - name: Lint the Schema
-        run: |
-          graphql-schema-linter --except=relay-connection-types-spec,relay-page-info-spec --ignore '{"defined-types-are-used":["MenuItemsWhereArgs","PostObjectUnion","TermObjectUnion","TimezoneEnum"]}' /tmp/schema.graphql
-
-      - name: Display ignored linting errors
-        run: |
-          graphql-schema-linter /tmp/schema.graphql || true
-
-      - name: Get Latest tag
-        uses: actions-ecosystem/action-get-latest-tag@v1
-        id: get-latest-tag
-
-      - name: Test Schema for breaking changes
-        run: |
-          echo "Previous tagged schema ${{ steps.get-latest-tag.outputs.tag }}"
-
-      - name: Get Previous Released Schema
-        run: |
-          FILE_NAME="schema.graphql"
-          GH_API="https://api.github.com"
-          GH_REPO="$GH_API/repos/$GITHUB_REPOSITORY"
-          GH_TAG="$GH_REPO/releases/tags/${{ steps.get-latest-tag.outputs.tag }}"
-          AUTH="Authorization: token $GITHUB_TOKEN"
-
-          response=$(curl -sH "$AUTH" $GH_TAG)
-          # Get ID of the asset based on given FILE_NAME.
-          id=$(echo "$response" | jq --arg name "$FILE_NAME" '.assets[] | select(.name == $name).id')
-          [ "$id" ] || { echo "Error: Failed to find ID for $FILE_NAME"; exit 1; }
-          GH_ASSET_URL="$GH_REPO/releases/assets/$id"
-
-          echo "Fetching schema from: $GH_ASSET_URL"
-
-          STATUS_CODE=$(
-            curl -H "$AUTH" \
-                -H 'Accept: application/octet-stream' \
-                -L -o /tmp/${{ steps.get-latest-tag.outputs.tag }}.graphql \
-                -w "%{http_code}" \
-                "$GH_ASSET_URL"
-          )
-
-          if [ "$STATUS_CODE" -ne 200 ]; then
-            echo "Failed to fetch schema. HTTP Status Code: $STATUS_CODE"
-            cat /tmp/${{ steps.get-latest-tag.outputs.tag }}.graphql
-            exit 1
-          fi
-
-          # Additional debug info
-          if [ ! -f /tmp/${{ steps.get-latest-tag.outputs.tag }}.graphql ]; then
-            echo "File not found!"
-            exit 1
-          else
-            echo "File exists."
-          fi
-
-          echo "Previous schema:"
-          cat /tmp/${{ steps.get-latest-tag.outputs.tag }}.graphql
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      # https://github.com/marketplace/actions/graphql-inspector
-      - name: Install Schema Inspector
-        run: |
-          npm install @graphql-inspector/config @graphql-inspector/cli
-
-      - name: Run Schema Inspector
-        run: |
-          # This schema and previous release schema
-          node_modules/.bin/graphql-inspector diff /tmp/${{ steps.get-latest-tag.outputs.tag }}.graphql /tmp/schema.graphql
-
+    pre-run:
+        name: 'Pre run'
+        runs-on: ubuntu-latest
+
+        outputs:
+            changed-php: ${{ steps.changed-files.outputs.php_any_changed }}
+            changed-js: ${{ steps.changed-files.outputs.js_any_changed }}
+            changed-workflow: ${{ steps.changed-files.outputs.gha-workflow_any_changed }}
+
+        steps:
+            - name: Checkout including last 2 commits
+              # Fetch last 2 commits if it's not a PR, so that we can determine the list of modified files.
+              if: ${{ github.base_ref == null }}
+              uses: actions/checkout@v4
+              with:
+                  fetch-depth: 2
+
+            - name: Checkout
+              # Do usual checkout if it's a PR.
+              if: ${{ github.base_ref != null }}
+              uses: actions/checkout@v4
+
+            - name: Fetch base branch
+              # Only fetch base ref if it's a PR.
+              if: ${{ github.base_ref != null }}
+              run: git fetch --depth=1 --no-tags origin ${{ github.base_ref }}
+
+            - name: Determine modified files for PR
+              id: changed-files
+              uses: tj-actions/changed-files@v44
+              with:
+                  # We are only interested in PHP, JS, and workflow files.
+                  files_yaml: |
+                      php: 
+                        - '**.php'
+                        - 'composer.json'
+                        - 'composer.lock'
+                      gha-workflow:
+                        - '**.yml'
+                        - '**.yaml'
+                      js:
+                        - '**.js'
+                        - '**.jsx'
+                        - '**.ts'
+                        - '**.tsx'
+                        - 'package.json'
+                        - 'package-lock.json'
+
+            - name: List all PHP changed files
+              if: steps.changed-files.outputs.php_any_changed == 'true'
+              env:
+                  PHP_CHANGED_FILES: ${{ steps.changed-files.outputs.php_all_changed_files }}
+              run: |
+                  for file in "$PHP_CHANGED_FILES"; do
+                    echo "$file was changed"
+                  done
+
+            - name: List all JS changed files
+              if: steps.changed-files.outputs.js_any_changed == 'true'
+              env:
+                  JS_CHANGED_FILES: ${{ steps.changed-files.outputs.js_all_changed_files }}
+              run: |
+                  for file in "$JS_CHANGED_FILES"; do
+                    echo "$file was changed"
+                  done
+
+            - name: List all Workflow changed files
+              if: steps.changed-files.outputs.gha-workflow_any_changed == 'true'
+              env:
+                  GHA_CHANGED_FILES: ${{ steps.changed-files.outputs.gha-workflow_all_changed_files }}
+              run: |
+                  for file in "$GHA_CHANGED_FILES"; do
+                    echo "$file was changed"
+                  done
+
+    phpcs:
+        needs: pre-run
+        if: needs.pre-run.outputs.changed-php == 'true' || needs.pre-run.outputs.changed-workflow == 'true'
+        name: PHP Coding Standards
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            - name: Setup PHP
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: '8.2'
+                  coverage: none
+                  tools: composer
+
+            # Install/cache composer dependencies
+            - name: Install dependencies
+              uses: ramsey/composer-install@v3
+              with:
+                  composer-options: '--no-progress'
+
+            - name: Run PHP_CodeSniffer
+              run: composer run-script phpcs -- --report-full --report-checkstyle=./phpcs-report.xml
+
+    phpstan:
+        needs: pre-run
+        if: needs.pre-run.outputs.changed-php == 'true' || needs.pre-run.outputs.changed-workflow == 'true'
+        name: 'PHP Static Analysis'
+        runs-on: ubuntu-latest
+        services:
+            mariadb:
+                image: mariadb:10
+                ports:
+                    - 3306:3306
+                env:
+                    MYSQL_ROOT_PASSWORD: password
+                options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            - name: Setup PHP
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: '8.2'
+                  extensions: mbstring, intl
+                  coverage: none
+                  tools: composer, wp-cli
+
+            # Install/cache composer dependencies
+            - name: Install dependencies
+              uses: ramsey/composer-install@v3
+              with:
+                  composer-options: '--no-progress'
+
+            - name: Setup WordPress
+              run: |
+                  cp .env.dist .env
+                  npm run install-test-env
+
+            - name: Run PHPStan
+              working-directory: /tmp/wordpress/wp-content/plugins/snapwp-helper
+              run: composer run-script phpstan -- --error-format=github
+
+    lint-js:
+        name: 'Lint: JS'
+        needs: pre-run
+        if: needs.pre-run.outputs.changed-workflow == 'true' || needs.pre-run.outputs.changed-js == 'true'
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 20
+
+            - name: Install Node.js dependencies
+              run: npm ci
+              env:
+                  CI: true
+
+            - name: Run ESLint
+              run: npm run lint:js
+
+    codeception:
+        needs: pre-run
+        if: needs.pre-run.outputs.changed-php == 'true' || needs.pre-run.outputs.changed-workflow == 'true'
+        name: 'Tests - Codeception | PHP: ${{ matrix.php }} WP: ${{ matrix.wordpress }}'
+        runs-on: ubuntu-latest
+        strategy:
+            matrix:
+                php: ['8.2', '8.1']
+                wordpress: ['6.7'] # @todo support older versions
+                include:
+                    - php: '8.2'
+                      wordpress: '6.7'
+                      coverage: 1
+            fail-fast: false
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            - name: Install PHP
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: ${{ matrix.php }}
+                  extensions: json, mbstring
+                  tools: composer:v2
+
+            # Install/cache composer dependencies
+            - name: Install dependencies
+              uses: ramsey/composer-install@v3
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 20
+
+            - name: Install Node.js dependencies
+              run: npm ci
+              env:
+                  CI: true
+
+            - name: Build JS assets
+              run: npm run build:js
+
+            - name: Copy .env file
+              run: cp .docker/.env.ci .env
+
+            - name: Start test environment
+              run: |
+                  npm run docker:start
+                  docker exec -e COVERAGE=${COVERAGE:-} $(docker compose ps -q wordpress) init-docker.sh
+              env:
+                  WP_VERSION: ${{ matrix.wordpress }}
+                  PHP_VERSION: ${{ matrix.php }}
+                  COVERAGE: ${{ matrix.coverage }}
+
+            - name: Run acceptance tests
+              run: bash ./bin/run-codeception.sh
+              env:
+                  WP_VERSION: ${{ matrix.wordpress }}
+                  PHP_VERSION: ${{ matrix.php }}
+                  COVERAGE: ${{ matrix.coverage }}
+                  DEBUG: ${{ secrets.ACTIONS_STEP_DEBUG || matrix.debug }}
+                  SUITES: 'Acceptance'
+
+            - name: Run integration tests
+              working-directory: ${{ env.PROJECT_URI }}
+              run: bash ./bin/run-codeception.sh
+              env:
+                  WP_VERSION: ${{ matrix.wordpress }}
+                  PHP_VERSION: ${{ matrix.php }}
+                  COVERAGE: ${{ matrix.coverage }}
+                  DEBUG: ${{ secrets.ACTIONS_STEP_DEBUG || matrix.debug }}
+                  SUITES: 'Integration'
+
+            - name: Push coverage to Coveralls.io
+              if: matrix.coverage == 1
+              uses: coverallsapp/github-action@v2
+              with:
+                  debug: true
+                  github-token: ${{ secrets.GITHUB_TOKEN }}
+                  files: tests/_output/integration-coverage.xml
+                  flag-name: Integration
+                  format: clover
+
+            - name: Push coverage to CodeClimate
+              if: matrix.coverage == 1
+              uses: paambaati/codeclimate-action@v9
+              env:
+                  CC_TEST_REPORTER_ID: ${{ secrets.CODECLIMATE_REPORTER_ID }}
+              with:
+                  debug: true
+                  coverageLocations: |
+                      ${{github.workspace}}/tests/_output/*.xml:clover  # todo: verify path
+                  prefix: '/var/www/html/wp-content/plugins/snapwp-helper'
+
+    playwright:
+        needs: pre-run
+        if: needs.pre-run.outputs.changed-workflow == 'true' || needs.pre-run.outputs.changed-js == 'true'
+        name: 'E2E - Playwright'
+        runs-on: ubuntu-latest
+        timeout-minutes: 10
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            - name: Setup PHP
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: '8.2'
+                  coverage: none
+                  tools: composer
+
+            - name: Install Composer dependencies
+              uses: ramsey/composer-install@v3
+              with:
+                  composer-options: '--no-progress'
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 20
+
+            - name: Install Node.js dependencies
+              run: npm ci
+              env:
+                  CI: true
+
+            - name: Build assets
+              run: npm run build:dist
+
+            - name: Install Playwright dependencies
+              run: npx playwright install --with-deps
+
+            - name: Start wp-env
+              run: |
+                  npm run wp-env -- start
+                  sleep 10
+                  netstat -nltp
+                  curl -iL http://localhost:8889
+
+            - name: Run E2E tests
+              run: npm run test:e2e
+
+            - name: Upload tests artifacts
+              if: ${{ failure() }}
+              uses: actions/upload-artifact@v4
+              with:
+                  name: artifact
+                  path: tests/_output/artifacts
+                  retention-days: 7
+                  if-no-files-found: error # 'warn' or 'ignore' are also available, defaults to `warn`
+
+            - name: Stop wp-env
+              if: ${{ always() }}
+              working-directory: ${{ env.PROJECT_URI }}
+              run: |
+                  npm run wp-env -- stop || true
+                  npm run wp-env -- destroy <<< 'y' || true  # this doesn't have a flag to skip prompt
+
+    graphql-schema:
+        needs: pre-run
+        if: needs.pre-run.outputs.changed-php == 'true' || needs.pre-run.outputs.changed-workflow == 'true'
+        name: 'Lint WPGraphQL Schema'
+        runs-on: ubuntu-latest
+        services:
+            mariadb:
+                image: mariadb:10
+                ports:
+                    - 3306:3306
+                env:
+                    MYSQL_ROOT_PASSWORD: password
+                options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            - name: Setup PHP w/ Composer & WP-CLI
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: 8.2
+                  extensions: mbstring, intl, bcmath, exif, gd, mysqli, opcache, zip, pdo_mysql
+                  coverage: none
+                  tools: composer:v2, wp-cli
+
+            - name: Install Composer dependencies
+              uses: ramsey/composer-install@v3
+              with:
+                  composer-options: '--no-progress'
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 20
+
+            - name: Setup GraphQL Schema Linter
+              run: npm install -g graphql-schema-linter@^3.0 graphql@^16
+
+            - name: Install Node.js dependencies
+              run: npm ci
+              env:
+                  CI: true
+
+            - name: Build JS assets
+              run: npm run build:js
+
+            - name: Setup WordPress
+              run: |
+                  cp .env.dist .env
+                  npm run install-test-env
+
+            - name: Generate the Static Schema
+              run: |
+                  cd /tmp/wordpress/
+                  # Output: /tmp/schema.graphql
+                  wp graphql generate-static-schema --allow-root
+
+            - name: Lint the Schema
+              run: |
+                  graphql-schema-linter --except=relay-connection-types-spec,relay-page-info-spec --ignore '{"defined-types-are-used":["MenuItemsWhereArgs","PostObjectUnion","TermObjectUnion","TimezoneEnum"]}' /tmp/schema.graphql
+
+            - name: Display ignored linting errors
+              run: |
+                  graphql-schema-linter /tmp/schema.graphql || true
+
+            - name: Get Latest tag
+              uses: actions-ecosystem/action-get-latest-tag@v1
+              id: get-latest-tag
+
+            - name: Test Schema for breaking changes
+              run: |
+                  echo "Previous tagged schema ${{ steps.get-latest-tag.outputs.tag }}"
+
+            - name: Get Previous Released Schema
+              run: |
+                  FILE_NAME="schema.graphql"
+                  GH_API="https://api.github.com"
+                  GH_REPO="$GH_API/repos/$GITHUB_REPOSITORY"
+                  GH_TAG="$GH_REPO/releases/tags/${{ steps.get-latest-tag.outputs.tag }}"
+                  AUTH="Authorization: token $GITHUB_TOKEN"
+
+                  response=$(curl -sH "$AUTH" $GH_TAG)
+                  # Get ID of the asset based on given FILE_NAME.
+                  id=$(echo "$response" | jq --arg name "$FILE_NAME" '.assets[] | select(.name == $name).id')
+                  [ "$id" ] || { echo "Error: Failed to find ID for $FILE_NAME"; exit 1; }
+                  GH_ASSET_URL="$GH_REPO/releases/assets/$id"
+
+                  echo "Fetching schema from: $GH_ASSET_URL"
+
+                  STATUS_CODE=$(
+                    curl -H "$AUTH" \
+                        -H 'Accept: application/octet-stream' \
+                        -L -o /tmp/${{ steps.get-latest-tag.outputs.tag }}.graphql \
+                        -w "%{http_code}" \
+                        "$GH_ASSET_URL"
+                  )
+
+                  if [ "$STATUS_CODE" -ne 200 ]; then
+                    echo "Failed to fetch schema. HTTP Status Code: $STATUS_CODE"
+                    cat /tmp/${{ steps.get-latest-tag.outputs.tag }}.graphql
+                    exit 1
+                  fi
+
+                  # Additional debug info
+                  if [ ! -f /tmp/${{ steps.get-latest-tag.outputs.tag }}.graphql ]; then
+                    echo "File not found!"
+                    exit 1
+                  else
+                    echo "File exists."
+                  fi
+
+                  echo "Previous schema:"
+                  cat /tmp/${{ steps.get-latest-tag.outputs.tag }}.graphql
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+            # https://github.com/marketplace/actions/graphql-inspector
+            - name: Install Schema Inspector
+              run: |
+                  npm install @graphql-inspector/config @graphql-inspector/cli
+
+            - name: Run Schema Inspector
+              run: |
+                  # This schema and previous release schema
+                  node_modules/.bin/graphql-inspector diff /tmp/${{ steps.get-latest-tag.outputs.tag }}.graphql /tmp/schema.graphql
