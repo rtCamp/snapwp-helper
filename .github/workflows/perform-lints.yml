@@ -269,7 +269,7 @@ jobs:
               if: matrix.coverage == 1
               uses: paambaati/codeclimate-action@v9
               env:
-                  CC_TEST_REPORTER_ID: ${{ secrets.CODECLIMATE_REPORTER_ID }}
+                  CC_TEST_REPORTER_ID: d16e661bd765b428e1b7bde991152367616a6511fab735cbb459976ec54096a0
               with:
                   coverageLocations: |
                       ${{github.workspace}}/tests/_output/Integration-coverage.xml:clover
