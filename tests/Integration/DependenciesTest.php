@@ -93,9 +93,6 @@ class DependenciesTest extends WPTestCase {
 		// Check that the admin notice is displayed.
 		Dependencies::instance()->check_and_display_admin_notice();
 
-		// Remove conflicting actions from wp-graphql-content-blocks
-		$this->remove_actions();
-
 		ob_start();
 		do_action( 'admin_notices' );
 
@@ -167,19 +164,5 @@ class DependenciesTest extends WPTestCase {
 		$instance   = $reflection->getProperty( 'instance' );
 		$instance->setAccessible( true );
 		$instance->setValue( null );
-	}
-
-	/**
-	 * Remove broken actions from wp-graphql-content-blocks.
-	 *
-	 * @see https://github.com/wpengine/wp-graphql-content-blocks/pull/262
-	 *
-	 * @todo remove once PR is merged.
-	 */
-	protected function remove_actions(): void {
-		$namespace = 'WPGraphQL\ContentBlocks\PluginUpdater';
-
-		remove_action( 'admin_notices', $namespace . '\delegate_plugin_row_notice' );
-		remove_action( 'admin_notices', $namespace . '\display_update_page_notice' );
 	}
 }
