@@ -45,23 +45,6 @@ class AutoloaderTest extends WPTestCase {
 		// Test if there is an error message
 		$this->expectOutputRegex( '/The Composer autoloader was not found/' );
 
-		// Remove conflicting actions from wp-graphql-content-blocks
-		$this->remove_actions();
-
 		do_action( 'admin_notices' );
-	}
-
-	/**
-	 * Remove broken actions from wp-graphql-content-blocks.
-	 *
-	 * @see https://github.com/wpengine/wp-graphql-content-blocks/pull/262
-	 *
-	 * @todo remove once PR is merged.
-	 */
-	protected function remove_actions(): void {
-		$namespace = 'WPGraphQL\ContentBlocks\PluginUpdater';
-
-		remove_action( 'admin_notices', $namespace . '\delegate_plugin_row_notice' );
-		remove_action( 'admin_notices', $namespace . '\display_update_page_notice' );
 	}
 }
