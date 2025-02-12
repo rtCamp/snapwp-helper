@@ -8,6 +8,7 @@
 namespace SnapWP\Helper\Tests\Integration;
 
 use SnapWP\Helper\Modules\Admin;
+use SnapWP\Helper\Modules\GraphQL\Data\IntrospectionToken;
 use lucatume\WPBrowser\TestCase\WPTestCase;
 
 /**
@@ -18,6 +19,25 @@ class AdminTest extends WPTestCase {
 	 * @param \IntegrationTester
 	 */
 	protected $tester;
+
+	/**
+	 * The ID of the admin user.
+	 */
+	protected $admin_id;
+
+	/**
+	 * {@inheritDoc}
+	 */
+	protected function setUp(): void {
+		$this->admin_id = $this->factory()->user->create( [ 'role' => 'administrator' ] );
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	protected function tearDown(): void {
+		wp_delete_user( $this->admin_id );
+	}
 
 	/**
 	 * Test the name method.
@@ -68,6 +88,22 @@ class AdminTest extends WPTestCase {
 		$admin->handle_token_regeneration();
 		$output = ob_get_clean();
 
+		// Should fail as as unauthenticated user.
+		$this->assertStringContainsString(
+			__( 'Could not regenerate the introspection token: insufficient permissions.', 'snapwp-helper' ),
+			$output
+		);
+
+		// Log in as an admin.
+		wp_set_current_user( $this->admin_id );
+		$_POST['regenerate_token_nonce'] = wp_create_nonce( 'regenerate_token_action' );
+
+		ob_start();
+		do_action( 'admin_notices' );
+		$admin = new Admin();
+		$admin->handle_token_regeneration();
+		$output = ob_get_clean();
+
 		// Verify the admin notice for success.
 		$this->assertStringContainsString(
 			__( 'Introspection token regenerated successfully. Please make sure to update your `.env` file.', 'snapwp-helper' ),
@@ -79,6 +115,10 @@ class AdminTest extends WPTestCase {
 	 * Test the handle_token_regeneration method with a wrong screen ID should not regenerate the token.
 	 */
 	public function testHandleTokenRegenerationWithWrongScreenId(): void {
+		wp_set_current_user( $this->admin_id );
+
+		$expected = IntrospectionToken::get_token();
+
 		// Stub the current screen global.
 		global $current_screen;
 		$current_screen = (object) [
@@ -96,8 +136,12 @@ class AdminTest extends WPTestCase {
 		$admin->handle_token_regeneration();
 		$output = ob_get_clean();
 
-		// Verify that the token was not regenerated.
-		$this->assertEmpty( $output );
+		// Verify that the token was neither regenerated nor output.
+		$this->assertStringNotContainsString( 'token', $output );
+
+		$actual = IntrospectionToken::get_token();
+
+		$this->assertEquals( $expected, $actual );
 	}
 
 	/**
