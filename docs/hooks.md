@@ -21,6 +21,8 @@
      - [`snapwp_helper/env/variables`](#snapwp_helperenvvariables)
    - [Plugin Updater](#plugin-updater)
      - [`snapwp_helper/plugin_updater/plugins`](#snapwp_helperplugin_updaterplugins)
+  - [Admin Screen](#admin-screen)
+    - [`snapwp_helper/admin/capability`](#snapwp_helperadmincapability)
 
 ## Action Hooks
 
@@ -140,8 +142,8 @@ apply_filters( 'snapwp_helper/dependencies/registered_dependencies', array $depe
 
 - `$dependencies` _(array)_: An array of dependencies. Each element in the array is an associative array with the following keys
    - `slug` _(string)_: A unique slug to identify the dependency. E.g. Plugin slug.
-	 - `name` _(string)_: The pretty name of the dependency used in the admin notice.
-	 - `check_callback` _(`callable(): true|\WP_Error`)_: A callable that returns true if the dependency is met, or a `WP_Error` object (with an explicit error message) if the dependency is not met.
+   - `name` _(string)_: The pretty name of the dependency used in the admin notice.
+   - `check_callback` _(`callable(): true|\WP_Error`)_: A callable that returns true if the dependency is met, or a `WP_Error` object (with an explicit error message) if the dependency is not met.
 
 ### Environment Variables
 
@@ -177,3 +179,17 @@ apply_filters( 'snapwp_helper/plugin_updater/plugins', array $plugins );
 
    - `slug` _(string)_: The qualified plugin slug with its folder. E.g. 'wp-graphql-my-plugin/wp-graphql-my-plugin.php'.
    - `update_uri` _(string)_: The URI used to check for plugin updates.
+
+### Admin Screen
+
+#### `snapwp_helper/admin/capability`
+
+Filters the capability required to access the SnapWP Helper admin screen and make any dashboard-related changes.
+
+```php
+apply_filters( 'snapwp_helper/admin/capability', string $capability );
+```
+
+##### Parameters
+
+- `$capability` _(string)_: The capability required to access the SnapWP Helper admin screen and make any dashboard-related changes. Default is `manage_options`.
