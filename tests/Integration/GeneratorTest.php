@@ -62,7 +62,7 @@ class GeneratorTest extends WPTestCase {
 NODE_TLS_REJECT_UNAUTHORIZED=5
 
 # The headless frontend domain URL. Uncomment this line and ensure the value matches the URL used by your frontend app.
-# NEXT_PUBLIC_URL=http://localhost:3000
+NEXT_PUBLIC_URL=http://localhost:3000
 
 # The WordPress "frontend" domain URL
 NEXT_PUBLIC_WORDPRESS_URL=https://headless-demo.local
@@ -130,7 +130,7 @@ NEXT_PUBLIC_WORDPRESS_REST_URL_PREFIX=api';
 # NODE_TLS_REJECT_UNAUTHORIZED=0
 
 # The headless frontend domain URL. Uncomment this line and ensure the value matches the URL used by your frontend app.
-# NEXT_PUBLIC_URL=http://localhost:3000
+NEXT_PUBLIC_URL=http://localhost:3000
 
 # The WordPress "frontend" domain URL
 NEXT_PUBLIC_WORDPRESS_URL=https://headless-demo.local
