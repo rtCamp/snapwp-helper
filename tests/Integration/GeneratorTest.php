@@ -58,10 +58,10 @@ class GeneratorTest extends WPTestCase {
 		$content = $generator->generate();
 
 		$expectedContent = '
-# Enable if connecting to a self-signed cert
+# Only enable if connecting to a self-signed cert
 NODE_TLS_REJECT_UNAUTHORIZED=5
 
-# The headless frontend domain URL. Uncomment this line and ensure the value matches the URL used by your frontend app.
+# The headless frontend domain URL. Make sure the value matches the URL used by your frontend app.
 NEXT_PUBLIC_URL=http://localhost:3000
 
 # The WordPress "frontend" domain URL
@@ -126,10 +126,10 @@ NEXT_PUBLIC_WORDPRESS_REST_URL_PREFIX=api';
 
 		// Define expected content.
 		$expectedContent = '
-# Enable if connecting to a self-signed cert
+# Only enable if connecting to a self-signed cert
 NODE_TLS_REJECT_UNAUTHORIZED=0
 
-# The headless frontend domain URL. Uncomment this line and ensure the value matches the URL used by your frontend app.
+# The headless frontend domain URL. Make sure the value matches the URL used by your frontend app.
 NEXT_PUBLIC_URL=http://localhost:3000
 
 # The WordPress "frontend" domain URL
