@@ -22,12 +22,12 @@ class VariableRegistry {
 		'NODE_TLS_REJECT_UNAUTHORIZED'          => [
 			'description' => 'Enable if connecting to a self-signed cert',
 			'default'     => '0',
-			'required'    => false,
+			'required'    => true,
 		],
 		'NEXT_PUBLIC_URL'                       => [
 			'description' => 'The headless frontend domain URL. Uncomment this line and ensure the value matches the URL used by your frontend app.',
 			'default'     => 'http://localhost:3000',
-			'required'    => false,
+			'required'    => true,
 		],
 		'NEXT_PUBLIC_WORDPRESS_URL'             => [
 			'description' => 'The WordPress "frontend" domain URL',
