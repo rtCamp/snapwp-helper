@@ -23,7 +23,7 @@ curl -X GET \
 
 This endpoint does not require any parameters to be passed in the request body. The .env file content is generated based on WordPress settings. Unchanged variables will be commented out.
 
-  - `NODE_TLS_REJECT_UNAUTHORIZED`: Enable if connecting to a self-signed cert. (Default: `0`)
+  - `NODE_TLS_REJECT_UNAUTHORIZED`: Only enable if connecting to a self-signed cert. (Default: `0`)
   - `NEXT_PUBLIC_URL` (Required): The headless frontend domain URL. (Default: `http://localhost:3000`)
   - `NEXT_PUBLIC_WORDPRESS_URL` (Required): The WordPress "frontend" domain URL.
   - `NEXT_PUBLIC_GRAPHQL_ENDPOINT`: The WordPress GraphQL endpoint. (Default: `graphql`)
