@@ -95,7 +95,7 @@ class Generator {
 		$required    = ! empty( $variable['required'] );
 
 		// Check if a required variable has a value.
-		if ( $required && empty( $value ) ) {
+		if ( $required && empty( $value ) && '0' !== $value ) {
 			throw new \InvalidArgumentException( 'Required variables must have a value.' );
 		}
 
