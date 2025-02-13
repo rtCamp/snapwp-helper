@@ -107,7 +107,7 @@ class Generator {
 		$env_output = sprintf( '%s=%s', $name, $resolved_value );
 
 		// Comment out variables if they're not required and have the default value.
-		if ( ! $required && $resolved_value === $default && 'NEXT_PUBLIC_URL' !== $name ) {
+		if ( ! $required && $resolved_value === $default ) {
 			$env_output = '# ' . $env_output;
 		}
 
