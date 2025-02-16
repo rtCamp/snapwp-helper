@@ -21,7 +21,7 @@ set -e
 
 # WPGraphQL for WPGraphQL plugin.
 if ! $( wp plugin is-installed wp-graphql --allow-root ); then
-	wp plugin install wp-graphql --allow-root
+	wp plugin install wp-graphql --version=1.32.1 --allow-root # @todo: revert to latest version once the plugin is compatible with v2.0
 fi
 wp plugin activate wp-graphql --allow-root
 
