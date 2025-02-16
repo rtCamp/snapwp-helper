@@ -43,5 +43,16 @@ body:
       attributes:
           label: Site Health Info
           description: Please include the output of the Site Health Info page, by going to Tools > Site Health > Info, clicking `Copy site info to clipboard`, and pasting the output here.
+          render: markdown
+      value: |
+          <details>
+            <summary>Site Health Info</summary>
+            ```bash
+
+              <!-- Paste the output of the Site Health Info page here -->
+
+
+            ```
+          </details>
       validations:
           required: true
