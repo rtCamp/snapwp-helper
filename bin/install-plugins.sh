@@ -33,6 +33,6 @@ wp plugin activate wp-graphql-content-blocks --allow-root
 
 # WPGraphQL IDE
 if ! $( wp plugin is-installed wpgraphql-ide --allow-root ); then
-	wp plugin install https://github.com/wp-graphql/wpgraphql-ide/releases/releases/latest/download/wpgraphql-ide.zip --allow-root
+	wp plugin install https://github.com/wp-graphql/wpgraphql-ide/releases/latest/download/wpgraphql-ide.zip --allow-root
 fi
 wp plugin activate wpgraphql-ide --allow-root
