@@ -17,9 +17,9 @@ class PluginUpdater implements Module {
 	/**
 	 * The instance of the UpdateChecker class.
 	 *
-	 * @var ?\SnapWP\Helper\Modules\PluginUpdater\UpdateChecker
+	 * @var \SnapWP\Helper\Modules\PluginUpdater\UpdateChecker
 	 */
-	private ?UpdateChecker $update_checker;
+	private UpdateChecker $update_checker;
 
 	/**
 	 * Retrieve the plugins to check for updates and array with filters applied.
