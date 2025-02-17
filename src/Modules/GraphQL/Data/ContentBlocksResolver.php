@@ -150,13 +150,7 @@ final class ContentBlocksResolver {
 		$block = self::populate_reusable_blocks( $block );
 		$block = self::populate_pattern_inner_blocks( $block );
 
-		/**
-		 * Filters the block data after it has been processed.
-		 *
-		 * @param array<string,mixed> $block The block data.
-		 */
-		$block = apply_filters( 'wpgraphql_content_blocks_handle_do_block', $block ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- WPGraphQL filter.
-
+		// @todo evaluate populate_navigation_blocks().
 		// Prepare innerBlocks.
 		if ( ! empty( $block['innerBlocks'] ) ) {
 			$block['innerBlocks'] = self::handle_do_blocks( $block['innerBlocks'] );

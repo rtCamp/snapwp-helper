@@ -29,9 +29,9 @@ class PluginUpdater implements Module {
 	private function get_plugins(): array {
 		$plugins = [
 			[
-				'slug'       => 'wp-graphql-content-blocks',
-				'file_path'  => 'wp-graphql-content-blocks/wp-graphql-content-blocks.php',
-				'update_uri' => 'https://github.com/wpengine/wp-graphql-content-blocks',
+				'slug'       => 'snapwp-helper',
+				'file_path'  => 'snapwp-helper/snapwp-helper.php',
+				'update_uri' => 'https://github.com/rtCamp/snapwp-helper',
 			],
 			[
 				'slug'       => 'wpgraphql-ide',

@@ -3,6 +3,8 @@
  * Tests the UpdateChecker class.
  *
  * @package SnapWP\Helper\Tests\Integration
+ *
+ * @todo update tests to use something other than wp-graphql-content-blocks.
  */
 
 namespace SnapWP\Helper\Tests\Integration;
