@@ -35,7 +35,8 @@ In general, we recommend you adhere to the GitHub issue templates included in th
 2. **Make your changes**: Implement the changes you'd like to contribute. Ensure that your code adheres to the project's [coding standards and guidelines](../DEVELOPMENT.md#code-quality--code-standards).
 
    > 💡 Tip
-	 > For detailed information on the project's directory structure, local development setup, and testing processes, refer to the [DEVELOPMENT.md](../DEVELOPMENT.md) document.
+   >
+   > For detailed information on the project's directory structure, local development setup, and testing processes, refer to the [DEVELOPMENT.md](../DEVELOPMENT.md) document.
 
 3. **Write tests**: If possible, add/update the necessary Integration/Functional/etc. tests for your changes to ensure that everything works correctly.
 

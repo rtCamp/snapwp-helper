@@ -18,7 +18,7 @@ For more info, see the <a href="https://github.com/rtCamp/snapwp-helper">SnapWP 
 
 == Installation ==
 
-1. Download the [latest release](https://github.com/rtCamp/snapwp-helper/releases) `.zip` file, upload it to your WordPress install, and activate the plugin.
+1. Download the <a href="https://github.com/rtCamp/snapwp-helper/releases" target="_blank> latest `snapwp-helper.zip` file</a>, upload it to your WordPress install, and activate the plugin.
 2. For more info and usage, see the <a href="https://github.com/rtCamp/snapwp/blob/main/docs/getting-started.md" target="_blank">SnapWP Getting Started guide</a>.
 
 == Frequently Asked Questions ==
