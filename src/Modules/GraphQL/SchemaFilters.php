@@ -98,7 +98,7 @@ final class SchemaFilters implements Registrable {
 	 */
 	public function overload_content_blocks_resolver( array $fields, $typename ): array {
 		// Bail if WPGraphQL is not loaded.
-		if( ! class_exists('WPGraphQL') ){
+		if ( ! class_exists( 'WPGraphQL' ) ) {
 			return $fields;
 		}
 
@@ -154,7 +154,7 @@ final class SchemaFilters implements Registrable {
 	 */
 	public function get_cached_rendered_block( $block_content, $parsed_block ) {
 		// Bail if not a GraphQL request.
-		if ( ! class_exists('WPGraphQL') || ! WPGraphQL::is_graphql_request() ) {
+		if ( ! class_exists( 'WPGraphQL' ) || ! \WPGraphQL::is_graphql_request() ) {
 			return $block_content;
 		}
 
@@ -187,7 +187,7 @@ final class SchemaFilters implements Registrable {
 	 */
 	public function cache_rendered_block( $block_content, $parsed_block ) {
 		// Bail if not a GraphQL request.
-		if ( ! class_exists('WPGraphQL') || ! WPGraphQL::is_graphql_request() ) {
+		if ( ! class_exists( 'WPGraphQL' ) || ! \WPGraphQL::is_graphql_request() ) {
 			return $block_content;
 		}
 
