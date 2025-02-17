@@ -13,7 +13,6 @@ use SnapWP\Helper\Interfaces\Registrable;
 use SnapWP\Helper\Modules\GraphQL\Data\ContentBlocksResolver;
 use SnapWP\Helper\Modules\GraphQL\Server\DisableIntrospectionRule;
 use SnapWP\Helper\Modules\GraphQL\Type\WPObject\RenderedTemplate;
-use WPGraphQL;
 
 /**
  * Class - SchemaFilters
@@ -39,6 +38,11 @@ final class SchemaFilters implements Registrable {
 	 * There's need to check for dependencies, since missing filters will just be ignored.
 	 */
 	public function register_hooks(): void {
+		// Register hooks only if WPGraphQL exists.
+		if ( ! class_exists( 'WPGraphQL' ) ) {
+			return;
+		}
+
 		// Register custom validation rule for introspection.
 		add_filter( 'graphql_validation_rules', [ $this, 'add_custom_validation_rule' ] );
 
@@ -93,6 +97,11 @@ final class SchemaFilters implements Registrable {
 	 * @return array<string,mixed>
 	 */
 	public function overload_content_blocks_resolver( array $fields, $typename ): array {
+		// Bail if WPGraphQL is not loaded.
+		if( ! class_exists('WPGraphQL') ){
+			return $fields;
+		}
+
 		if ( ! isset( $fields['editorBlocks'] ) ) {
 			return $fields;
 		}
@@ -145,7 +154,7 @@ final class SchemaFilters implements Registrable {
 	 */
 	public function get_cached_rendered_block( $block_content, $parsed_block ) {
 		// Bail if not a GraphQL request.
-		if ( ! WPGraphQL::is_graphql_request() ) {
+		if ( ! class_exists('WPGraphQL') || ! WPGraphQL::is_graphql_request() ) {
 			return $block_content;
 		}
 
@@ -178,7 +187,7 @@ final class SchemaFilters implements Registrable {
 	 */
 	public function cache_rendered_block( $block_content, $parsed_block ) {
 		// Bail if not a GraphQL request.
-		if ( ! WPGraphQL::is_graphql_request() ) {
+		if ( ! class_exists('WPGraphQL') || ! WPGraphQL::is_graphql_request() ) {
 			return $block_content;
 		}
 
