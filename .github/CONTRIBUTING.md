@@ -34,8 +34,9 @@ In general, we recommend you adhere to the GitHub issue templates included in th
 
 2. **Make your changes**: Implement the changes you'd like to contribute. Ensure that your code adheres to the project's [coding standards and guidelines](../DEVELOPMENT.md#code-quality--code-standards).
 
-   > [!TIP]
-	 > For detailed information on the project's directory structure, local development setup, and testing processes, refer to the [DEVELOPMENT.md](../DEVELOPMENT.md) document.
+   > 💡 Tip
+   >
+   > For detailed information on the project's directory structure, local development setup, and testing processes, refer to the [DEVELOPMENT.md](../DEVELOPMENT.md) document.
 
 3. **Write tests**: If possible, add/update the necessary Integration/Functional/etc. tests for your changes to ensure that everything works correctly.
 
@@ -56,4 +57,4 @@ We aim to maintain thorough documentation for all aspects of the project. Please
 You can refer to existing documentation in the [`docs`](../docs) directory for examples of how to structure and format your documentation.
 
 ## Thank You!
-We appreciate your time and contributions to the `SnapWP-Helper` project. Your efforts help make this project better for everyone!
+We appreciate your time and contributions to SnapWP Helper. Your efforts help make this project better for everyone!
