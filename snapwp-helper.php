@@ -32,6 +32,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+// Load the autoloader.
+require_once __DIR__ . '/src/Autoloader.php';
+if ( ! \SnapWP\Helper\Autoloader::autoload() ) {
+	return;
+}
+
 /**
  * Define the plugin constants.
  */
@@ -73,63 +79,15 @@ function constants(): void {
 	}
 }
 
-// Check for dependencies.
-add_action( 'plugins_loaded', __NAMESPACE__ . '\check_dependencies' );
-
-/**
- * Check if required plugins are installed and activated.
- */
-function check_dependencies(): void {
-	// Get the list of active plugins.
-	$active_plugins = get_option( 'active_plugins' );
-
-	// Required plugins.
-	$required_plugins = [
-		'wp-graphql/wp-graphql.php' => 'https://wordpress.org/plugins/wp-graphql/',
-		'wp-graphql-content-blocks/wp-graphql-content-blocks.php' => 'https://github.com/wp-graphql/wp-graphql-content-blocks',
-	];
-
-	// Check if required plugin are installed and activated.
-	foreach ( $required_plugins as $slug => $url ) {
-		if ( ! in_array( $slug, $active_plugins, true ) ) {
-			add_action(
-				'admin_notices',
-				static function () use ( $slug, $url ) {
-					$slug_name = explode( '\\', $slug );
-					$slug_name = end( $slug_name );
-					echo '<div class="notice notice-error"><p><strong>SnapWP Helper:</strong> ' . esc_html( $slug_name ) . ' is not installed or activated. Please install and activate <a href="' . esc_url( $url ) . '" target="_blank">' . esc_html( $slug_name ) . '</a> to use this plugin.</p></div>';
-				}
-			);
-
-			// Bail early.
-			return;
-		}
-	}
-
-	// Load the plugin if dependencies are met.
-	plugin_init();
+// Run this function when the plugin is activated.
+if ( file_exists( __DIR__ . '/activation.php' ) ) {
+	require_once __DIR__ . '/activation.php';
+	register_activation_hook( __FILE__, 'SnapWP\Helper\activation_callback' );
 }
 
-/**
- * Initialize the plugin.
- */
-function plugin_init(): void {
-	// Load the autoloader.
-	require_once __DIR__ . '/src/Autoloader.php';
-	if ( ! \SnapWP\Helper\Autoloader::autoload() ) {
-		return;
-	}
+// Load the plugin.
+if ( class_exists( 'SnapWP\Helper\Main' ) ) {
+	constants();
 
-	// Run activation callback if file exists.
-	if ( file_exists( __DIR__ . '/activation.php' ) ) {
-		require_once __DIR__ . '/activation.php';
-		register_activation_hook( __FILE__, __NAMESPACE__ . '\activation_callback' );
-	}
-
-	// Load the plugin.
-	if ( class_exists( 'SnapWP\Helper\Main' ) ) {
-		constants();
-
-		\SnapWP\Helper\Main::instance();
-	}
+	\SnapWP\Helper\Main::instance();
 }
