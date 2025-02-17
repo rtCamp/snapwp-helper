@@ -1,8 +1,8 @@
 === SnapWP Helper ===
 Contributors: rtCamp, justlevine
-Tags: decoupled, headless, REST API, GraphQL, WPGraphQL, React, NextJS, JAMStack
+Tags: decoupled, headless, GraphQL, WPGraphQL, React, NextJS
 Requires at least: 6.7
-Tested up to: 6.7.1
+Tested up to: 6.7.2
 Requires PHP: 7.4
 Stable tag: 0.0.1
 License: GPLv3 or later
@@ -18,8 +18,8 @@ For more info, see the <a href="https://github.com/rtCamp/snapwp-helper">SnapWP 
 
 == Installation ==
 
-1. Upload the `snapwp-helper.zip` release zip via the WordPress Dashboard > Plugins > Add New > Upload Plugin.
-2. Activate the plugin through the 'Plugins' menu in WordPress
+1. Download the [latest release](https://github.com/rtCamp/snapwp-helper/releases) `.zip` file, upload it to your WordPress install, and activate the plugin.
+2. For more info and usage, see the <a href="https://github.com/rtCamp/snapwp/blob/main/docs/getting-started.md" target="_blank">SnapWP Getting Started guide</a>.
 
 == Frequently Asked Questions ==
 
@@ -33,7 +33,7 @@ If you still need to <a href="https://github.com/rtCamp/snapwp-helper/issues/new
 
 Want to contribute a new feature? Start a conversation by <a href="https://github.com/rtCamp/snapwp-helper/issues/new" target="_blank">creating a new issue</a>.
 
-Once you're ready to send a pull request, please check out our <a href="https://github.com/rtCamp/snapwp-helper/blob/main/DEVELOPMENT.md" target="_blank">Contributing Guidelines</a>.
+Once you're ready to send a pull request, please check out our <a href="https://github.com/rtCamp/snapwp-helper/blob/main/.github/CONTRIBUTING.md" target="_blank">Contributing Guidelines</a>.
 
 == Screenshots ==
 
