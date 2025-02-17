@@ -2,13 +2,9 @@ parameters:
 	level: 8
 	treatPhpDocTypesAsCertain: false
 	inferPrivatePropertyTypeFromConstructor: true
-	checkAlwaysTrueCheckTypeFunctionCall: true
-	checkAlwaysTrueInstanceof: true
-	checkAlwaysTrueStrictComparison: true
 	checkExplicitMixedMissingReturn: true
 	checkFunctionNameCase: true
 	checkInternalClassCaseSensitivity: true
-	checkMissingIterableValueType: true
 	checkTooWideReturnTypesInProtectedAndPublicMethods: true
 	polluteScopeWithAlwaysIterableForeach: false
 	polluteScopeWithLoopInitialAssignments: false

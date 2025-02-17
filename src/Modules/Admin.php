@@ -22,9 +22,9 @@ class Admin implements Module {
 	 *
 	 * Filtered by `snapwp_helper/admin/capability`.
 	 *
-	 * @var ?string
+	 * @var string
 	 */
-	private ?string $capability;
+	private string $capability;
 
 	/**
 	 * {@inheritDoc}

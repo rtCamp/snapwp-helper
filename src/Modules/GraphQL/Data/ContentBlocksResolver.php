@@ -112,13 +112,13 @@ final class ContentBlocksResolver {
 		foreach ( $blocks as $block ) {
 			$block_data = self::handle_do_block( $block );
 
-			if ( $block_data ) {
+			if ( ! empty( $block_data ) ) {
 				$parsed[] = $block_data;
 			}
 		}
 
 		// Remove empty blocks.
-		return array_values( array_filter( $parsed ) );
+		return $parsed;
 	}
 
 	/**

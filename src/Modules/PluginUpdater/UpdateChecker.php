@@ -72,8 +72,6 @@ class UpdateChecker {
 
 			/**
 			 * Store the instance.
-			 *
-			 * @var \YahnisElsts\PluginUpdateChecker\v5p5\Plugin\UpdateChecker $update_checker
 			 */
 			$this->update_checkers[ $plugin['slug'] ] = $update_checker;
 		}
