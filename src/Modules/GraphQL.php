@@ -31,7 +31,8 @@ class GraphQL implements Module {
 	public function init(): void {
 		$this->register_dependencies();
 
-		$this->register_hooks();
+		// This is deferred to give the dependencies a chance to load.
+		add_action( 'snapwp_helper/init', [ $this, 'register_hooks' ] );
 	}
 
 	/**
@@ -49,11 +50,7 @@ class GraphQL implements Module {
 
 		foreach ( $classes_to_register as $class ) {
 			$class_instance = new $class();
-
-			// Check if WPGraphQL class exists before registering hooks.
-			if ( class_exists( 'WPGraphQL' ) ) {
-				$class_instance->register_hooks();
-			}
+			$class_instance->register_hooks();
 		}
 
 		// We only want to register our types After WPGraphQL has been initialized.

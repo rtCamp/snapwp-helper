@@ -38,11 +38,6 @@ final class SchemaFilters implements Registrable {
 	 * There's need to check for dependencies, since missing filters will just be ignored.
 	 */
 	public function register_hooks(): void {
-		// Register hooks only if WPGraphQL exists.
-		if ( ! class_exists( 'WPGraphQL' ) ) {
-			return;
-		}
-
 		// Register custom validation rule for introspection.
 		add_filter( 'graphql_validation_rules', [ $this, 'add_custom_validation_rule' ] );
 
@@ -97,11 +92,6 @@ final class SchemaFilters implements Registrable {
 	 * @return array<string,mixed>
 	 */
 	public function overload_content_blocks_resolver( array $fields, $typename ): array {
-		// Bail if WPGraphQL is not loaded.
-		if ( ! class_exists( 'WPGraphQL' ) ) {
-			return $fields;
-		}
-
 		if ( ! isset( $fields['editorBlocks'] ) ) {
 			return $fields;
 		}
