@@ -17,7 +17,6 @@ SnapWP Helper is a WordPress plugin that provides the necessary functionality to
 
 ## Getting Started
 
-
 > [!TIP]
 > While this plugin can be used independently to provide Block Theme support for WPGraphQL, we recommend using it in conjunction with the SnapWP framework. For more information on setting up this plugin as part of SnapWP, please refer to the [SnapWP documentation](https://github.com/rtCamp/snapwp/blob/main/docs/getting-started.md).
 
