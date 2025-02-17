@@ -31,7 +31,8 @@ class GraphQL implements Module {
 	public function init(): void {
 		$this->register_dependencies();
 
-		$this->register_hooks();
+		// This is deferred to give the dependencies a chance to load.
+		add_action( 'snapwp_helper/init', [ $this, 'register_hooks' ] );
 	}
 
 	/**

@@ -13,7 +13,6 @@ use SnapWP\Helper\Interfaces\Registrable;
 use SnapWP\Helper\Modules\GraphQL\Data\ContentBlocksResolver;
 use SnapWP\Helper\Modules\GraphQL\Server\DisableIntrospectionRule;
 use SnapWP\Helper\Modules\GraphQL\Type\WPObject\RenderedTemplate;
-use WPGraphQL;
 
 /**
  * Class - SchemaFilters
@@ -145,7 +144,7 @@ final class SchemaFilters implements Registrable {
 	 */
 	public function get_cached_rendered_block( $block_content, $parsed_block ) {
 		// Bail if not a GraphQL request.
-		if ( ! WPGraphQL::is_graphql_request() ) {
+		if ( ! class_exists( 'WPGraphQL' ) || ! \WPGraphQL::is_graphql_request() ) {
 			return $block_content;
 		}
 
@@ -178,7 +177,7 @@ final class SchemaFilters implements Registrable {
 	 */
 	public function cache_rendered_block( $block_content, $parsed_block ) {
 		// Bail if not a GraphQL request.
-		if ( ! WPGraphQL::is_graphql_request() ) {
+		if ( ! class_exists( 'WPGraphQL' ) || ! \WPGraphQL::is_graphql_request() ) {
 			return $block_content;
 		}
 
