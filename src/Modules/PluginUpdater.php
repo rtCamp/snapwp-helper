@@ -29,6 +29,11 @@ class PluginUpdater implements Module {
 	private function get_plugins(): array {
 		$plugins = [
 			[
+				'slug'       => 'snapwp-helper',
+				'file_path'  => 'snapwp-helper/snapwp-helper.php',
+				'update_uri' => 'https://github.com/rtCamp/snapwp-helper',
+			],
+			[
 				'slug'       => 'wpgraphql-ide',
 				'file_path'  => 'wpgraphql-ide/wpgraphql-ide.php',
 				'update_uri' => 'https://github.com/wp-graphql/wpgraphql-ide',
