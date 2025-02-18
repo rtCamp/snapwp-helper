@@ -20,8 +20,8 @@
 		"yahnis-elsts/plugin-update-checker": "^5.4"
 	},
 	"require-dev": {
-		"axepress/wp-graphql-cs": "^2.0.0-beta",
-		"axepress/wp-graphql-stubs": "^1.27",
+		"axepress/wp-graphql-cs": "^2.0.0",
+		"axepress/wp-graphql-stubs": "^2.0.0",
 		"codeception/codeception": "^4.2",
 		"codeception/module-asserts": "^1.0",
 		"codeception/module-cli": "^1.0",

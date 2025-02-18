@@ -30,8 +30,6 @@ function min_php_version() {
 /**
  * Checks whether the WordPress requirements are met.
  *
- * @since 2.0.0
- *
  * @return bool
  */
 function has_wp_requirements() {

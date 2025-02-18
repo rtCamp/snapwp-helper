@@ -13,7 +13,7 @@
  * Requires at least: 6.7
  * Tested up to: 6.7.2
  * Requires PHP: 7.4
- * WPGraphQL tested up to: 1.31.1
+ * WPGraphQL tested up to: 2.0.0
  * License: GPL-3
  * License URI: https://www.gnu.org/licenses/gpl-3.0.html
  *
