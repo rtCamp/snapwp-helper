@@ -3,7 +3,6 @@
  * Registers custom fields to the GraphQL RootQuery Object.
  *
  * @package SnapWP\Helper\Modules\GraphQL\Type\Fields
- * @since 0.0.1
  */
 
 declare( strict_types = 1 );

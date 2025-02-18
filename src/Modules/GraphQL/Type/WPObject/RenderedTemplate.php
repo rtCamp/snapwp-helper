@@ -2,10 +2,9 @@
 /**
  * Registers the RenderedTemplate Object to WPGraphQL.
  *
- * Temporary until supported by WPGraphQL / REST API.
+ * @todo Temporary until supported by WPGraphQL / REST API.
  *
  * @package SnapWP\Helper\Modules\GraphQL\Type\WPObject
- * @since 0.0.1
  */
 
 declare( strict_types = 1 );

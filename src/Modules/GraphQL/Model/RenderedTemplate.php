@@ -46,7 +46,7 @@ class RenderedTemplate extends Model {
 	 */
 	public function __construct( array $resolved_template_data ) {
 		// translators: %s: array key name.
-		$error_message = __( 'The %s key is required to resolve instantiate the RenderedTemplate GraphQL model.', 'snapwp-helper' );
+		$error_message = __( 'The %s key is required to resolve the RenderedTemplate GraphQL model.', 'snapwp-helper' );
 
 		if ( ! isset( $resolved_template_data['uri'] ) ) {
 			throw new \InvalidArgumentException( esc_html( sprintf( $error_message, 'uri' ) ) );

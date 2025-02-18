@@ -3,7 +3,6 @@
  * Shared utility functions.
  *
  * @package SnapWP\Helper\Utils
- * @since 0.0.1
  */
 
 declare( strict_types = 1 );

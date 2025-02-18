@@ -3,7 +3,6 @@
  * Used to resolve the template for a given URI.
  *
  * @package SnapWP\Helper\Modules\GraphQL\Data
- * @since 0.0.1
  */
 
 declare( strict_types = 1 );
