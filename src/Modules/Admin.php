@@ -18,6 +18,15 @@ use SnapWP\Helper\Modules\GraphQL\Data\IntrospectionToken;
  */
 class Admin implements Module {
 	/**
+	 * The capability required to access the SnapWP Helper screen and do admin-related actions.
+	 *
+	 * Filtered by `snapwp_helper/admin/capability`.
+	 *
+	 * @var string
+	 */
+	private string $capability;
+
+	/**
 	 * {@inheritDoc}
 	 */
 	public function name(): string {
@@ -48,6 +57,7 @@ class Admin implements Module {
 		 * @see https://github.com/wp-graphql/wpgraphql-ide/issues/214
 		 */
 		add_action( 'admin_menu', [ $this, 'register_menu' ], 101 );
+		add_action( 'current_screen', [ $this, 'handle_token_regeneration' ] );
 	}
 
 	/**
@@ -64,13 +74,11 @@ class Admin implements Module {
 			$parent_menu_slug,
 			__( 'SnapWP', 'snapwp-helper' ),
 			__( 'SnapWP', 'snapwp-helper' ),
-			'edit_plugins',
+			$this->get_capability(), // phpcs:ignore WordPress.WP.Capabilities.Undetermined -- It's user filterable.
 			'snapwp-helper',
 			[ $this, 'render_menu' ],
 			999
 		);
-
-		add_action( 'current_screen', [ $this, 'handle_token_regeneration' ] );
 	}
 
 	/**
@@ -230,6 +238,16 @@ class Admin implements Module {
 			return;
 		}
 
+		if ( ! current_user_can( $this->get_capability() ) ) { // phpcs:ignore WordPress.WP.Capabilities.Undetermined -- It's user filterable.
+			wp_admin_notice(
+				__( 'Could not regenerate the introspection token: insufficient permissions.', 'snapwp-helper' ),
+				[
+					'type' => 'error',
+				]
+			);
+			return;
+		}
+
 		// Generate a new introspection token.
 		$introspection_token = IntrospectionToken::generate_token();
 
@@ -254,5 +272,25 @@ class Admin implements Module {
 				'type' => 'success',
 			]
 		);
+	}
+
+	/**
+	 * Get the capability required to access the SnapWP Helper screen and do admin-related actions.
+	 *
+	 * @uses snapwp_helper/admin/capability filter
+	 */
+	private function get_capability(): string {
+		if ( ! isset( $this->capability ) ) {
+			/**
+			 * Filter the capability required to access the SnapWP Helper admin screen and do admin-related actions.
+			 *
+			 * Defaults to `manage_options`.
+			 *
+			 * @param string $capability The capability required to access the SnapWP Helper admin screen and do admin-related actions.
+			 */
+			$this->capability = apply_filters( 'snapwp_helper/admin/capability', 'manage_options' );
+		}
+
+		return $this->capability;
 	}
 }

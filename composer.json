@@ -1,6 +1,6 @@
 {
 	"name": "rtcamp/snapwp-helper",
-	"description": "WordPress helper plugin used to power SnapWP's Headless WordPress framework.",
+	"description": "WordPress helper plugin used to power SnapWP's headless WordPress framework.",
 	"type": "wordpress-plugin",
 	"license": "GPL-3.0-or-later",
 	"authors": [
@@ -33,8 +33,9 @@
 		"lucatume/wp-browser": "^3.1",
 		"phpcompatibility/php-compatibility": "dev-develop as 9.99.99",
 		"phpstan/extension-installer": "^1.1",
-		"phpstan/phpstan": "^1.2",
-		"szepeviktor/phpstan-wordpress": "^1.1.5",
+		"phpstan/phpstan": "^2.0.0",
+		"phpstan/phpstan-deprecation-rules": "^2.0",
+		"szepeviktor/phpstan-wordpress": "^2.0.0",
 		"wp-cli/wp-cli-bundle": "^2.8.1",
 		"wp-graphql/wp-graphql-testcase": "^3.3"
 	},
@@ -76,6 +77,13 @@
 		],
 		"phpstan": [
 			"vendor/bin/phpstan analyze --ansi --memory-limit=1G"
+		],
+		"post-install-cmd": [
+			"npm ci --no-progress --no-audit --silent --no-fund",
+			"npm run build:js"
+		],
+		"post-update-cmd": [
+			"@post-install-cmd"
 		]
 	}
 }

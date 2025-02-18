@@ -58,11 +58,11 @@ class GeneratorTest extends WPTestCase {
 		$content = $generator->generate();
 
 		$expectedContent = '
-# Enable if connecting to a self-signed cert
+# Only enable if connecting to a self-signed cert
 NODE_TLS_REJECT_UNAUTHORIZED=5
 
-# The headless frontend domain URL. Uncomment this line and ensure the value matches the URL used by your frontend app.
-# NEXT_PUBLIC_URL=http://localhost:3000
+# The headless frontend domain URL. Make sure the value matches the URL used by your frontend app.
+NEXT_PUBLIC_URL=http://localhost:3000
 
 # The WordPress "frontend" domain URL
 NEXT_PUBLIC_WORDPRESS_URL=https://headless-demo.local
@@ -111,8 +111,8 @@ NEXT_PUBLIC_WORDPRESS_REST_URL_PREFIX=api';
 
 		// CASE : For NODE_TLS_REJECT_UNAUTHORIZED with no default value, Generator class should comment out the variable in .ENV content.
 		$values = [
-			'NODE_TLS_REJECT_UNAUTHORIZED'          => '',
-			'NEXT_PUBLIC_URL'                       => '',
+			'NODE_TLS_REJECT_UNAUTHORIZED'          => '0',
+			'NEXT_PUBLIC_URL'                       => 'http://localhost:3000',
 			'NEXT_PUBLIC_WORDPRESS_URL'             => 'https://headless-demo.local',
 			'NEXT_PUBLIC_GRAPHQL_ENDPOINT'          => '/test_endpoint',
 			'NEXT_PUBLIC_WORDPRESS_UPLOADS_PATH'    => '',
@@ -126,11 +126,11 @@ NEXT_PUBLIC_WORDPRESS_REST_URL_PREFIX=api';
 
 		// Define expected content.
 		$expectedContent = '
-# Enable if connecting to a self-signed cert
-# NODE_TLS_REJECT_UNAUTHORIZED=0
+# Only enable if connecting to a self-signed cert
+NODE_TLS_REJECT_UNAUTHORIZED=0
 
-# The headless frontend domain URL. Uncomment this line and ensure the value matches the URL used by your frontend app.
-# NEXT_PUBLIC_URL=http://localhost:3000
+# The headless frontend domain URL. Make sure the value matches the URL used by your frontend app.
+NEXT_PUBLIC_URL=http://localhost:3000
 
 # The WordPress "frontend" domain URL
 NEXT_PUBLIC_WORDPRESS_URL=https://headless-demo.local

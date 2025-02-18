@@ -95,7 +95,8 @@ class Generator {
 		$required    = ! empty( $variable['required'] );
 
 		// Check if a required variable has a value.
-		if ( $required && empty( $value ) ) {
+		// @todo: handle NODE_TLS_REJECT_UNAUTHORIZED by checking the NEXT_PUBLIC_URL.
+		if ( $required && empty( $value ) && '0' !== $value ) {
 			throw new \InvalidArgumentException( 'Required variables must have a value.' );
 		}
 

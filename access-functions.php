@@ -72,8 +72,8 @@ if ( ! function_exists( 'snapwp_helper_get_env_variables' ) ) {
 		$upload_path = '/' . ltrim( str_replace( ABSPATH, '', $upload_dir['basedir'] ), '/' );
 
 		return [
-			'NODE_TLS_REJECT_UNAUTHORIZED'          => '',
-			'NEXT_PUBLIC_URL'                       => '',
+			'NODE_TLS_REJECT_UNAUTHORIZED'          => '0',
+			'NEXT_PUBLIC_URL'                       => 'http://localhost:3000',
 			'NEXT_PUBLIC_WORDPRESS_URL'             => untrailingslashit( get_home_url() ),
 			'NEXT_PUBLIC_GRAPHQL_ENDPOINT'          => graphql_get_endpoint(),
 			'NEXT_PUBLIC_WORDPRESS_UPLOADS_PATH'    => $upload_path,

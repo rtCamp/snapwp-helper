@@ -1,48 +1,34 @@
-# SnapWP Helper - WPGraphQL Extension Updater
+# SnapWP Helper
+A helper plugin for WordPress used to power [SnapWP](https://snapwp.io)'s solution for headless WordPress.
 
-> A helper plugin for WordPress used to power [SnapWP](https://snapwp.io)'s Headless WordPress framework.
-
-## Table of Contents
-
-- [Overview](#overview)
-- [System Requirements](#system-requirements)
-- [Getting Started](#getting-started)
-- [Usage](#usage)
-- [Features](#features)
-- [Reference](#reference)
-- [Local Development & Contributing Guidelines](#local-development-testing-and-contribution)
+* [Join the WPGraphQL community on Discord.](https://discord.gg/ZQzAqk4heU)
+* [Documentation](#usage)
 
 ## Overview
 
-SnapWP Helper is a WordPress plugin that allows you to quickly install WPGraphQL extensions and manage extension updates from the WordPress dashboard.
+SnapWP Helper is a WordPress plugin that provides the necessary functionality to run [SnapWP](https://github.com/rtCamp/snapwp), extending the capabilities of [WPGraphQL](https://github.com/wp-graphql/wp-graphql) and [WPGraphQL Content Blocks](https://github.com/wpengine/wp-graphql-content-blocks) to power "turn-key" headless WordPress applications.
 
 ## System Requirements
 
-- **PHP** 7.4 or higher
-- **WordPress** 6.7 or higher
-- **WPGraphQL** 1.28.0 or higher
-- **WPGraphQL Content Blocks** 4.4.0 or higher
+- **PHP** 7.4+
+- **WordPress** 6.7+
+- **[WPGraphQL](https://github.com/wp-graphql/wp-graphql/releases)** 1.28.0+
+- **[WPGraphQL Content Blocks](https://github.com/wpengine/wp-graphql-content-blocks/releases)** 4.6.0+
 
 ## Getting Started
 
-1. Clone this repository to the `wp-content/plugins` directory.
-2. Initialize the plugin by running `npm run install-local-deps`
-3. Activate the plugin from WordPress dashboard.
+> [!TIP]
+> While this plugin can be used independently to provide Block Theme support for WPGraphQL, we recommend using it in conjunction with the SnapWP framework. For more information on setting up this plugin as part of SnapWP, please refer to the [SnapWP documentation](https://github.com/rtCamp/snapwp/blob/main/docs/getting-started.md).
 
-> [!NOTE]
-> To build the plugin for production, run `npm run build:dist && npm run plugin-zip` and then upload the generated `snapwp-helper.zip` file to your WordPress site.
->
-> For more information on building the plugin, see [DEVELOPMENT.md](DEVELOPMENT.md#building-for-production).
-
-## Usage
-
-@todo - Add usage instructions
+1. Install and activate [WPGraphQL](https://github.com/wp-graphql/wp-graphql/releases)
+2. Install and activate [WPGraphQL Content Blocks](https://github.com/wpengine/wp-graphql-content-blocks/releases)
+3. Download the [latest release](https://github.com/rtCamp/snapwp-helper/releases) `.zip` file, upload it to your WordPress install, and activate the plugin.
 
 ## Features
 
 @todo - Add features
 
-## Documentation
+## Usage
 
 - [Actions & Filters](docs/hooks.md)
 - [GraphQL Queries](docs/graphql-queries.md)
@@ -50,9 +36,13 @@ SnapWP Helper is a WordPress plugin that allows you to quickly install WPGraphQL
 
 ## Development & Contribution
 
-SnapWP Helper is a free and open-source project developed and maintained by [rtCamp](https://rtcamp.com/). We *welcome* and **encourage** contributions from the community to help improve this project.
+SnapWP Helper is a free and open-source project developed and maintained by [rtCamp](https://rtcamp.com/) and can be used standalone in the headless WordPress ecosystem or as part of  [SnapWP](https://github.com/rtCamp/snapwp)'s framework.
 
-To contribute to this project, please follow the guidelines outlined in the [CONTRIBUTING.md](.github/CONTRIBUTING.md) file. To get started with local development and learn more about the project's development processes, code standards, and testing, refer to the [DEVELOPMENT.md](DEVELOPMENT.md) document.
+Contributions are _welcome_ and **encouraged!**
+
+To learn more about contributing to this package or SnapWP as a whole, please read the [Contributing Guide](.github/CONTRIBUTING.md).
+
+For development guidelines, please refer to our [Development Guide](DEVELOPMENT.md).
 
 ## License
 

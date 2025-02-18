@@ -42,6 +42,16 @@ body:
       id: site-health
       attributes:
           label: Site Health Info
-          description: Please include the output of the Site Health Info page, by going to Tools > Site Health > Info, clicking `Copy site info to clipboard`, and pasting the output here.
+          description: Please include the output of the Site Health Info page, by going to `Tools > Site Health > Info`, clicking `Copy site info to clipboard`, and pasting the output here.
+          render: markdown
+          value: |
+              <details>
+                <summary>Site Health Info</summary>
+                <!-- Please leave one blank line below for enabling the code block rendering. -->
+
+                ```
+                PASTE SITE HEALTH INFO HERE
+                ```
+              </details>
       validations:
           required: true
