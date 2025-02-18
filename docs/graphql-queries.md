@@ -5,10 +5,11 @@ This document outlines the GraphQL queries available in the SnapWP Helper plugin
 ## Table of Contents
 
 - [Querying `RenderedTemplate` data with `templateByUri`](#querying-renderedtemplate-data-with-templatebyuri)
+- [Querying `globalStyles` data](#querying-globalstyles-data)
 
 ## Querying `RenderedTemplate` data with `templateByUri`
 
-The `RootQuery.templateByUri` field is used to fetch the rendered template data (`RenderedTemplate`) for a given URI. This query allows the use WordPress's Block Template rendering engine as the full source of truth for a headless frontend.
+The `RootQuery.templateByUri` field is used to fetch the rendered template data (`RenderedTemplate`) for a given URI. This query allows the use of WordPress's Block Template rendering engine as the full source of truth for a headless frontend.
 
 ### Query Structure
 
@@ -52,5 +53,22 @@ query GetTemplateByUri( $uri: String! ) {
     isTermNode
     uri
   }
+}
+```
+
+## Querying `globalStyles` data
+
+The `RootQuery.globalStyles` field is used to fetch the global styles data.
+
+### Query Structure
+
+```graphql
+query GetGlobalStyles {
+    globalStyles {
+        customCss         # The Global custom CSS defined in the theme or theme.json
+        fontFaces         # The font faces
+        renderedFontFaces # The rendered @font-face style
+        stylesheet        # The Global Stylesheet CSS
+    }
 }
 ```
