@@ -17,7 +17,7 @@ SnapWP Helper is a WordPress plugin that provides the necessary functionality to
 
 ## Quick Install
 
-1. Install and activate [WPGraphQL](https://github.com/wp-graphql/wp-graphql/releases) and [WPGraphQL Content Blocks](https://github.com/wpengine/wp-graphql-content-blocks/releases)
+1. Install and activate [WPGraphQL](https://github.com/wp-graphql/wp-graphql/releases) and [WPGraphQL Content Blocks](https://github.com/wpengine/wp-graphql-content-blocks/releases).
 2. Download the [latest SnapWP Helper release](https://github.com/rtCamp/snapwp-helper/releases) `.zip` file, upload it to your WordPress install, and activate the plugin.
 
 ### With WP-CLI
