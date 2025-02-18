@@ -58,17 +58,19 @@ query GetTemplateByUri( $uri: String! ) {
 
 ## Querying `globalStyles` data
 
-The `RootQuery.globalStyles` field is used to fetch the global styles data.
+The `RootQuery.globalStyles` field is used to fetch the global styles data (`GlobalStyles`) for the site. This query allows the use of WordPress's [Global Settings and Styles](https://developer.wordpress.org/themes/global-settings-and-styles/) on the frontend.
 
 ### Query Structure
 
 ```graphql
 query GetGlobalStyles {
-    globalStyles {
-        customCss         # The Global custom CSS defined in the theme or theme.json
-        fontFaces         # The font faces
-        renderedFontFaces # The rendered @font-face style
-        stylesheet        # The Global Stylesheet CSS
+  globalStyles {
+    customCss         # The Global custom CSS defined in the theme or theme.json
+    fontFaces {       # The data for the font faces
+      ...FontFaceFrag
     }
+    renderedFontFaces # The rendered @font-face style
+    stylesheet        # The Global Stylesheet CSS
+  }
 }
 ```
