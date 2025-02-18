@@ -15,20 +15,34 @@ SnapWP Helper is a WordPress plugin that provides the necessary functionality to
 - **[WPGraphQL](https://github.com/wp-graphql/wp-graphql/releases)** 1.28.0+
 - **[WPGraphQL Content Blocks](https://github.com/wpengine/wp-graphql-content-blocks/releases)** 4.6.0+
 
-## Getting Started
+## Quick Install
 
-> [!TIP]
-> While this plugin can be used independently to provide Block Theme support for WPGraphQL, we recommend using it in conjunction with the SnapWP framework. For more information on setting up this plugin as part of SnapWP, please refer to the [SnapWP documentation](https://github.com/rtCamp/snapwp/blob/main/docs/getting-started.md).
+1. Install and activate [WPGraphQL](https://github.com/wp-graphql/wp-graphql/releases) and [WPGraphQL Content Blocks](https://github.com/wpengine/wp-graphql-content-blocks/releases)
+2. Download the [latest SnapWP Helper release](https://github.com/rtCamp/snapwp-helper/releases) `.zip` file, upload it to your WordPress install, and activate the plugin.
 
-1. Install and activate [WPGraphQL](https://github.com/wp-graphql/wp-graphql/releases)
-2. Install and activate [WPGraphQL Content Blocks](https://github.com/wpengine/wp-graphql-content-blocks/releases)
-3. Download the [latest release](https://github.com/rtCamp/snapwp-helper/releases) `.zip` file, upload it to your WordPress install, and activate the plugin.
+### With WP-CLI
+
+```bash
+wp plugin install https://github.com/rtCamp/snapwp-helper/releases/latest/download/snapwp-helper.zip --activate
+```
+
+### With Composer
+
+```bash
+composer require rtcamp/snapwp-helper
+```
 
 ## Features
 
-@todo - Add features
+- **Block Theme support for WPGraphQL**: SnapWP Helper provides the necessary functionality to power Block Themes in headless WordPress applications, allowing you to use WordPress's Block Editor as the full - or fallback - source of truth for your frontend.
+- **Easy Onboarding**: The SnapWP Helper admin screen makes setting up your local development environment a breeze, putting your entire .env configuration in a single, copyable location.
+- **WPGraphQL Extension Updates**: SnapWP Helper adds wp-admin update support for GitHub hosted WPGraphQL extensions recommended for the SnapWP stack, and makes it easy to add update checking for any additional extensions you use.
+- **Enterprise-grade Codebase**: SnapWP Helper is maintained by [rtCamp](https://rtcamp.com/), a leading WordPress agency with a focus on high-performance, enterprise-grade solutions. Even at version `0.0.1`, this plugin is more stable than many plugins at `1.0.0`, and is performant, extensible, thoroughly tested, and strictly follows the best practices of the headless WordPress ecosystem.
 
 ## Usage
+
+> [!TIP]
+> While this plugin can be used independently to provide Block Theme support for WPGraphQL, we recommend using it in conjunction with the SnapWP framework. For more information on setting up this plugin as part of SnapWP, please refer to the [SnapWP documentation](https://github.com/rtCamp/snapwp/blob/main/docs/getting-started.md).
 
 - [Actions & Filters](docs/hooks.md)
 - [GraphQL Queries](docs/graphql-queries.md)
