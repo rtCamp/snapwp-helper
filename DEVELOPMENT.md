@@ -51,7 +51,6 @@ snapwp-helper/
 │   # Classes follow PSR-4, and are namespaced at `SnapWP\Helper`.
 ├── src/
 │   ├── Abstracts/       # Abstract PHP classes
-│   │
 │   ├── Interfaces/      # PHP interfaces.
 │   │
 │   │   # Individual features exist as co-located "Modules".
@@ -82,7 +81,6 @@ snapwp-helper/
 │   │  └── Assets.php      # Registers WP scripts and styles.
 │   │
 │   ├── Traits/          # Reusable PHP traits.
-│   │
 │   ├── Utils/           # Utility methods
 │   │
 │   ├── Autoloader.php   # The PSR-4 autoloader for the plugin.
