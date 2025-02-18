@@ -35,6 +35,10 @@ The plugin is organized as follows:
 ```log
 snapwp-helper/
 │
+├── .docker/               # Docker configuration files for containerized development.
+├── .github/               # GitHub specific files and CI/CD workflows.
+├── bin/                   # Build scripts and development utilities.
+│
 │   # The built assets, compiled via `npm run build:dist`. They are excluded from the repository and should not be edited directly.
 ├── build/
 │
@@ -46,39 +50,49 @@ snapwp-helper/
 │   # PHP classes and functions.
 │   # Classes follow PSR-4, and are namespaced at `SnapWP\Helper`.
 ├── src/
-│   ├── Interfaces/  # PHP interfaces.
+│   ├── Abstracts/       # Abstract PHP classes
+│   ├── Interfaces/      # PHP interfaces.
 │   │
 │   │   # Individual features exist as co-located "Modules".
+│   │   # Modules are self-contained and loaded via a `{Module}.php` file, and (usually) a corresponding namespace.
 │   ├── Modules/
-│   │  ├── Admin.php   # Registers the plugin's admin pages.
-│   │  ├── Assets.php  # Registers WP scripts and styles.
+│   │  ├── Admin/          # Registers the plugin's admin screens and public settings
+│   │  │
+│   │  │  # Manages the Environment Variables used by the SnapWP frontend.
+│   │  ├── EnvGenerator/
+│   │  │  ├── Generator.php        # Generates the environment variables.
+│   │  │  ├── RestController.php   # Exposes the environment variables via REST API.
+│   │  │  └── VariableRegistry.php # Defines the environment variables.
 │   │  │
 │   │  │  # Manages WPGraphQL functionality
 │   │  ├── GraphQL/
-│   │  │  ├── Interfaces/ # Local PHP interfaces for the Module.
-│   │  │  ├── Model/      # Custom WPGraphQL Models
-│   │  │  ├── Type/       # Custom WPGraphQL types
+│   │  │  ├── Data/              # GraphQL Data fetchers and resolvers.
+│   │  │  ├── Interfaces/        # Local PHP interfaces for the Module.
+│   │  │  ├── Model/             # Custom data Models
+│   │  │  ├── Server/            # GraphQL server functionality and overrides.
+│   │  │  ├── Type/              # Custom GraphQL types
+│   │  │  ├── Utils/             # Utility methods for the Module.
 │   │  │  │
-│   │  │  ├── SchemaFilters.php     # Modifies existing WPGraphQL schema.
-│   │  │  └── TypeRegistry.php      # Registers custom WPGraphQL types.
+│   │  │  ├── SchemaFilters.php  # Modifies existing WPGraphQL schema.
+│   │  │  └── TypeRegistry.php   # Registers custom WPGraphQL types.
 │   │  │
-│   │  └── PluginUpdater/ # Plugin Updater Module
-│   │     └── UpdateChecker.php  # Update Checker API
+│   │  ├── PluginUpdater/  # Checks and handles Plugin updates for non .org requirements.
+│   │  │
+│   │  └── Assets.php      # Registers WP scripts and styles.
 │   │
-│   ├── Traits/ # Reusable PHP traits.
-│   │
-│   ├── Utils/  # Utility methods
+│   ├── Traits/          # Reusable PHP traits.
+│   ├── Utils/           # Utility methods
 │   │
 │   ├── Autoloader.php   # The PSR-4 autoloader for the plugin.
 │   ├── Dependencies.php # Manages plugin dependencies (e.g. WPGraphQL versions).
 │   └── Main.php         # The main plugin class.
 │
-├── tests/ # Test files.
-├── vendor/ # Composer dependencies
+├── tests/                 # Test files.
+├── vendor/                # Composer dependencies
 │
 │   # Important root files.
-├── access-functions.php  # Globally-available functions. External code should use these functions to access plugin functionality instead of directly calling individual class methods.
-├── activation.php        # Runs when the plugin is activated.
+├── access-functions.php   # Globally-available functions. External code should use these functions to access plugin functionality instead of directly calling individual class methods.
+├── activation.php         # Runs when the plugin is activated.
 └── snapwp-helper.php      # Main plugin file
 
 ```
@@ -305,7 +319,7 @@ To run the tests in your [local WordPress environment](#using-a-local-wordpress-
 
 ##### Using Docker
 
-When using a dockerized test environment, Codeception tests must be run _inside_ the docker container.
+When using a Dockerized test environment, Codeception tests must be run _inside_ the docker container.
 
 While you can always connect to the container and run the tests manually, you can also use the following commands to run the tests from your host machine (outside the container), by using the `bin/run-codeception.sh` script with the necessary environment variables.
 
