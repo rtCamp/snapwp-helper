@@ -35,6 +35,30 @@ The plugin is organized as follows:
 ```log
 snapwp-helper/
 │
+│   # Docker configuration files for containerized development
+├── .docker/
+│   ├── Dockerfile
+│   └── init-docker.sh
+│
+│   # GitHub specific files and CI/CD workflows
+├── .github/
+│   ├── workflows/           # GitHub Actions workflow definitions
+│   ├── ISSUE_TEMPLATE/     # Issue templates for bug reports and features
+│   ├── deploy/             # Deployment scripts
+│   ├── CODE_OF_CONDUCT.md
+│   ├── CONTRIBUTING.md
+│   ├── PULL_REQUEST_TEMPLATE.md
+│   └── SECURITY.md
+│
+│   # Build scripts and development utilities
+├── bin/
+│   ├── _lib.sh
+│   ├── build-docker.sh
+│   ├── docker-functions.sh
+│   ├── install-plugins.sh
+│   ├── install-test-env.sh
+│   └── run-codeception.sh
+│
 │   # The built assets, compiled via `npm run build:dist`. They are excluded from the repository and should not be edited directly.
 ├── build/
 │
@@ -46,40 +70,43 @@ snapwp-helper/
 │   # PHP classes and functions.
 │   # Classes follow PSR-4, and are namespaced at `SnapWP\Helper`.
 ├── src/
-│   ├── Interfaces/  # PHP interfaces.
+│   ├── Abstracts/         # Abstract PHP classes
+│   │   └── AbstractRestAPI.php
+│   │
+│   ├── Interfaces/        # PHP interfaces.
 │   │
 │   │   # Individual features exist as co-located "Modules".
 │   ├── Modules/
-│   │  ├── Admin.php   # Registers the plugin's admin pages.
-│   │  ├── Assets.php  # Registers WP scripts and styles.
+│   │  ├── Admin.php       # Registers the plugin's admin pages.
+│   │  ├── Assets.php      # Registers WP scripts and styles.
 │   │  │
 │   │  │  # Manages WPGraphQL functionality
 │   │  ├── GraphQL/
-│   │  │  ├── Interfaces/ # Local PHP interfaces for the Module.
-│   │  │  ├── Model/      # Custom WPGraphQL Models
-│   │  │  ├── Type/       # Custom WPGraphQL types
+│   │  │  ├── Interfaces/  # Local PHP interfaces for the Module.
+│   │  │  ├── Model/       # Custom WPGraphQL Models
+│   │  │  ├── Type/        # Custom WPGraphQL types
 │   │  │  │
-│   │  │  ├── SchemaFilters.php     # Modifies existing WPGraphQL schema.
-│   │  │  └── TypeRegistry.php      # Registers custom WPGraphQL types.
+│   │  │  ├── SchemaFilters.php  # Modifies existing WPGraphQL schema.
+│   │  │  └── TypeRegistry.php   # Registers custom WPGraphQL types.
 │   │  │
-│   │  └── PluginUpdater/ # Plugin Updater Module
+│   │  └── PluginUpdater/  # Plugin Updater Module
 │   │     └── UpdateChecker.php  # Update Checker API
 │   │
-│   ├── Traits/ # Reusable PHP traits.
+│   ├── Traits/            # Reusable PHP traits.
 │   │
-│   ├── Utils/  # Utility methods
+│   ├── Utils/             # Utility methods
 │   │
-│   ├── Autoloader.php   # The PSR-4 autoloader for the plugin.
-│   ├── Dependencies.php # Manages plugin dependencies (e.g. WPGraphQL versions).
-│   └── Main.php         # The main plugin class.
+│   ├── Autoloader.php     # The PSR-4 autoloader for the plugin.
+│   ├── Dependencies.php    # Manages plugin dependencies (e.g. WPGraphQL versions).
+│   └── Main.php           # The main plugin class.
 │
-├── tests/ # Test files.
-├── vendor/ # Composer dependencies
+├── tests/                 # Test files.
+├── vendor/                # Composer dependencies
 │
 │   # Important root files.
-├── access-functions.php  # Globally-available functions. External code should use these functions to access plugin functionality instead of directly calling individual class methods.
-├── activation.php        # Runs when the plugin is activated.
-└── snapwp-helper.php      # Main plugin file
+├── access-functions.php   # Globally-available functions. External code should use these functions to access plugin functionality instead of directly calling individual class methods.
+├── activation.php         # Runs when the plugin is activated.
+└── snapwp-helper.php     # Main plugin file
 
 ```
 
