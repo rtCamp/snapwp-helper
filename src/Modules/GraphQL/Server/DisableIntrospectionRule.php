@@ -21,7 +21,7 @@ class DisableIntrospectionRule extends ValidationRulesDisableIntrospection {
 	 *
 	 * Overridden to validate the introspection token.
 	 */
-	public function isEnabled() {
+	public function isEnabled(): bool {
 		// Check the original conditions first.
 		$is_rule_enabled = parent::isEnabled();
 
