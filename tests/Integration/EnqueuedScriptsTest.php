@@ -68,13 +68,18 @@ class EnqueuedScriptsTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase {
 	 * Helper to execute a GraphQL query with the post URL.
 	 */
 	private function query(): string {
+		// Get the appropriate field name based on WPGraphQL version
+		$location_field = defined( 'WPGRAPHQL_VERSION' ) && version_compare( WPGRAPHQL_VERSION, '1.30.0', '>=' )
+		? 'groupLocation'
+		: 'location';
+
 		return '
 			query GetEnqueuedScripts($uri: String!) {
 				templateByUri(uri: $uri) {
 					enqueuedScripts(first: 1000) {
 						nodes {
 							handle
-							location
+							{$location_field}
 						}
 					}
 				}
@@ -124,7 +129,7 @@ class EnqueuedScriptsTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase {
 		$this->assertNotFalse( $index );
 		$actual_script = $actual['data']['templateByUri']['enqueuedScripts']['nodes'][ $index ];
 		$this->assertEquals( 'test-head-script', $actual_script['handle'] );
-		$this->assertEquals( 'header', $actual_script['location'] );
+		$this->assertEquals( 'header', $actual_script[defined( 'WPGRAPHQL_VERSION' ) && version_compare( WPGRAPHQL_VERSION, '1.30.0', '>=' ) ? 'groupLocation' : 'location'] );
 
 		// Assert only the expected script is enqueued by checking unwanted handles are absent.
 		$this->assertNoUnexpectedScriptsEnqueued( $actual, [ 'test-content-script', 'test-footer-script', 'dependency-script', 'test-dependent-script' ] );
@@ -175,7 +180,7 @@ class EnqueuedScriptsTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase {
 		$this->assertNotFalse( $index );
 		$actual_script = $actual['data']['templateByUri']['enqueuedScripts']['nodes'][ $index ];
 		$this->assertEquals( 'test-content-script', $actual_script['handle'] );
-		$this->assertEquals( 'header', $actual_script['location'] );
+		$this->assertEquals( 'header', $actual_script[defined( 'WPGRAPHQL_VERSION' ) && version_compare( WPGRAPHQL_VERSION, '1.30.0', '>=' ) ? 'groupLocation' : 'location'] );
 
 		// Assert only the expected script is enqueued by checking unwanted handles are absent.
 		$this->assertNoUnexpectedScriptsEnqueued( $actual, [ 'test-head-script', 'test-footer-script', 'dependency-script', 'test-dependent-script' ] );

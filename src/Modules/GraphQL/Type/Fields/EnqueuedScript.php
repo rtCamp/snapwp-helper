@@ -29,17 +29,28 @@ final class EnqueuedScript extends AbstractFields {
 	 * {@inheritDoc}
 	 */
 	public function get_fields(): array {
+		$field_resolver = static function ( \_WP_Dependency $script ) {
+			if ( isset( $script->extra['group'] ) && 1 === (int) $script->extra['group'] ) {
+				return 'footer';
+			}
+			return 'header';
+		};
+
+		if ( defined( 'WPGRAPHQL_VERSION' ) && version_compare( WPGRAPHQL_VERSION, '1.30.0', '>=' ) ) {
+			return [
+				'groupLocation' => [
+					'type'        => 'String',
+					'description' => __( 'The location where this script should be loaded', 'snapwp-helper' ),
+					'resolve'     => $field_resolver,
+				],
+			];
+		}
+
 		return [
 			'location' => [
 				'type'        => 'String',
 				'description' => __( 'The location where this script should be loaded', 'snapwp-helper' ),
-				'resolve'     => static function ( \_WP_Dependency $script ) {
-					if ( isset( $script->extra['group'] ) && 1 === (int) $script->extra['group'] ) {
-						return 'footer';
-					}
-
-					return 'header';
-				},
+				'resolve'     => $field_resolver,
 			],
 		];
 	}
