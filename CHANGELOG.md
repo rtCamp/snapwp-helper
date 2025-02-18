@@ -25,6 +25,7 @@ and this project adheres to [Semantic Versioning](./README.md#updating-and-versi
 ### Misc
 - docs: Misc cleanup.
 - ci: Enable CodeClimate and Coveralls reporting.
+- chore: lint JS files with ESLint.
 
 ## [0.0.1] - 2025-01-30
 

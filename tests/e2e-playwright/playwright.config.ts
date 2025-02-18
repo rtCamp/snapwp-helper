@@ -12,12 +12,12 @@ process.env.WP_ARTIFACTS_PATH = path.join(
 	'tests/_output/artifacts'
 );
 
-const baseConfig = require( '@wordpress/scripts/config/playwright.config' );
+const baseConfig = require('@wordpress/scripts/config/playwright.config');
 
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
-export default defineConfig( {
+export default defineConfig({
 	...baseConfig,
 	testDir: './specs',
 	/* Run tests in files in parallel */
@@ -37,16 +37,16 @@ export default defineConfig( {
 	projects: [
 		{
 			name: 'chromium',
-			use: { ...devices[ 'Desktop Chrome' ] },
+			use: { ...devices['Desktop Chrome'] },
 		},
 		{
 			name: 'firefox',
-			use: { ...devices[ 'Desktop Firefox' ] },
+			use: { ...devices['Desktop Firefox'] },
 		},
 
 		{
 			name: 'webkit',
-			use: { ...devices[ 'Desktop Safari' ] },
+			use: { ...devices['Desktop Safari'] },
 		},
 	],
 	/* Configure web server */
@@ -54,4 +54,4 @@ export default defineConfig( {
 		...baseConfig.webServer,
 		command: 'npm run wp-env -- start',
 	},
-} );
+});
