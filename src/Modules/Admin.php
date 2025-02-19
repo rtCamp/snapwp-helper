@@ -129,6 +129,15 @@ class Admin implements Module {
 			<?php if ( is_array( $variables ) ) : ?>
 				<h3><?php esc_html_e( 'Environment Variables', 'snapwp-helper' ); ?></h3>
 				<p><?php esc_html_e( 'These `.env` variables are used by SnapWP\'s frontend to connect with your WordPress backend.', 'snapwp-helper', ); ?></p>
+				<p>
+					<?php
+					printf(
+						// translators: %s is the hyperlink to the 'Config API & Environment Variables' doc.
+						esc_html__( 'Need help setting up environment variables? Refer to the %s doc.', 'snapwp-helper' ),
+						'<a href="https://github.com/rtcamp/snapwp/blob/develop/docs/config-api.md#env-variables" target="_blank">' . esc_html__( 'Config API and Environment Variables', 'snapwp-helper' ) . '</a>'
+					);
+					?>
+				</p>
 				<table class="wp-list-table widefat striped">
 					<thead>
 						<tr>
@@ -164,7 +173,13 @@ class Admin implements Module {
 			<h3><?php esc_html_e( 'SnapWP Frontend Setup Guide', 'snapwp-helper' ); ?></h3>
 
 			<p>
-				<?php esc_html_e( 'To get started with using SnapWP locally, follow the steps below:', 'snapwp-helper' ); ?>
+				<?php
+					printf(
+						// translators: %s is the hyperlink to the 'Frontend Setup' section in the 'Getting Started' doc.
+						esc_html__( 'To get started with using SnapWP locally, you can read the %s or can follow the steps below:', 'snapwp-helper' ),
+						'<a href="https://github.com/rtcamp/snapwp/blob/develop/docs/getting-started.md#frontend-setup" target="_blank">' . esc_html__( 'SnapWP Frontend Setup Guide', 'snapwp-helper' ) . '</a>'
+					);
+				?>
 			</p>
 
 			<ol>
@@ -196,18 +211,47 @@ class Admin implements Module {
 					<p><?php esc_html_e( 'Start the SnapWP frontend.', 'snapwp-helper' ); ?></p>
 					<p>
 						<?php esc_html_e( 'You are now ready to view your headless site locally!', 'snapwp-helper' ); ?>
+					</p>
 					<p>
-					<p>
-						<?php
-							printf(
-								// Translators: %1$s and %2$s are the commands, wrapped in code tags.
-								esc_html__( 'Run %1$s (for development) or %2$s (for production) and visit the `NEXT_PUBLIC_URL` from `.env` (updated in Step 2), in your browser to see SnapWP in action!.', 'snapwp-helper' ),
-								'<code>npm run dev</code>',
-								'<code>npm run build && npm run start</code>'
-							);
-						?>
+						<?php esc_html_e( 'Follow these steps to start your headless WordPress app:', 'snapwp-helper' ); ?>
+					</p>
+					<ol style="list-style-type: lower-roman;">
+						<li><?php esc_html_e( 'Navigate to the newly created app.', 'snapwp-helper' ); ?></li>
+						<li>
+							<?php
+								printf(
+									// Translators: %s is the command, wrapped in code tags.
+									esc_html__( 'Run %s', 'snapwp-helper' ),
+									'<code>npm install</code>',
+								);
+							?>
+						</li>
+						<li>
+							<p>
+								<?php
+									printf(
+										// Translators: %1$s and %2$s are the commands, wrapped in code tags.
+										esc_html__( 'Run %1$s (for development) or %2$s (for production).', 'snapwp-helper' ),
+										'<code>npm run dev</code>',
+										'<code>npm run build && npm run start</code>'
+									);
+								?>
+							</p>
+						</li>
+						<li><?php esc_html_e( 'Visit the `NEXT_PUBLIC_URL` from `.env` (updated in Step 2), in your browser to see SnapWP in action!', 'snapwp-helper' ); ?></li>
+					</ol>
 				</li>
 			</ol>
+
+			<p>
+				<?php
+					printf(
+						// translators: %s is the hyperlink to the 'Getting Started' doc.
+						esc_html__( 'For detailed setup instructions, please refer to the %s.', 'snapwp-helper' ),
+						'<a href="https://github.com/rtcamp/snapwp/blob/develop/docs/getting-started.md" target="_blank">' . esc_html__( 'Getting Started guide', 'snapwp-helper' ) . '</a>'
+					);
+				?>
+			</p>
 		</div>
 		<?php
 	}
