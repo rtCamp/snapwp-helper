@@ -248,7 +248,7 @@ class Admin implements Module {
 					printf(
 						// translators: %s is the hyperlink to the 'Getting Started' doc.
 						esc_html__( 'For detailed setup instructions, please refer to the %s.', 'snapwp-helper' ),
-						'<a href="https://github.com/rtcamp/snapwp/blob/develop/docs/getting-started.md#getting-started" target="_blank">' . esc_html__( 'Getting Started Guide', 'snapwp-helper' ) . '</a>'
+						'<a href="https://github.com/rtcamp/snapwp/blob/develop/docs/getting-started.md" target="_blank">' . esc_html__( 'Getting Started guide', 'snapwp-helper' ) . '</a>'
 					);
 				?>
 			</p>
