@@ -26,31 +26,31 @@ final class EnqueuedScript extends AbstractFields {
 	}
 
 	/**
+	 * Register fields to the Type.
+	 */
+	public function register(): void {
+		// Early return if WPGraphQL will register the field itself.
+		if ( defined( 'WPGRAPHQL_VERSION' ) && version_compare( WPGRAPHQL_VERSION, '1.30.0', '>=' ) ) {
+			return;
+		}
+
+		parent::register();
+	}
+
+	/**
 	 * {@inheritDoc}
 	 */
 	public function get_fields(): array {
-		$field_resolver = static function ( \_WP_Dependency $script ) {
-			if ( isset( $script->extra['group'] ) && 1 === (int) $script->extra['group'] ) {
-				return 'footer';
-			}
-			return 'header';
-		};
-
-		if ( defined( 'WPGRAPHQL_VERSION' ) && version_compare( WPGRAPHQL_VERSION, '1.30.0', '>=' ) ) {
-			return [
-				'groupLocation' => [
-					'type'        => 'String',
-					'description' => __( 'The location where this script should be loaded', 'snapwp-helper' ),
-					'resolve'     => $field_resolver,
-				],
-			];
-		}
-
 		return [
-			'location' => [
+			'groupLocation' => [
 				'type'        => 'String',
 				'description' => __( 'The location where this script should be loaded', 'snapwp-helper' ),
-				'resolve'     => $field_resolver,
+				'resolve'     => static function ( \_WP_Dependency $script ) {
+					if ( isset( $script->extra['group'] ) && 1 === (int) $script->extra['group'] ) {
+						return 'footer';
+					}
+					return 'header';
+				},
 			],
 		];
 	}
