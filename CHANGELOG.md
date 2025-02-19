@@ -6,7 +6,17 @@ and this project adheres to [Semantic Versioning](./README.md#updating-and-versi
 
 ## [Unreleased]
 
+## [0.1.0] - 2025-02-19
+
+This release represents the first 0.X release of SnapWP Helper, allowing for future _patch_ releases to be semantically versioned without breaking changes.
+
+There are **no breaking changes** in this release.
+
+### Changed
 - chore: Update Admin screen links and latest steps.
+
+### Misc
+- chore: Update Composer dev-dependencies to their latest versions.
 
 ## [0.0.2] - 2025-02-18
 
@@ -29,7 +39,7 @@ and this project adheres to [Semantic Versioning](./README.md#updating-and-versi
 - docs: Add usage docs on querying for `globalStyles` data.
 - docs: Add Quick Install instructions for `wp-cli` and `composer`.
 
-## Misc
+### Misc
 - ci: Enable CodeClimate and Coveralls reporting.
 - chore: Update Composer and NPM dependencies to their latest (SemVer-compatible) versions.
 - chore: Update PHPStan to v2.0 and remediate new smells.
