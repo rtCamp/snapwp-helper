@@ -243,8 +243,6 @@ class Admin implements Module {
 				</li>
 			</ol>
 
-			<p></p>
-
 			<p>
 				<?php
 					printf(
