@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](./README.md#updating-and-versioning).
 
+## [Unreleased]
+
+- chore: Update Admin screen links and latest steps.
+
 ## [0.0.2] - 2025-02-18
 
 ### Breaking
