@@ -130,12 +130,12 @@ class Admin implements Module {
 				<h3><?php esc_html_e( 'Environment Variables', 'snapwp-helper' ); ?></h3>
 				<p><?php esc_html_e( 'These `.env` variables are used by SnapWP\'s frontend to connect with your WordPress backend.', 'snapwp-helper', ); ?></p>
 				<p>
-					<?php 
-					printf( 
+					<?php
+					printf(
 						// translators: %s is the hyperlink to the 'Config API & Environment Variables' doc.
-						esc_html__( 'Need help setting up environment variables? Refer to the %s doc.', 'snapwp-helper' ), 
+						esc_html__( 'Need help setting up environment variables? Refer to the %s doc.', 'snapwp-helper' ),
 						'<a href="https://github.com/rtcamp/snapwp/blob/develop/docs/config-api.md#env-variables" target="_blank">' . esc_html__( 'Config API and Environment Variables', 'snapwp-helper' ) . '</a>'
-					); 
+					);
 					?>
 				</p>
 				<table class="wp-list-table widefat striped">
@@ -174,10 +174,11 @@ class Admin implements Module {
 
 			<p>
 				<?php
-					printf( 
+					printf(
 						// translators: %s is the hyperlink to the 'Frontend Setup' section in the 'Getting Started' doc.
-						esc_html__( 'To get started with using SnapWP locally, you can read the %s or can follow the steps below:', 'snapwp-helper' ), 
-						'<a href="https://github.com/rtcamp/snapwp/blob/develop/docs/getting-started.md#frontend-setup" target="_blank">' . esc_html__( 'SnapWP Frontend Setup Guide', 'snapwp-helper' ) . '</a>'					);
+						esc_html__( 'To get started with using SnapWP locally, you can read the %s or can follow the steps below:', 'snapwp-helper' ),
+						'<a href="https://github.com/rtcamp/snapwp/blob/develop/docs/getting-started.md#frontend-setup" target="_blank">' . esc_html__( 'SnapWP Frontend Setup Guide', 'snapwp-helper' ) . '</a>'
+					);
 				?>
 			</p>
 
@@ -219,8 +220,8 @@ class Admin implements Module {
 						<li>
 							<?php
 								printf(
-									// Translators: %1$s is the command, wrapped in code tags.
-									esc_html__( 'Run %1$s', 'snapwp-helper' ),
+									// Translators: %s is the command, wrapped in code tags.
+									esc_html__( 'Run %s', 'snapwp-helper' ),
 									'<code>npm install</code>',
 								);
 							?>
@@ -246,10 +247,11 @@ class Admin implements Module {
 
 			<p>
 				<?php
-					printf( 
-						// translators: %s is the hyperlink to the 'Frontend Setup' section in the 'Getting Started' doc.
-						esc_html__( 'For detailed setup instructions, please refer to the %s.', 'snapwp-helper' ), 
-						'<a href="https://github.com/rtcamp/snapwp/blob/develop/docs/getting-started.md#getting-started" target="_blank">' . esc_html__( 'Getting Started Guide', 'snapwp-helper' ) . '</a>');
+					printf(
+						// translators: %s is the hyperlink to the 'Getting Started' doc.
+						esc_html__( 'For detailed setup instructions, please refer to the %s.', 'snapwp-helper' ),
+						'<a href="https://github.com/rtcamp/snapwp/blob/develop/docs/getting-started.md#getting-started" target="_blank">' . esc_html__( 'Getting Started Guide', 'snapwp-helper' ) . '</a>'
+					);
 				?>
 			</p>
 		</div>
