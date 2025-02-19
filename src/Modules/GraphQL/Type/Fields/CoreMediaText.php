@@ -5,7 +5,6 @@
  * @todo: Temporary (non-conflicting) backport until supported by WPGraphQL Content Blocks.
  *
  * @package SnapWP\Helper\Modules\GraphQL\Type\Fields
- * @since 0.0.1
  */
 
 declare( strict_types = 1 );

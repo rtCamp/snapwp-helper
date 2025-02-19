@@ -7,7 +7,6 @@
  * @see https://github.com/wp-graphql/wp-graphql/pull/3196
  *
  * @package SnapWP\Helper\Modules\GraphQL\Type\Fields
- * @since 0.0.1
  */
 
 declare( strict_types = 1 );
