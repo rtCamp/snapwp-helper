@@ -14,6 +14,7 @@ There are **no breaking changes** in this release.
 
 ### Changed
 - chore: Update Admin screen links and latest steps.
+- dev!: Replace `EnqueuedScript.location` with `EnqueuedScript.groupLocation` for WPGraphQL < 1.3.0 compatibility.
 
 ### Misc
 - chore: Update Composer dev-dependencies to their latest versions.
