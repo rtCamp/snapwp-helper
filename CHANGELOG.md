@@ -5,6 +5,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](./README.md#updating-and-versioning).
 
 ## [Unreleased]
+- dev!: Replace `EnqueuedScript.location` with `EnqueuedScript.groupLocation` for WPGraphQL < 1.3.0 compatibility.
 
 ## [0.1.0] - 2025-02-19
 
@@ -14,7 +15,6 @@ There are **no breaking changes** in this release.
 
 ### Changed
 - chore: Update Admin screen links and latest steps.
-- dev!: Replace `EnqueuedScript.location` with `EnqueuedScript.groupLocation` for WPGraphQL < 1.3.0 compatibility.
 
 ### Misc
 - chore: Update Composer dev-dependencies to their latest versions.

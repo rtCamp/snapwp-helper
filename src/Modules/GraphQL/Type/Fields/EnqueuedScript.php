@@ -2,7 +2,6 @@
 /**
  * Registers custom fields to the GraphQL EnqueuedScript Object.
  *
- * @todo Temporary (non-conflicting) backport until supported by WPGraphQL.
  * @todo Remove when WPGraphQL >= 1.30.0 is required.
  *
  * @see https://github.com/wp-graphql/wp-graphql/pull/3196

@@ -124,8 +124,8 @@ class EnqueuedScriptsTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase {
 		$this->assertNotFalse( $index );
 		$actual_script = $actual['data']['templateByUri']['enqueuedScripts']['nodes'][ $index ];
 		$this->assertEquals( 'test-head-script', $actual_script['handle'] );
-		// WPGraphQL Core (>=1.30) returns location values in uppercase ('HEADER'/'FOOTER').
-		$this->assertEquals( 'HEADER', $actual_script['groupLocation'] );
+		// Handle both pre and post 1.30 enum cases.
+		$this->assertContains( $actual_script['groupLocation'], ['HEADER', 'header'] );
 
 		// Assert only the expected script is enqueued by checking unwanted handles are absent.
 		$this->assertNoUnexpectedScriptsEnqueued( $actual, [ 'test-content-script', 'test-footer-script', 'dependency-script', 'test-dependent-script' ] );
@@ -176,8 +176,8 @@ class EnqueuedScriptsTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase {
 		$this->assertNotFalse( $index );
 		$actual_script = $actual['data']['templateByUri']['enqueuedScripts']['nodes'][ $index ];
 		$this->assertEquals( 'test-content-script', $actual_script['handle'] );
-		// WPGraphQL Core (>=1.30) returns location values in uppercase ('HEADER'/'FOOTER').
-		$this->assertEquals( 'HEADER', $actual_script['groupLocation'] );
+		// Handle both pre and post 1.30 enum cases.
+		$this->assertContains( $actual_script['groupLocation'], ['HEADER', 'header'] );
 
 		// Assert only the expected script is enqueued by checking unwanted handles are absent.
 		$this->assertNoUnexpectedScriptsEnqueued( $actual, [ 'test-head-script', 'test-footer-script', 'dependency-script', 'test-dependent-script' ] );
