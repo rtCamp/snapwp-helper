@@ -11,6 +11,7 @@ declare( strict_types = 1 );
 
 namespace SnapWP\Helper\Modules\GraphQL\Type\WPObject;
 
+use SnapWP\Helper\Modules\GraphQL\Type\Enum\ScriptModuleImportTypeEnum;
 use WPGraphQL\AppContext;
 
 /**
@@ -37,7 +38,7 @@ final class ScriptModuleDependency extends AbstractObject {
 	public function get_fields(): array {
 		return [
 			'importType'            => [
-				'type'        => 'String', // @todo make enum.
+				'type'        => ScriptModuleImportTypeEnum::get_type_name(),
 				'description' => __( 'The import type for the dependency. Either `static` or `dynamic`.', 'snapwp-helper' ),
 				'resolve'     => static function ( $source ) {
 					return $source['import'] ?? 'static';
