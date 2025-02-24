@@ -172,6 +172,7 @@ class RenderedTemplate extends Model {
 		) {
 			while ( have_posts() ) {
 				the_post();
+
 				$blocks = ContentBlocksResolver::resolve_content_blocks(
 					$this->data,
 					[

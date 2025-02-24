@@ -6,8 +6,7 @@ and this project adheres to [Semantic Versioning](./README.md#updating-and-versi
 
 ## [Unreleased]
 
-### Fixed
-- Fix : `templateByUri.editorBlocks` to respect `flat: false`.
+- fix: Ensure `templateByUri.editorBlocks` respects the `flat` query arg.
 
 ## [0.1.0] - 2025-02-19
 
