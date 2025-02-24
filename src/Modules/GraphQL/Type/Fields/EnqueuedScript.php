@@ -48,6 +48,7 @@ final class EnqueuedScript extends AbstractFields {
 					if ( isset( $script->extra['group'] ) && 1 === (int) $script->extra['group'] ) {
 						return 'footer';
 					}
+
 					return 'header';
 				},
 			],

@@ -25,6 +25,18 @@ final class ScriptLoadingGroupLocationEnum extends AbstractEnum {
 	/**
 	 * {@inheritDoc}
 	 */
+	public function register(): void {
+		// Early return if WPGraphQL will register the field itself.
+		if ( defined( 'WPGRAPHQL_VERSION' ) && version_compare( WPGRAPHQL_VERSION, '1.30.0', '>=' ) ) {
+			return;
+		}
+
+		parent::register();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public function get_description(): string {
 		return __( 'The location where the script should be loaded.', 'snapwp-helper' );
 	}
