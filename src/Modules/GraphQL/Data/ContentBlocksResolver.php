@@ -304,7 +304,7 @@ final class ContentBlocksResolver {
 	 *
 	 * @return array<string,mixed> The flattened list of blocks.
 	 */
-	private static function flatten_block_list( $blocks ): array {
+	public static function flatten_block_list( $blocks ): array {
 		$result = [];
 		foreach ( $blocks as $block ) {
 			$result = array_merge( $result, self::flatten_inner_blocks( $block ) );

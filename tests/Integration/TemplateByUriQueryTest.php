@@ -130,6 +130,21 @@ class TemplateByUriQueryTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase
 	}
 
 	/**
+	 * The GraphQL query string to use for editor blocks.
+	 */
+	protected function editor_blocks_query(): string {
+		return '
+		query GetCurrentTemplate( $uri: String!, $flat: Boolean ) {
+			templateByUri( uri: $uri ) {
+				id
+				editorBlocks(flat: $flat) {
+					parentClientId
+				}
+			}
+		}';
+	}
+
+	/**
 	 * Test Post URIs
 	 */
 	public function testPostByUri(): void {
@@ -1036,5 +1051,70 @@ class TemplateByUriQueryTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase
 	 */
 	public function testSearchByUri(): void {
 		$this->markTestIncomplete( 'This test has not been implemented yet.' );
+	}
+
+	/**
+	 * Test the templateByUri GraphQL query for the flat argument.
+	 *
+	 * This test verifies that the `templateByUri` query correctly handles the flat argument.
+	 * It ensures that the query returns the flattened list of blocks when flat argument is set to true.
+	 * It also ensures that the query returns non-flattened list of blocks when flat argument is set to false or null.
+	 */
+	public function testTemplateByUriQueryFlatArgs(): void {
+		// Create a post with a block.
+		$post_id = $this->factory()->post->create();
+
+		// Get the post URL and the query.
+		$post_url = get_permalink( $post_id );
+		$query    = $this->editor_blocks_query();
+
+		// 1. Test the query with the flat argument set to null.
+		$variables     = [
+			'uri'  => wp_make_link_relative( $post_url ),
+			'flat' => null,
+		];
+		$actual        = $this->graphql( compact( 'query', 'variables' ) );
+		$editor_blocks = $actual['data']['templateByUri']['editorBlocks'];
+
+		// Assert that the query was successful and the editor blocks are returned.
+		$this->assertArrayNotHasKey( 'errors', $actual );
+		$this->assertNotEmpty( $editor_blocks );
+		$this->assertCount( 3, $editor_blocks );
+
+		// Assert that the editor blocks are not flattened.
+		foreach ( range( 0, 2 ) as $index ) {
+			$this->assertNull( $editor_blocks[ $index ]['parentClientId'] );
+		}
+
+		// 2. Test the query with the flat argument set to false.
+		$variables     = [
+			'uri'  => wp_make_link_relative( $post_url ),
+			'flat' => false,
+		];
+		$actual        = $this->graphql( compact( 'query', 'variables' ) );
+		$editor_blocks = $actual['data']['templateByUri']['editorBlocks'];
+
+		// Assert that the query was successful and the editor blocks are returned.
+		$this->assertArrayNotHasKey( 'errors', $actual );
+		$this->assertNotEmpty( $editor_blocks );
+		$this->assertCount( 3, $editor_blocks );
+
+		// Assert that the editor blocks are not flattened.
+		foreach ( range( 0, 2 ) as $index ) {
+			$this->assertNull( $editor_blocks[ $index ]['parentClientId'] );
+		}
+
+		// 3. Test the query with the flat argument set to true.
+		$variables     = [
+			'uri'  => wp_make_link_relative( $post_url ),
+			'flat' => true,
+		];
+		$actual        = $this->graphql( compact( 'query', 'variables' ) );
+		$editor_blocks = $actual['data']['templateByUri']['editorBlocks'];
+
+		// Assert that the query was successful and the editor blocks are returned.
+		$this->assertArrayNotHasKey( 'errors', $actual );
+		$this->assertNotEmpty( $editor_blocks );
+		$this->assertCount( 88, $editor_blocks );
 	}
 }

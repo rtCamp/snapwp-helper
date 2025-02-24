@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](./README.md#updating-and-versi
 
 ## [Unreleased]
 
+- fix: Ensure `templateByUri.editorBlocks` respects the `flat` query arg.
+
 ## [0.1.0] - 2025-02-19
 
 This release represents the first 0.X release of SnapWP Helper, allowing for future _patch_ releases to be semantically versioned without breaking changes.

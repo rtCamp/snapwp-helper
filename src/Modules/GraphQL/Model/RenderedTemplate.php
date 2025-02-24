@@ -172,10 +172,21 @@ class RenderedTemplate extends Model {
 		) {
 			while ( have_posts() ) {
 				the_post();
-				$blocks = ContentBlocksResolver::resolve_content_blocks( $this->data, [] );
+
+				$blocks = ContentBlocksResolver::resolve_content_blocks(
+					$this->data,
+					[
+						'flat' => false,
+					]
+				);
 			}
 		} else {
-			$blocks = ContentBlocksResolver::resolve_content_blocks( $this->data, [] );
+			$blocks = ContentBlocksResolver::resolve_content_blocks(
+				$this->data,
+				[
+					'flat' => false,
+				]
+			);
 		}
 
 		return $blocks;
