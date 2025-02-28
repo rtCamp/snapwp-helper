@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](./README.md#updating-and-versioning).
 
 ## [Unreleased]
+- dev!: Replace `EnqueuedScript.location` with `EnqueuedScript.groupLocation`.
+
+- feat!: Change `ScriptModuleDependency.importType` from type `String` to `ScriptModuleImportTypeEnum`.
 
 - feat!: Change `ScriptModuleDependency.importType` from type `String` to `ScriptModuleImportTypeEnum`.
 - fix: Ensure `templateByUri.editorBlocks` respects the `flat` query arg.

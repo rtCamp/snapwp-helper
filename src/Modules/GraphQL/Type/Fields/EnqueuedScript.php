@@ -2,7 +2,7 @@
 /**
  * Registers custom fields to the GraphQL EnqueuedScript Object.
  *
- * @todo Temporary (non-conflicting) backport until supported by WPGraphQL.
+ * @todo Remove when WPGraphQL >= 1.30.0 is required.
  *
  * @see https://github.com/wp-graphql/wp-graphql/pull/3196
  *
@@ -27,10 +27,22 @@ final class EnqueuedScript extends AbstractFields {
 	/**
 	 * {@inheritDoc}
 	 */
+	public function register(): void {
+		// Early return if WPGraphQL will register the field itself.
+		if ( defined( 'WPGRAPHQL_VERSION' ) && version_compare( WPGRAPHQL_VERSION, '1.30.0', '>=' ) ) {
+			return;
+		}
+
+		parent::register();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public function get_fields(): array {
 		return [
-			'location' => [
-				'type'        => 'String',
+			'groupLocation' => [
+				'type'        => 'ScriptLoadingGroupLocationEnum',
 				'description' => __( 'The location where this script should be loaded', 'snapwp-helper' ),
 				'resolve'     => static function ( \_WP_Dependency $script ) {
 					if ( isset( $script->extra['group'] ) && 1 === (int) $script->extra['group'] ) {
