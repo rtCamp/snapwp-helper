@@ -108,7 +108,7 @@ final class TypeRegistry implements Registrable {
 	private function enums(): array {
 		// Enums to register.
 		$classes_to_register = [
-      Enum\ScriptLoadingGroupLocationEnum::class,
+			Enum\ScriptLoadingGroupLocationEnum::class,
 			Enum\ScriptModuleImportTypeEnum::class,
 		];
 
