@@ -12,6 +12,7 @@ namespace SnapWP\Helper\Modules\GraphQL;
 use SnapWP\Helper\Interfaces\Registrable;
 use SnapWP\Helper\Modules\GraphQL\Interfaces\GraphQLType;
 use SnapWP\Helper\Modules\GraphQL\Type\Connection;
+use SnapWP\Helper\Modules\GraphQL\Type\Enum;
 use SnapWP\Helper\Modules\GraphQL\Type\Fields;
 use SnapWP\Helper\Modules\GraphQL\Type\WPObject;
 use SnapWP\Helper\Traits\Singleton;
@@ -106,7 +107,10 @@ final class TypeRegistry implements Registrable {
 	 */
 	private function enums(): array {
 		// Enums to register.
-		$classes_to_register = [];
+		$classes_to_register = [
+			Enum\ScriptModuleImportTypeEnum::class,
+			Enum\ScriptLoadingGroupLocationEnum::class,
+		];
 
 		/**
 		 * Filters the list of enum classes to register.

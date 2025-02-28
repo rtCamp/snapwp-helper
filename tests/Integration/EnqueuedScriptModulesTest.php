@@ -8,6 +8,7 @@
 namespace SnapWP\Tests\Integration;
 
 use WPGraphQL;
+use WPGraphQL\Type\WPEnumType;
 
 /**
  * Tests Enqueuing Script Modules.
@@ -175,7 +176,7 @@ class EnqueuedScriptModulesTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestC
 		$this->assertNotEmpty( $main_module['id'] );
 		$this->assertEquals( 'https://example.com/main.js', $main_module['src'] );
 		$this->assertCount( 1, $main_module['dependencies'] );
-		$this->assertEquals( 'static', $main_module['dependencies'][0]['importType'] );
+		$this->assertEquals( WPEnumType::get_safe_name( 'static' ), $main_module['dependencies'][0]['importType'] );
 		$this->assertEquals( 'test-parent-dependency', $main_module['dependencies'][0]['connectedScriptModule']['handle'] );
 
 		$parent_module = array_values(
@@ -190,7 +191,7 @@ class EnqueuedScriptModulesTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestC
 		$this->assertNotEmpty( $parent_module['id'] );
 		$this->assertEquals( 'https://example.com/test-parent-dependency.js', $parent_module['src'] );
 		$this->assertCount( 1, $parent_module['dependencies'] );
-		$this->assertEquals( 'dynamic', $parent_module['dependencies'][0]['importType'] );
+		$this->assertEquals( WPEnumType::get_safe_name( 'dynamic' ), $parent_module['dependencies'][0]['importType'] );
 		$this->assertEquals( 'test-grandparent-dependency', $parent_module['dependencies'][0]['connectedScriptModule']['handle'] );
 
 		$grandparent_module = array_values(
