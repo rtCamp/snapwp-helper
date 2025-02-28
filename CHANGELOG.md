@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](./README.md#updating-and-versi
 ## [Unreleased]
 
 - fix: Ensure `templateByUri.editorBlocks` respects the `flat` query arg.
-- fix: Unmute `WP_DEBUG_DISPLAY` during env creation
+- ci: Unmute `WP_DEBUG_DISPLAY` during env creation
 
 ## [0.1.0] - 2025-02-19
 

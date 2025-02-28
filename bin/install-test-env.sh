@@ -115,10 +115,6 @@ if [ "$WP_DEBUG" != $WP_DEBUG_CURRENT ]; then
 	wp config set WP_DEBUG $WP_DEBUG --raw --type=constant --quiet --allow-root
 	WP_DEBUG_RESULT=$(wp config get --type=constant --format=json WP_DEBUG  --allow-root | tr -d '\r')
 	echo -e "$(status_message "WP_DEBUG: $WP_DEBUG_RESULT...")"
-
-	wp config set WP_DEBUG_DISPLAY true --raw --type=constant --quiet --allow-root
-	WP_DEBUG_DISPLAY_RESULT=$(wp config get --type=constant --format=json WP_DEBUG_DISPLAY --allow-root | tr -d '\r')
-	echo -e "$(status_message "WP_DEBUG_DISPLAY: $WP_DEBUG_DISPLAY_RESULT...")"
 fi
 
 # Disable Update Checks
