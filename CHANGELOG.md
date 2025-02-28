@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](./README.md#updating-and-versi
 
 - feat!: Change `ScriptModuleDependency.importType` from type `String` to `ScriptModuleImportTypeEnum`.
 - fix: Ensure `templateByUri.editorBlocks` respects the `flat` query arg.
+- ci: Unmute `WP_DEBUG_DISPLAY` during env creation
 
 ## [0.1.0] - 2025-02-19
 
