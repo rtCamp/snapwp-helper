@@ -278,11 +278,6 @@ final class ContentBlocksResolver {
 	 * @return array<string,mixed> The populated block.
 	 */
 	private static function populate_pattern_inner_blocks( array $block ): array {
-		// Bail if not WP 6.6 or later.
-		if ( ! function_exists( 'resolve_pattern_blocks' ) ) {
-			return $block;
-		}
-
 		if ( 'core/pattern' !== $block['blockName'] || ! isset( $block['attrs']['slug'] ) ) {
 			return $block;
 		}

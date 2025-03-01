@@ -35,14 +35,9 @@ final class ScriptModuleUtils {
 	 * @see https://core.trac.wordpress.org/ticket/60597
 	 * @see https://github.com/WordPress/wordpress-develop/blob/86f31c81668c0a680b6db275b41298f7e8513389/src/wp-includes/class-wp-script-modules.php#L380
 	 *
-	 * @return array<string,ScriptModuleData>|null
+	 * @return array<string,ScriptModuleData>
 	 */
-	public static function get_enqueued_script_modules(): ?array {
-		// Check for WP 6.5+ compatibility.
-		if ( ! function_exists( 'wp_script_modules' ) ) {
-			return null;
-		}
-
+	public static function get_enqueued_script_modules(): array {
 		$modules = wp_script_modules();
 
 		$reflector = new \ReflectionClass( $modules );
