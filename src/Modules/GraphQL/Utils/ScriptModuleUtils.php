@@ -38,11 +38,6 @@ final class ScriptModuleUtils {
 	 * @return array<string,ScriptModuleData>|null
 	 */
 	public static function get_enqueued_script_modules(): ?array {
-		// Check for WP 6.5+ compatibility.
-		if ( ! function_exists( 'wp_script_modules' ) ) {
-			return null;
-		}
-
 		$modules = wp_script_modules();
 
 		$reflector = new \ReflectionClass( $modules );
