@@ -12,7 +12,6 @@ This _major_ release aligns the WPGraphQL schema with changes backported upstrea
 
 ### Breaking
 - feat!: Change `ScriptModuleDependency.importType` from type `String` to `ScriptModuleImportTypeEnum`.
-- feat!: Change `ScriptModuleDependency.importType` from type `String` to `ScriptModuleImportTypeEnum`.
 - feat!: Remove `EnqueuedScript.location` field in favor of `EnqueuedScript.groupLocation`.
 
 ### Fixed
