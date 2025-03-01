@@ -5,14 +5,23 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](./README.md#updating-and-versioning).
 
 ## [Unreleased]
-- dev!: Replace `EnqueuedScript.location` with `EnqueuedScript.groupLocation`.
 
-- feat!: Change `ScriptModuleDependency.importType` from type `String` to `ScriptModuleImportTypeEnum`.
+## [0.2.0] - 2025-03-01
 
+This _major_ release aligns the WPGraphQL schema with changes backported upstream to WPGraphQL. Additionally, it fixes an issue when querying for nested `editorBlocks` data.
+
+### Breaking
 - feat!: Change `ScriptModuleDependency.importType` from type `String` to `ScriptModuleImportTypeEnum`.
+- feat!: Remove `EnqueuedScript.location` field in favor of `EnqueuedScript.groupLocation`.
+
+### Fixed
+
 - fix: Ensure `templateByUri.editorBlocks` respects the `flat` query arg.
-- ci: Unmute `WP_DEBUG_DISPLAY` during env creation
+
+### Misc
+- ci: Unmute `WP_DEBUG_DISPLAY` during env creation.
 - chore: Remove unnecessary WordPress version checks.
+- chore: Update Composer and NPM dev-dependencies to their latest (SemVer-compatible) versions.
 
 ## [0.1.0] - 2025-02-19
 
