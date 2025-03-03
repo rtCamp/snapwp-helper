@@ -100,11 +100,11 @@ final class SchemaFilters implements Registrable {
 		if ( RenderedTemplate::get_type_name() === $typename ) {
 			$fields['editorBlocks']['resolve'] = static function ( $node, $args ) {
 				// Since blocks are preresolved by `templatebyUri`, may need to flatten them.
-				if ( empty( $args['flat'] ) ) {
-					return $node->parsed_blocks;
-				}
+				$should_flatten_blocks = ! isset( $args['flat'] ) || $args['flat'];
 
-				return ContentBlocksResolver::flatten_block_list( $node->parsed_blocks );
+				return $should_flatten_blocks
+					? ContentBlocksResolver::flatten_block_list( $node->parsed_blocks )
+					: $node->parsed_blocks;
 			};
 
 			return $fields;
