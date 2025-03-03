@@ -17,6 +17,7 @@ This _major_ release aligns the WPGraphQL schema with changes backported upstrea
 ### Fixed
 
 - fix: Ensure `templateByUri.editorBlocks` respects the `flat` query arg.
+- fix: Ensure if the `flat` query arg is not provided, the blocks are flattened.
 
 ### Misc
 - ci: Unmute `WP_DEBUG_DISPLAY` during env creation.
