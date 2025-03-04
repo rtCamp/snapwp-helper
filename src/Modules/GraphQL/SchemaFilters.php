@@ -96,11 +96,11 @@ final class SchemaFilters implements Registrable {
 			return $fields;
 		}
 
-		// RenderedTemplate is a special case, as it already has the blocks resolved.
+		// RenderedTemplate is a special case, as the blocks are preresolved before any args are applied.
 		if ( RenderedTemplate::get_type_name() === $typename ) {
 			$fields['editorBlocks']['resolve'] = static function ( $node, $args ) {
-				// Since blocks are preresolved by `templatebyUri`, may need to flatten them.
-				if ( empty( $args['flat'] ) ) {
+				// Bail if the blocks don't need to be flattened.
+				if ( isset( $args['flat'] ) && ! $args['flat'] ) {
 					return $node->parsed_blocks;
 				}
 

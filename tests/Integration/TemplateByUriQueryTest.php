@@ -132,12 +132,12 @@ class TemplateByUriQueryTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase
 	/**
 	 * The GraphQL query string to use for editor blocks.
 	 */
-	protected function editor_blocks_query(): string {
+	protected function editor_blocks_query( $flat = '' ): string {
 		return '
-		query GetCurrentTemplate( $uri: String!, $flat: Boolean ) {
+		query GetCurrentTemplate( $uri: String! ) {
 			templateByUri( uri: $uri ) {
 				id
-				editorBlocks(flat: $flat) {
+				editorBlocks' . $flat . ' {
 					parentClientId
 				}
 			}
@@ -1066,12 +1066,11 @@ class TemplateByUriQueryTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase
 
 		// Get the post URL and the query.
 		$post_url = get_permalink( $post_id );
-		$query    = $this->editor_blocks_query();
+		// 1. Test the query with no flat argument set.
 
-		// 1. Test the query with the flat argument set to null.
+		$query         = $this->editor_blocks_query();
 		$variables     = [
-			'uri'  => wp_make_link_relative( $post_url ),
-			'flat' => null,
+			'uri' => wp_make_link_relative( $post_url ),
 		];
 		$actual        = $this->graphql( compact( 'query', 'variables' ) );
 		$editor_blocks = $actual['data']['templateByUri']['editorBlocks'];
@@ -1079,17 +1078,12 @@ class TemplateByUriQueryTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase
 		// Assert that the query was successful and the editor blocks are returned.
 		$this->assertArrayNotHasKey( 'errors', $actual );
 		$this->assertNotEmpty( $editor_blocks );
-		$this->assertCount( 3, $editor_blocks );
-
-		// Assert that the editor blocks are not flattened.
-		foreach ( range( 0, 2 ) as $index ) {
-			$this->assertNull( $editor_blocks[ $index ]['parentClientId'] );
-		}
+		$this->assertCount( 88, $editor_blocks );
 
 		// 2. Test the query with the flat argument set to false.
+		$query         = $this->editor_blocks_query( '(flat : false)' );
 		$variables     = [
-			'uri'  => wp_make_link_relative( $post_url ),
-			'flat' => false,
+			'uri' => wp_make_link_relative( $post_url ),
 		];
 		$actual        = $this->graphql( compact( 'query', 'variables' ) );
 		$editor_blocks = $actual['data']['templateByUri']['editorBlocks'];
@@ -1105,9 +1099,9 @@ class TemplateByUriQueryTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase
 		}
 
 		// 3. Test the query with the flat argument set to true.
+		$query         = $this->editor_blocks_query( '(flat : true)' );
 		$variables     = [
-			'uri'  => wp_make_link_relative( $post_url ),
-			'flat' => true,
+			'uri' => wp_make_link_relative( $post_url ),
 		];
 		$actual        = $this->graphql( compact( 'query', 'variables' ) );
 		$editor_blocks = $actual['data']['templateByUri']['editorBlocks'];
