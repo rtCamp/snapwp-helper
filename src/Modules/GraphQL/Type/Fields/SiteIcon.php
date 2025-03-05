@@ -26,8 +26,8 @@ final class SiteIcon extends AbstractFields {
 	 * {@inheritDoc}
 	 */
 	public function get_fields(): array {
-		return array(
-			'siteIcon' => array(
+		return [
+			'siteIcon' => [
 				'type'        => 'MediaItem',
 				'description' => __( 'Site Icon', 'snapwp-helper' ),
 				'resolve'     => static function ( $_source, $_args, AppContext $context ) {
@@ -39,7 +39,7 @@ final class SiteIcon extends AbstractFields {
 
 					return $context->get_loader( 'post' )->load_deferred( $site_icon_id );
 				},
-			),
-		);
+			],
+		];
 	}
 }
