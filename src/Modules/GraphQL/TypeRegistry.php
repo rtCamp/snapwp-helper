@@ -193,6 +193,7 @@ final class TypeRegistry implements Registrable {
 			Fields\EnqueuedScript::class,
 			Fields\CoreCover::class,
 			Fields\CoreMediaText::class,
+			Fields\SiteIcon::class,
 		];
 
 		/**
