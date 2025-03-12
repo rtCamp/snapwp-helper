@@ -18,12 +18,16 @@ class AutoloaderTest extends WPTestCase {
 	protected $autoloader;
 
 	protected function setUp(): void {
+		parent::setUp();
+
 		$this->autoloader = new MockAutoloader();
 		MockAutoloader::reset();
 	}
 
 	protected function tearDown(): void {
 		unset( $this->autoloader );
+
+		parent::tearDown();
 	}
 
 	public function testAutoload() {

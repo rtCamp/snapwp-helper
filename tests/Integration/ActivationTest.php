@@ -22,9 +22,9 @@ class ActivationTest extends WPTestCase {
 	 * Tear down the test.
 	 */
 	public function tearDown(): void {
-		parent::tearDown();
-
 		$GLOBALS['wp_version'] = $this->wp_version;
+
+		parent::tearDown();
 	}
 
 	/**

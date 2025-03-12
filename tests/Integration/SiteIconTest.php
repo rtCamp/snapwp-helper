@@ -31,19 +31,17 @@ class SiteIconTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase {
 	public function setUp(): void {
 		parent::setUp();
 
-		$this->user_id = $this->factory->user->create(
+		$this->user_id = $this->factory()->user->create(
 			[
 				'role' => 'administrator',
 			]
 		);
 
 		$ico_file            = SNAPWP_HELPER_PLUGIN_DIR . '/tests/_data/image/wordpress.png';
-		$this->attachment_id = $this->factory->attachment->create_upload_object( $ico_file );
+		$this->attachment_id = $this->factory()->attachment->create_upload_object( $ico_file );
 
 		// Set it as the site icon.
 		update_option( 'site_icon', $this->attachment_id );
-
-		$this->clearSchema();
 	}
 
 	/**
@@ -51,8 +49,6 @@ class SiteIconTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase {
 	 */
 	public function tearDown(): void {
 		wp_delete_user( $this->user_id );
-		$this->clearSchema();
-
 		// Reset the site icon.
 		delete_option( 'site_icon' );
 
