@@ -87,9 +87,12 @@ class SiteIconTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase {
 	/**
 	 * Test Post URIs
 	 */
-	public function testPostByUri(): void {
+	public function testSiteIcon(): void {
 		$query  = $this->query();
 		$actual = $this->graphql( compact( 'query' ) );
+
+		// Added temporary debug.
+		error_log( print_r( $actual, true ) );
 
 		$this->assertArrayNotHasKey( 'errors', $actual, 'Query should not return errors.' );
 		$this->assertNotNull( $actual['data']['generalSettings']['siteIcon'], 'Site Icon should not be null.' );
