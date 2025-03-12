@@ -40,10 +40,10 @@ class DisableIntrospectionRuleTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTe
 	public function tearDown(): void {
 		// Reset the graphql_general_settings option.
 		$settings = get_option( 'graphql_general_settings' );
-		unset( $settings['public_introspection_enabled'] );
+		$settings['public_introspection_enabled'] = 'off';
 		update_option( 'graphql_general_settings', $settings );
 
-		remove_filter( 'graphql_debug_enabled', '__return_false' );
+		remove_all_filters( 'graphql_debug_enabled' );
 
 		wp_delete_user( $this->admin );
 
