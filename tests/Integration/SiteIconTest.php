@@ -31,21 +31,19 @@ class SiteIconTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase {
 	public function setUp(): void {
 		parent::setUp();
 
-		flush_rewrite_rules( true ); // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.flush_rewrite_rules_flush_rewrite_rules -- Required for the test.
-
-		$this->clearSchema();
-
 		$this->user_id = $this->factory->user->create(
 			[
 				'role' => 'administrator',
 			]
 		);
 
-		$tmp_file            = SNAPWP_HELPER_PLUGIN_DIR . '/tests/_data/image/wordpress.png';
-		$this->attachment_id = $this->factory->attachment->create_upload_object( $tmp_file );
+		$ico_file            = SNAPWP_HELPER_PLUGIN_DIR . '/tests/_data/image/wordpress.png';
+		$this->attachment_id = $this->factory->attachment->create_upload_object( $ico_file );
 
 		// Set it as the site icon.
 		update_option( 'site_icon', $this->attachment_id );
+
+		$this->clearSchema();
 	}
 
 	/**
