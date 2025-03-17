@@ -51,7 +51,7 @@ jobs:
 
             - name: Determine modified files for PR
               id: changed-files
-              uses: tj-actions/changed-files@v44
+              uses: tj-actions/changed-files@2f7c5bfce28377bc069a65ba478de0a74aa0ca32 # @v46.0.1
               with:
                   # We are only interested in PHP, JS, and workflow files.
                   files_yaml: |
