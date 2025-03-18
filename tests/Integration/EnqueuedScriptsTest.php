@@ -5,14 +5,14 @@
  * @package SnapWP\Helper\Tests\Integration
  */
 
-namespace SnapWP\Tests\Integration;
+namespace SnapWP\Helper\Tests\Integration;
 
-use WPGraphQL;
+use SnapWP\Helper\Tests\TestCase\IntegrationTestCase;
 
 /**
  * Tests the RenderedTemplate class.
  */
-class EnqueuedScriptsTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase {
+class EnqueuedScriptsTest extends IntegrationTestCase {
 	/**
 	 * {@inheritDoc}
 	 */
@@ -36,16 +36,12 @@ class EnqueuedScriptsTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase {
 		// Reset the queues.
 		$GLOBALS['wp_scripts']->queue = [];
 		$GLOBALS['wp_styles']->queue  = [];
-
-		// Clear the schema.
-		WPGraphQL::clear_schema();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	protected function tearDown(): void {
-
 		remove_all_actions( 'wp_enqueue_scripts' );
 
 		// Reset the queues.
@@ -56,9 +52,6 @@ class EnqueuedScriptsTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase {
 		if ( isset( $GLOBALS['wp_styles'] ) ) {
 			$GLOBALS['wp_styles']->queue = [];
 		}
-
-		// Clear the schema.
-		WPGraphQL::clear_schema();
 
 		// Call the parent teardown to clean up.
 		parent::tearDown();
@@ -164,7 +157,7 @@ class EnqueuedScriptsTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase {
 
 		$actual = $this->graphql( compact( 'query', 'variables' ) );
 
-		// Assert no errors
+		// Assert no errors.
 		$this->assertArrayNotHasKey( 'errors', $actual );
 		$this->assertArrayHasKey( 'data', $actual );
 

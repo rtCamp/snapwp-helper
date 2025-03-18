@@ -10,13 +10,13 @@
 namespace SnapWP\Helper\Tests\Integration;
 
 use SnapWP\Helper\Modules\PluginUpdater\UpdateChecker;
+use SnapWP\Helper\Tests\TestCase\IntegrationTestCase;
 use YahnisElsts\PluginUpdateChecker\v5p5\Plugin\Update;
-use lucatume\WPBrowser\TestCase\WPTestCase;
 
 /**
  * Tests the Update Checker class.
  */
-class UpdateCheckerTest extends WPTestCase {
+class UpdateCheckerTest extends IntegrationTestCase {
 	/**
 	 * {@inheritDoc}
 	 */

@@ -7,13 +7,13 @@
 
 namespace SnapWP\Helper\Tests\Integration;
 
+use SnapWP\Helper\Tests\TestCase\IntegrationTestCase;
 use SnapWP\Helper\Utils\Utils;
-use lucatume\WPBrowser\TestCase\WPTestCase;
 
 /**
  * Tests the Utils class.
  */
-class UtilsTest extends WPTestCase {
+class UtilsTest extends IntegrationTestCase {
 	/**
 	 * Tests Utils::kebab_to_camel_case().
 	 *

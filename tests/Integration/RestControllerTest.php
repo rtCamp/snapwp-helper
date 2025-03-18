@@ -8,12 +8,12 @@
 namespace SnapWP\Helper\Tests\Integration;
 
 use SnapWP\Helper\Modules\GraphQL\Data\IntrospectionToken;
-use lucatume\WPBrowser\TestCase\WPTestCase;
+use SnapWP\Helper\Tests\TestCase\IntegrationTestCase;
 
 /**
  * Tests the RestController class.
  */
-class RestControllerTest extends WPTestCase {
+class RestControllerTest extends IntegrationTestCase {
 	/**
 	 * The REST endpoint to use.
 	 *
@@ -48,8 +48,13 @@ class RestControllerTest extends WPTestCase {
 	 * {@inheritDoc}
 	 */
 	public function tearDown(): void {
-		global $wp_rest_server;
+		global $wp_rest_server, $wp_registered_settings;
 		$wp_rest_server = null;
+
+		// Rest API registers settings, so we need to clear them to prevent conflicts with our GeneralSettings fields.
+		$wp_registered_settings = null;
+
+		$this->clearSchema();
 
 		parent::tearDown();
 	}

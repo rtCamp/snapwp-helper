@@ -9,17 +9,12 @@ namespace SnapWP\Helper\Tests\Integration;
 
 use SnapWP\Helper\Modules\Admin;
 use SnapWP\Helper\Modules\GraphQL\Data\IntrospectionToken;
-use lucatume\WPBrowser\TestCase\WPTestCase;
+use SnapWP\Helper\Tests\TestCase\IntegrationTestCase;
 
 /**
  * Tests the Admin class.
  */
-class AdminTest extends WPTestCase {
-	/**
-	 * @param \IntegrationTester
-	 */
-	protected $tester;
-
+class AdminTest extends IntegrationTestCase {
 	/**
 	 * The ID of the admin user.
 	 */
@@ -29,6 +24,8 @@ class AdminTest extends WPTestCase {
 	 * {@inheritDoc}
 	 */
 	protected function setUp(): void {
+		parent::setUp();
+
 		$this->admin_id = $this->factory()->user->create( [ 'role' => 'administrator' ] );
 	}
 
@@ -37,6 +34,8 @@ class AdminTest extends WPTestCase {
 	 */
 	protected function tearDown(): void {
 		wp_delete_user( $this->admin_id );
+
+		parent::tearDown();
 	}
 
 	/**

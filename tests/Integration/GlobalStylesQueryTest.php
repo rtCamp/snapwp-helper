@@ -7,26 +7,13 @@
 
 namespace SnapWP\Helper\Tests\Integration;
 
+use SnapWP\Helper\Tests\TestCase\IntegrationTestCase;
 use SnapWP\Helper\Utils\Utils;
 
 /**
  * Class - GlobalStylesQueryTest
  */
-class GlobalStylesQueryTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase {
-	/**
-	 * {@inheritDoc}
-	 */
-	public function setUp(): void {
-		parent::setUp();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function tearDown(): void {
-		parent::tearDown();
-	}
-
+class GlobalStylesQueryTest extends IntegrationTestCase {
 	public function testGlobalStylesQuery(): void {
 		$query = 'query testGlobalStyles {
 			globalStyles {

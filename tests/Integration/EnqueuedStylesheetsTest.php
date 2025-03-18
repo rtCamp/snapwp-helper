@@ -5,14 +5,14 @@
  * @package SnapWP\Helper\Tests\Integration
  */
 
-namespace SnapWP\Tests\Integration;
+namespace SnapWP\Helper\Tests\Integration;
 
-use WPGraphQL;
+use SnapWP\Helper\Tests\TestCase\IntegrationTestCase;
 
 /**
  * Tests the stylesheet enqueuing functionality of RenderedTemplate.
  */
-class EnqueuedStylesheetsTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase {
+class EnqueuedStylesheetsTest extends IntegrationTestCase {
 	/**
 	 * {@inheritDoc}
 	 */
@@ -36,7 +36,7 @@ class EnqueuedStylesheetsTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCas
 		$GLOBALS['wp_styles']->queue = [];
 
 		// Clear the schema.
-		WPGraphQL::clear_schema();
+		$this->clearSchema();
 	}
 
 	/**
@@ -51,7 +51,7 @@ class EnqueuedStylesheetsTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCas
 		}
 
 		// Clear the schema.
-		WPGraphQL::clear_schema();
+		$this->clearSchema();
 
 		parent::tearDown();
 	}

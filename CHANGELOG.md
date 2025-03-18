@@ -6,6 +6,16 @@ and this project adheres to [Semantic Versioning](./README.md#updating-and-versi
 
 ## [Unreleased]
 
+- tests: Use `IntegrationTestCase` for Integration tests.
+- feat: Expose `generalSettings.siteIcon` field to the schema.
+
+## [0.2.1] - 2025-03-10
+
+This _patch_ release fixes a regression where an unset `flat` query arg passed to `templateByUri.editorBlocks` would return unflattened blocks.
+
+- fix: Ensure blocks are flattened if no `flat` query arg is passed to `templateByUri.editorBlocks`.
+- chore: Update Composer and NPM dev-dependencies to their latest (SemVer-compatible) versions.
+
 ## [0.2.0] - 2025-03-01
 
 This _major_ release aligns the WPGraphQL schema with changes backported upstream to WPGraphQL. Additionally, it fixes an issue when querying for nested `editorBlocks` data.
@@ -17,7 +27,6 @@ This _major_ release aligns the WPGraphQL schema with changes backported upstrea
 ### Fixed
 
 - fix: Ensure `templateByUri.editorBlocks` respects the `flat` query arg.
-- fix: Ensure if the `flat` query arg is not provided, the blocks are flattened.
 
 ### Misc
 - ci: Unmute `WP_DEBUG_DISPLAY` during env creation.
