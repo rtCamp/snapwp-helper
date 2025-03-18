@@ -2,17 +2,12 @@
 
 namespace SnapWP\Helper\Tests\Integration;
 
-use lucatume\WPBrowser\TestCase\WPTestCase;
+use SnapWP\Helper\Tests\TestCase\IntegrationTestCase;
 
 /**
  * Tests the main class.
  */
-class MainTest extends WPTestCase {
-	/**
-	 * @var \UnitTester
-	 */
-	protected $tester;
-
+class MainTest extends IntegrationTestCase {
 	/**
 	 * Test if the plugin is active.
 	 */

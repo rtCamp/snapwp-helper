@@ -62,7 +62,8 @@
 	},
 	"autoload-dev": {
 		"psr-4": {
-			"SnapWP\\Helper\\Tests\\Helper\\": "tests/_support/Helper/"
+			"SnapWP\\Helper\\Tests\\Helper\\": "tests/_support/Helper/",
+			"SnapWP\\Helper\\Tests\\TestCase\\": "tests/_support/TestCase/"
 		}
 	},
 	"scripts": {

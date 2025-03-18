@@ -7,10 +7,17 @@
 
 namespace SnapWP\Helper\Integration\Tests;
 
+use SnapWP\Helper\Tests\TestCase\IntegrationTestCase;
+
 /**
  * Tests the DisableIntrospectionRule class.
  */
-class DisableIntrospectionRuleTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase {
+class DisableIntrospectionRuleTest extends IntegrationTestCase {
+	/**
+	 * Admin user ID.
+	 *
+	 * @var int
+	 */
 	public $admin;
 
 	/**
@@ -39,7 +46,7 @@ class DisableIntrospectionRuleTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTe
 	 */
 	public function tearDown(): void {
 		// Reset the graphql_general_settings option.
-		$settings = get_option( 'graphql_general_settings' );
+		$settings                                 = get_option( 'graphql_general_settings' );
 		$settings['public_introspection_enabled'] = 'off';
 		update_option( 'graphql_general_settings', $settings );
 

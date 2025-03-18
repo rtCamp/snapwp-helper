@@ -7,10 +7,12 @@
 
 namespace SnapWP\Helper\Tests\Integration;
 
+use SnapWP\Helper\Tests\TestCase\IntegrationTestCase;
+
 /**
  * Class - SiteIconTest
  */
-class SiteIconTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase {
+class SiteIconTest extends IntegrationTestCase {
 	/**
 	 * User ID.
 	 *
@@ -42,6 +44,9 @@ class SiteIconTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase {
 
 		// Set it as the site icon.
 		update_option( 'site_icon', $this->attachment_id );
+
+		// Prevent conflicts if the REST API registers the icon in a previous test.
+		$this->clearSchema();
 	}
 
 	/**
@@ -84,9 +89,6 @@ class SiteIconTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase {
 	public function testSiteIcon(): void {
 		$query  = $this->query();
 		$actual = $this->graphql( compact( 'query' ) );
-
-		// Added temporary debug.
-		error_log( print_r( $actual, true ) );
 
 		$this->assertArrayNotHasKey( 'errors', $actual, 'Query should not return errors.' );
 		$this->assertNotNull( $actual['data']['generalSettings']['siteIcon'], 'Site Icon should not be null.' );

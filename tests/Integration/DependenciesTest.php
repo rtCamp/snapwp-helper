@@ -8,12 +8,12 @@
 namespace SnapWP\Helper\Tests\Integration;
 
 use SnapWP\Helper\Dependencies;
-use lucatume\WPBrowser\TestCase\WPTestCase;
+use SnapWP\Helper\Tests\TestCase\IntegrationTestCase;
 
 /**
  * Tests the Dependencies class.
  */
-class DependenciesTest extends WPTestCase {
+class DependenciesTest extends IntegrationTestCase {
 	/**
 	 * {@inheritDoc}
 	 */

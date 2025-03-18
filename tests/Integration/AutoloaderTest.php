@@ -3,7 +3,7 @@
 namespace SnapWP\Helper\Tests\Integration;
 
 use SnapWP\Helper\Autoloader;
-use lucatume\WPBrowser\TestCase\WPTestCase;
+use SnapWP\Helper\Tests\TestCase\IntegrationTestCase;
 
 class MockAutoloader extends Autoloader {
 	public static function reset() {
@@ -14,7 +14,7 @@ class MockAutoloader extends Autoloader {
 /**
  * Tests the main class.
  */
-class AutoloaderTest extends WPTestCase {
+class AutoloaderTest extends IntegrationTestCase {
 	protected $autoloader;
 
 	protected function setUp(): void {

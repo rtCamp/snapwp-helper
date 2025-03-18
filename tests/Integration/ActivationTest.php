@@ -3,10 +3,9 @@
 namespace SnapWP\Helper\Tests\Integration;
 
 use SnapWP\Helper;
-use lucatume\WPBrowser\TestCase\WPTestCase;
+use SnapWP\Helper\Tests\TestCase\IntegrationTestCase;
 
-
-class ActivationTest extends WPTestCase {
+class ActivationTest extends IntegrationTestCase {
 	private $wp_version;
 
 	/**

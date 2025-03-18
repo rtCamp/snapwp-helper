@@ -8,12 +8,12 @@
 namespace SnapWP\Helper\Tests\Integration;
 
 use SnapWP\Helper\Modules\PluginUpdater;
-use lucatume\WPBrowser\TestCase\WPTestCase;
+use SnapWP\Helper\Tests\TestCase\IntegrationTestCase;
 
 /**
  * Tests the PluginUpdater class.
  */
-class PluginUpdaterTest extends WPTestCase {
+class PluginUpdaterTest extends IntegrationTestCase {
 	/**
 	 * {@inheritDoc}
 	 */
