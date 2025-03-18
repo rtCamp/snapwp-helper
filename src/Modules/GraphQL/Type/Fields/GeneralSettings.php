@@ -12,9 +12,9 @@ namespace SnapWP\Helper\Modules\GraphQL\Type\Fields;
 use WPGraphQL\AppContext;
 
 /**
- * Class - SiteIcon
+ * Class - GeneralSettings
  */
-final class SiteIcon extends AbstractFields {
+final class GeneralSettings extends AbstractFields {
 	/**
 	 * {@inheritDoc}
 	 */
