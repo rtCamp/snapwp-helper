@@ -7,10 +7,12 @@
 
 namespace SnapWP\Helper\Tests\Integration;
 
+use SnapWP\Helper\Tests\TestCase\IntegrationTestCase;
+
 /**
  * Class - TemplateByUriQueryTest
  */
-class TemplateByUriQueryTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase {
+class TemplateByUriQueryTest extends IntegrationTestCase {
 	/**
 	 * User ID.
 	 *

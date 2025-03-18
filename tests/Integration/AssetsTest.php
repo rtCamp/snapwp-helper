@@ -3,9 +3,9 @@
 namespace SnapWP\Helper\Tests\Integration;
 
 use SnapWP\Helper\Modules\Assets;
-use lucatume\WPBrowser\TestCase\WPTestCase;
+use SnapWP\Helper\Tests\TestCase\IntegrationTestCase;
 
-class AssetsTest extends WPTestCase {
+class AssetsTest extends IntegrationTestCase {
 	/**
 	 * Test the name method.
 	 */

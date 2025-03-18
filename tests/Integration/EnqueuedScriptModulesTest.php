@@ -5,15 +5,15 @@
  * @package SnapWP\Helper\Tests\Integration
  */
 
-namespace SnapWP\Tests\Integration;
+namespace SnapWP\Helper\Tests\Integration;
 
-use WPGraphQL;
+use SnapWP\Helper\Tests\TestCase\IntegrationTestCase;
 use WPGraphQL\Type\WPEnumType;
 
 /**
  * Tests Enqueuing Script Modules.
  */
-class EnqueuedScriptModulesTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestCase {
+class EnqueuedScriptModulesTest extends IntegrationTestCase {
 	/**
 	 * {@inheritDoc}
 	 */
@@ -21,7 +21,7 @@ class EnqueuedScriptModulesTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestC
 		parent::setUp();
 
 		// Clear the schema.
-		WPGraphQL::clear_schema();
+		$this->clearSchema();
 	}
 
 	/**
@@ -29,7 +29,7 @@ class EnqueuedScriptModulesTest extends \Tests\WPGraphQL\TestCase\WPGraphQLTestC
 	 */
 	protected function tearDown(): void {
 		// Clear the schema.
-		WPGraphQL::clear_schema();
+		$this->clearSchema();
 
 		// Call the parent teardown to clean up.
 		parent::tearDown();

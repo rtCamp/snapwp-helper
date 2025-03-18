@@ -8,12 +8,12 @@
 namespace SnapWP\Helper\Tests\Integration;
 
 use SnapWP\Helper\Modules\GraphQL\TypeRegistry;
-use lucatume\WPBrowser\TestCase\WPTestCase;
+use SnapWP\Helper\Tests\TestCase\IntegrationTestCase;
 
 /**
  * Tests the TypeRegistry class.
  */
-class TypeRegistryTest extends WPTestCase {
+class TypeRegistryTest extends IntegrationTestCase {
 	/**
 	 * {@inheritDoc}
 	 */

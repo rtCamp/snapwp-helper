@@ -9,14 +9,14 @@ namespace SnapWP\Helper\Tests\Integration;
 
 use SnapWP\Helper\Modules\EnvGenerator\Generator;
 use SnapWP\Helper\Modules\EnvGenerator\VariableRegistry;
-use lucatume\WPBrowser\TestCase\WPTestCase;
+use SnapWP\Helper\Tests\TestCase\IntegrationTestCase;
 
 /**
  * Class GeneratorTest
  *
  * @package SnapWP\Helper\Tests\Integration
  */
-class GeneratorTest extends WPTestCase {
+class GeneratorTest extends IntegrationTestCase {
 	/**
 	 * Tests if the Generator class initializes properly.
 	 */

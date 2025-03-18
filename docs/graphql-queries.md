@@ -6,6 +6,7 @@ This document outlines the GraphQL queries available in the SnapWP Helper plugin
 
 - [Querying `RenderedTemplate` data with `templateByUri`](#querying-renderedtemplate-data-with-templatebyuri)
 - [Querying `globalStyles` data](#querying-globalstyles-data)
+- [Additional GraphQL fields](#additional-graphql-fields)
 
 ## Querying `RenderedTemplate` data with `templateByUri`
 
@@ -74,3 +75,23 @@ query GetGlobalStyles {
   }
 }
 ```
+
+## Additional GraphQL fields
+
+In addition to the above queries, the SnapWP Helper plugin exposes additional fields to the WPGraphQL schema. These fields are used to power specific features in SnapWP, but can be used in custom queries and are often pending an upstream merge to WPGraphQL itself.
+
+### `generalSettings.siteIcon: MediaItem`
+
+Exposes the Site Icon attachment to the `GeneralSettings` type.
+
+```graphql
+query GetGeneralSettings {
+	generalSettings {
+		siteIcon { # The Site Icon attachment
+			...MediaItemFrag
+		}
+		...OtherGeneralSettingsFrag
+	}
+}
+```
+

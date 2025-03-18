@@ -191,6 +191,7 @@ final class TypeRegistry implements Registrable {
 		$classes_to_register = [
 			Fields\RootQuery::class,
 			Fields\EnqueuedScript::class,
+			Fields\GeneralSettings::class,
 			Fields\CoreCover::class,
 			Fields\CoreMediaText::class,
 		];

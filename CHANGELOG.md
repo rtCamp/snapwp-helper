@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](./README.md#updating-and-versi
 
 ## [Unreleased]
 
+- tests: Use `IntegrationTestCase` for Integration tests.
+- feat: Expose `generalSettings.siteIcon` field to the schema.
+
 ## [0.2.1] - 2025-03-10
 
 This _patch_ release fixes a regression where an unset `flat` query arg passed to `templateByUri.editorBlocks` would return unflattened blocks.
