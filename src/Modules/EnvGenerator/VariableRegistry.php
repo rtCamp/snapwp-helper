@@ -24,27 +24,32 @@ class VariableRegistry {
 			'default'     => '0',
 			'required'    => true,
 		],
-		'NEXT_PUBLIC_URL'                       => [
+		'NEXT_PUBLIC_FRONTEND_URL'                       => [
 			'description' => 'The headless frontend domain URL. Make sure the value matches the URL used by your frontend app.',
 			'default'     => 'http://localhost:3000',
 			'required'    => true,
 		],
-		'NEXT_PUBLIC_WORDPRESS_URL'             => [
-			'description' => 'The WordPress "frontend" domain URL',
+		'NEXT_PUBLIC_WP_HOME_URL'             => [
+			'description' => 'The WordPress "frontend" domain URL e.g. https://my-headless-site.local',
 			'default'     => '',
 			'required'    => true,
+		],
+		'NEXT_PUBLIC_WP_SITE_URL'             => [
+			'description' => 'The WordPress "backend" Site Address. Uncomment if different than `NEXT_PUBLIC_WP_HOME_URL` e.g. https://my-headless-site.local/wp/',
+			'default'     => '',
+			'required'    => false,
 		],
 		'NEXT_PUBLIC_GRAPHQL_ENDPOINT'          => [
 			'description' => 'The WordPress GraphQL endpoint',
 			'default'     => 'index.php?graphql',
 			'required'    => true,
 		],
-		'NEXT_PUBLIC_WORDPRESS_UPLOADS_PATH'    => [
+		'NEXT_PUBLIC_WP_UPLOADS_DIRECTORY'    => [
 			'description' => 'The WordPress Uploads directory path',
 			'default'     => '/wp-content/uploads',
 			'required'    => false,
 		],
-		'NEXT_PUBLIC_WORDPRESS_REST_URL_PREFIX' => [
+		'NEXT_PUBLIC_REST_URL_PREFIX' => [
 			'description' => 'The WordPress REST URL Prefix',
 			'default'     => '/wp-json',
 			'required'    => false,
@@ -53,6 +58,11 @@ class VariableRegistry {
 			'description' => 'Token used for authenticating GraphQL introspection queries',
 			'default'     => '',
 			'required'    => true,
+		],
+		'NEXT_PUBLIC_CORS_PROXY_PREFIX'         => [
+			'description' => 'The CORS proxy prefix to use when bypassing CORS restrictions from WordPress server, Possible values: string|false Default: /proxy, This means for script module next app will make request NEXT_PUBLIC_FRONTEND_URL/proxy/{module-path}',
+			'default'     => '/proxy',
+			'required'    => false,
 		],
 	];
 

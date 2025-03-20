@@ -72,13 +72,15 @@ if ( ! function_exists( 'snapwp_helper_get_env_variables' ) ) {
 		$upload_path = '/' . ltrim( str_replace( ABSPATH, '', $upload_dir['basedir'] ), '/' );
 
 		return [
-			'NODE_TLS_REJECT_UNAUTHORIZED'          => '0',
-			'NEXT_PUBLIC_URL'                       => 'http://localhost:3000',
-			'NEXT_PUBLIC_WORDPRESS_URL'             => untrailingslashit( get_home_url() ),
-			'NEXT_PUBLIC_GRAPHQL_ENDPOINT'          => graphql_get_endpoint(),
-			'NEXT_PUBLIC_WORDPRESS_UPLOADS_PATH'    => $upload_path,
-			'NEXT_PUBLIC_WORDPRESS_REST_URL_PREFIX' => '/' . rest_get_url_prefix(),
-			'INTROSPECTION_TOKEN'                   => $token,
+			'INTROSPECTION_TOKEN'              => $token,
+			'NEXT_PUBLIC_CORS_PROXY_PREFIX'    => '/proxy',
+			'NEXT_PUBLIC_FRONTEND_URL'         => 'http://localhost:3000',
+			'NEXT_PUBLIC_GRAPHQL_ENDPOINT'     => graphql_get_endpoint(),
+			'NEXT_PUBLIC_REST_URL_PREFIX'      => '/' . rest_get_url_prefix(),
+			'NEXT_PUBLIC_WP_HOME_URL'          => untrailingslashit( get_home_url() ),
+			'NEXT_PUBLIC_WP_SITE_URL'          => '',
+			'NEXT_PUBLIC_WP_UPLOADS_DIRECTORY' => $upload_path,
+			'NODE_TLS_REJECT_UNAUTHORIZED'     => '0',
 		];
 	}
 }
