@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](./README.md#updating-and-versi
 
 - tests: Use `IntegrationTestCase` for Integration tests.
 - feat: Expose `generalSettings.siteIcon` field to the schema.
+- refactor : Update EnvGenerator variables, tests, documentation.
 
 ## [0.2.1] - 2025-03-10
 
