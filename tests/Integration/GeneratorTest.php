@@ -24,12 +24,12 @@ class GeneratorTest extends IntegrationTestCase {
 		$registry = new VariableRegistry();
 
 		$values = [
-			'NODE_TLS_REJECT_UNAUTHORIZED'          => '',
-			'NEXT_PUBLIC_URL'                       => 'http://localhost:3000',
-			'NEXT_PUBLIC_WORDPRESS_URL'             => 'https://headless-demo.local',
-			'NEXT_PUBLIC_GRAPHQL_ENDPOINT'          => '',
-			'NEXT_PUBLIC_WORDPRESS_UPLOADS_PATH'    => '',
-			'NEXT_PUBLIC_WORDPRESS_REST_URL_PREFIX' => '',
+			'NODE_TLS_REJECT_UNAUTHORIZED'     => '',
+			'NEXT_PUBLIC_FRONTEND_URL'         => 'http://localhost:3000',
+			'NEXT_PUBLIC_WP_HOME_URL'          => 'https://headless-demo.local',
+			'NEXT_PUBLIC_GRAPHQL_ENDPOINT'     => '',
+			'NEXT_PUBLIC_WP_UPLOADS_DIRECTORY' => '',
+			'NEXT_PUBLIC_REST_URL_PREFIX'      => '',
 		];
 
 		$generator = new Generator( $values, $registry );
@@ -43,13 +43,16 @@ class GeneratorTest extends IntegrationTestCase {
 	public function testGenerateEnvContent(): void {
 		$registry = new VariableRegistry();
 		$values   = [
-			'NODE_TLS_REJECT_UNAUTHORIZED'          => '5',
-			'NEXT_PUBLIC_URL'                       => 'http://localhost:3000',
-			'NEXT_PUBLIC_WORDPRESS_URL'             => 'https://headless-demo.local',
-			'NEXT_PUBLIC_GRAPHQL_ENDPOINT'          => '/test_endpoint',
-			'NEXT_PUBLIC_WORDPRESS_UPLOADS_PATH'    => 'uploads',
-			'NEXT_PUBLIC_WORDPRESS_REST_URL_PREFIX' => 'api',
-			'INVALID_VARIABLE'                      => 'should-not-be-included', // This should not be included in the output.
+			'NODE_TLS_REJECT_UNAUTHORIZED'     => '5',
+			'NEXT_PUBLIC_CORS_PROXY_PREFIX'    => '/proxy',
+			'NEXT_PUBLIC_FRONTEND_URL'         => 'http://localhost:3000',
+			'NEXT_PUBLIC_WP_HOME_URL'          => 'https://headless-demo.local',
+			'NEXT_PUBLIC_WP_SITE_URL'          => '',
+			'NEXT_PUBLIC_GRAPHQL_ENDPOINT'     => '/test_endpoint',
+			'NEXT_PUBLIC_WP_UPLOADS_DIRECTORY' => 'uploads',
+			'NEXT_PUBLIC_REST_URL_PREFIX'      => 'api',
+			'INTROSPECTION_TOKEN'              => '0123456789',
+			'INVALID_VARIABLE'                 => 'should-not-be-included', // This should not be included in the output.
 		];
 
 		$generator = new Generator( $values, $registry );
@@ -61,20 +64,29 @@ class GeneratorTest extends IntegrationTestCase {
 # Only enable if connecting to a self-signed cert
 NODE_TLS_REJECT_UNAUTHORIZED=5
 
-# The headless frontend domain URL. Make sure the value matches the URL used by your frontend app.
-NEXT_PUBLIC_URL=http://localhost:3000
+# The CORS proxy prefix to use when bypassing CORS restrictions from WordPress server, Possible values: string|false Default: /proxy, This means for script module next app will make request NEXT_PUBLIC_FRONTEND_URL/proxy/{module-path}
+# NEXT_PUBLIC_CORS_PROXY_PREFIX=/proxy
 
-# The WordPress "frontend" domain URL
-NEXT_PUBLIC_WORDPRESS_URL=https://headless-demo.local
+# The headless frontend domain URL. Make sure the value matches the URL used by your frontend app.
+NEXT_PUBLIC_FRONTEND_URL=http://localhost:3000
+
+# The WordPress "frontend" domain URL e.g. https://my-headless-site.local
+NEXT_PUBLIC_WP_HOME_URL=https://headless-demo.local
+
+# The WordPress "backend" Site Address. Uncomment if different than `NEXT_PUBLIC_WP_HOME_URL` e.g. https://my-headless-site.local/wp/
+# NEXT_PUBLIC_WP_SITE_URL=
 
 # The WordPress GraphQL endpoint
 NEXT_PUBLIC_GRAPHQL_ENDPOINT=/test_endpoint
 
 # The WordPress Uploads directory path
-NEXT_PUBLIC_WORDPRESS_UPLOADS_PATH=uploads
+NEXT_PUBLIC_WP_UPLOADS_DIRECTORY=uploads
 
 # The WordPress REST URL Prefix
-NEXT_PUBLIC_WORDPRESS_REST_URL_PREFIX=api';
+NEXT_PUBLIC_REST_URL_PREFIX=api
+
+# Token used for authenticating GraphQL introspection queries
+INTROSPECTION_TOKEN=0123456789';
 
 		$this->assertSame( $expectedContent, $content );
 	}
@@ -85,12 +97,13 @@ NEXT_PUBLIC_WORDPRESS_REST_URL_PREFIX=api';
 	public function testMissingRequiredValuesEnvContent(): void {
 		$registry = new VariableRegistry();
 		$values   = [
-			'NODE_TLS_REJECT_UNAUTHORIZED'          => '',
-			'NEXT_PUBLIC_URL'                       => '',
-			'NEXT_PUBLIC_WORDPRESS_URL'             => '',
-			'NEXT_PUBLIC_GRAPHQL_ENDPOINT'          => '',
-			'NEXT_PUBLIC_WORDPRESS_UPLOADS_PATH'    => '',
-			'NEXT_PUBLIC_WORDPRESS_REST_URL_PREFIX' => '',
+			'NODE_TLS_REJECT_UNAUTHORIZED'     => '',
+			'NEXT_PUBLIC_FRONTEND_URL'         => '',
+			'NEXT_PUBLIC_WP_HOME_URL'          => '',
+			'NEXT_PUBLIC_GRAPHQL_ENDPOINT'     => '',
+			'NEXT_PUBLIC_WP_UPLOADS_DIRECTORY' => '',
+			'NEXT_PUBLIC_REST_URL_PREFIX'      => '',
+			'INTROSPECTION_TOKEN'              => '',
 		];
 
 		$generator = new Generator( $values, $registry );
@@ -111,12 +124,13 @@ NEXT_PUBLIC_WORDPRESS_REST_URL_PREFIX=api';
 
 		// CASE : For NODE_TLS_REJECT_UNAUTHORIZED with no default value, Generator class should comment out the variable in .ENV content.
 		$values = [
-			'NODE_TLS_REJECT_UNAUTHORIZED'          => '0',
-			'NEXT_PUBLIC_URL'                       => 'http://localhost:3000',
-			'NEXT_PUBLIC_WORDPRESS_URL'             => 'https://headless-demo.local',
-			'NEXT_PUBLIC_GRAPHQL_ENDPOINT'          => '/test_endpoint',
-			'NEXT_PUBLIC_WORDPRESS_UPLOADS_PATH'    => '',
-			'NEXT_PUBLIC_WORDPRESS_REST_URL_PREFIX' => '',
+			'NODE_TLS_REJECT_UNAUTHORIZED'     => '0',
+			'NEXT_PUBLIC_CORS_PROXY_PREFIX'    => '',
+			'NEXT_PUBLIC_FRONTEND_URL'         => 'http://localhost:3000',
+			'NEXT_PUBLIC_WP_HOME_URL'          => 'https://headless-demo.local',
+			'NEXT_PUBLIC_GRAPHQL_ENDPOINT'     => '/test_endpoint',
+			'NEXT_PUBLIC_WP_UPLOADS_DIRECTORY' => '',
+			'NEXT_PUBLIC_REST_URL_PREFIX'      => '',
 		];
 
 		$generator = new Generator( $values, $registry );
@@ -129,20 +143,23 @@ NEXT_PUBLIC_WORDPRESS_REST_URL_PREFIX=api';
 # Only enable if connecting to a self-signed cert
 NODE_TLS_REJECT_UNAUTHORIZED=0
 
-# The headless frontend domain URL. Make sure the value matches the URL used by your frontend app.
-NEXT_PUBLIC_URL=http://localhost:3000
+# The CORS proxy prefix to use when bypassing CORS restrictions from WordPress server, Possible values: string|false Default: /proxy, This means for script module next app will make request NEXT_PUBLIC_FRONTEND_URL/proxy/{module-path}
+# NEXT_PUBLIC_CORS_PROXY_PREFIX=/proxy
 
-# The WordPress "frontend" domain URL
-NEXT_PUBLIC_WORDPRESS_URL=https://headless-demo.local
+# The headless frontend domain URL. Make sure the value matches the URL used by your frontend app.
+NEXT_PUBLIC_FRONTEND_URL=http://localhost:3000
+
+# The WordPress "frontend" domain URL e.g. https://my-headless-site.local
+NEXT_PUBLIC_WP_HOME_URL=https://headless-demo.local
 
 # The WordPress GraphQL endpoint
 NEXT_PUBLIC_GRAPHQL_ENDPOINT=/test_endpoint
 
 # The WordPress Uploads directory path
-# NEXT_PUBLIC_WORDPRESS_UPLOADS_PATH=/wp-content/uploads
+# NEXT_PUBLIC_WP_UPLOADS_DIRECTORY=/wp-content/uploads
 
 # The WordPress REST URL Prefix
-# NEXT_PUBLIC_WORDPRESS_REST_URL_PREFIX=/wp-json';
+# NEXT_PUBLIC_REST_URL_PREFIX=/wp-json';
 
 		$this->assertSame( $expectedContent, $content );
 	}
