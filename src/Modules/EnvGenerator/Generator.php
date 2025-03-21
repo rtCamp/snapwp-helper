@@ -51,35 +51,6 @@ class Generator {
 	}
 
 	/**
-	 * Add environment variables to the generator based on the provided args.
-	 *
-	 * @param string[] $variables The variables to generate.
-	 *
-	 * @throws \InvalidArgumentException If a required variable is missing a value.
-	 */
-	protected function prepare_variables( array $variables ): ?string {
-		// Prime the output string.
-		$output = '';
-
-		foreach ( $variables as $name ) {
-			$variable_output = $this->prepare_variable( $name );
-
-			if ( empty( $variable_output ) ) {
-				continue;
-			}
-
-			// Add a newline if there's already content.
-			if ( ! empty( $output ) ) {
-				$output .= "\n\n";
-			}
-
-			$output .= $variable_output;
-		}
-
-		return $output ?: null;
-	}
-
-	/**
 	 * Prepare a single environment variable for output.
 	 *
 	 * @param string $name The name of the variable.

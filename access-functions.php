@@ -17,6 +17,7 @@ if ( ! function_exists( 'snapwp_helper_get_env_content' ) ) {
 	 * Generates the SnapWP .env file content based on the site configuration.
 	 *
 	 * @deprecated @next-version Use \SnapWP\Helper\Modules\EnvGenerator\Generator::generate() directly.
+	 * @codeCoverageIgnore
 	 *
 	 * @return string|\WP_Error The .env file content or an error object.
 	 */
@@ -55,6 +56,7 @@ if ( ! function_exists( 'snapwp_helper_get_env_variables' ) ) {
 	 * Get the list of environment variables.
 	 *
 	 * @deprecated @next-version Use \SnapWP\Helper\Modules\EnvGenerator\VariableRegistry::get_all_values() directly.
+	 * @codeCoverageIgnore
 	 *
 	 * @return array<string,string>|\WP_Error The environment variables and their values.
 	 */
