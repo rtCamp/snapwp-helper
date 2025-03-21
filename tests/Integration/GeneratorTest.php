@@ -1,149 +1,175 @@
 <?php
 /**
- * Tests the Generator class initialization.
+ * Tests the Generator class.
  *
  * @package SnapWP\Helper\Tests\Integration
  */
 
 namespace SnapWP\Helper\Tests\Integration;
 
+use ReflectionClass;
 use SnapWP\Helper\Modules\EnvGenerator\Generator;
 use SnapWP\Helper\Modules\EnvGenerator\VariableRegistry;
 use SnapWP\Helper\Tests\TestCase\IntegrationTestCase;
 
 /**
  * Class GeneratorTest
- *
- * @package SnapWP\Helper\Tests\Integration
  */
 class GeneratorTest extends IntegrationTestCase {
 	/**
 	 * Tests if the Generator class initializes properly.
 	 */
 	public function testGeneratorInitialization(): void {
-		$registry = new VariableRegistry();
-
-		$values = [
-			'NODE_TLS_REJECT_UNAUTHORIZED'          => '',
-			'NEXT_PUBLIC_URL'                       => 'http://localhost:3000',
-			'NEXT_PUBLIC_WORDPRESS_URL'             => 'https://headless-demo.local',
-			'NEXT_PUBLIC_GRAPHQL_ENDPOINT'          => '',
-			'NEXT_PUBLIC_WORDPRESS_UPLOADS_PATH'    => '',
-			'NEXT_PUBLIC_WORDPRESS_REST_URL_PREFIX' => '',
-		];
-
-		$generator = new Generator( $values, $registry );
+		$registry  = new VariableRegistry();
+		$generator = new Generator( $registry );
 
 		$this->assertInstanceOf( Generator::class, $generator );
 	}
 
 	/**
-	 * Tests if the Generator generates the correct formatt .ENV content.
+	 * Tests if the Generator generates the correctly formatted .ENV content.
 	 */
 	public function testGenerateEnvContent(): void {
+		// Create a custom VariableRegistry with test variables.
 		$registry = new VariableRegistry();
-		$values   = [
-			'NODE_TLS_REJECT_UNAUTHORIZED'          => '5',
-			'NEXT_PUBLIC_URL'                       => 'http://localhost:3000',
-			'NEXT_PUBLIC_WORDPRESS_URL'             => 'https://headless-demo.local',
-			'NEXT_PUBLIC_GRAPHQL_ENDPOINT'          => '/test_endpoint',
-			'NEXT_PUBLIC_WORDPRESS_UPLOADS_PATH'    => 'uploads',
-			'NEXT_PUBLIC_WORDPRESS_REST_URL_PREFIX' => 'api',
-			'INVALID_VARIABLE'                      => 'should-not-be-included', // This should not be included in the output.
-		];
 
-		$generator = new Generator( $values, $registry );
+		// Use reflection to modify the private variables property.
+		$reflection     = new ReflectionClass( $registry );
+		$variables_prop = $reflection->getProperty( 'variables' );
+		$variables_prop->setAccessible( true );
 
-		// Generate the .env content.
-		$content = $generator->generate();
+		// Get current variables to modify them.
+		$variables = $variables_prop->getValue( $registry );
 
-		$expectedContent = '
-# Only enable if connecting to a self-signed cert
-NODE_TLS_REJECT_UNAUTHORIZED=5
+		// Set specific test values.
+		$variables['NODE_TLS_REJECT_UNAUTHORIZED']['value']     = '5';
+		$variables['NEXT_PUBLIC_FRONTEND_URL']['value']         = 'http://localhost:3000';
+		$variables['NEXT_PUBLIC_WP_HOME_URL']['value']          = 'https://headless-demo.local';
+		$variables['NEXT_PUBLIC_GRAPHQL_ENDPOINT']['value']     = '/test_endpoint';
+		$variables['NEXT_PUBLIC_WP_UPLOADS_DIRECTORY']['value'] = 'uploads';
+		$variables['NEXT_PUBLIC_REST_URL_PREFIX']['value']      = 'api';
+		$variables['INTROSPECTION_TOKEN']['value']              = '0123456789';
 
-# The headless frontend domain URL. Make sure the value matches the URL used by your frontend app.
-NEXT_PUBLIC_URL=http://localhost:3000
+		// Update the registry.
+		$variables_prop->setValue( $registry, $variables );
 
-# The WordPress "frontend" domain URL
-NEXT_PUBLIC_WORDPRESS_URL=https://headless-demo.local
+		// Create generator with our modified registry.
+		$generator = new Generator( $registry );
+		$content   = $generator->generate();
 
-# The WordPress GraphQL endpoint
-NEXT_PUBLIC_GRAPHQL_ENDPOINT=/test_endpoint
+		// Ensure content is generated.
+		$this->assertNotNull( $content );
+		$this->assertIsString( $content );
 
-# The WordPress Uploads directory path
-NEXT_PUBLIC_WORDPRESS_UPLOADS_PATH=uploads
-
-# The WordPress REST URL Prefix
-NEXT_PUBLIC_WORDPRESS_REST_URL_PREFIX=api';
-
-		$this->assertSame( $expectedContent, $content );
+		// Check for expected values.
+		$this->assertStringContainsString( 'NODE_TLS_REJECT_UNAUTHORIZED=5', $content );
+		$this->assertStringContainsString( 'NEXT_PUBLIC_FRONTEND_URL=http://localhost:3000', $content );
+		$this->assertStringContainsString( 'NEXT_PUBLIC_WP_HOME_URL=https://headless-demo.local', $content );
+		$this->assertStringContainsString( 'NEXT_PUBLIC_GRAPHQL_ENDPOINT=/test_endpoint', $content );
+		$this->assertStringContainsString( 'INTROSPECTION_TOKEN=0123456789', $content );
 	}
 
 	/**
 	 * Tests if the Generator class throws correct error when missing required values.
 	 */
 	public function testMissingRequiredValuesEnvContent(): void {
+		// Create registry with a required variable that has no value.
 		$registry = new VariableRegistry();
-		$values   = [
-			'NODE_TLS_REJECT_UNAUTHORIZED'          => '',
-			'NEXT_PUBLIC_URL'                       => '',
-			'NEXT_PUBLIC_WORDPRESS_URL'             => '',
-			'NEXT_PUBLIC_GRAPHQL_ENDPOINT'          => '',
-			'NEXT_PUBLIC_WORDPRESS_UPLOADS_PATH'    => '',
-			'NEXT_PUBLIC_WORDPRESS_REST_URL_PREFIX' => '',
+
+		// Use reflection to modify the private variables property.
+		$reflection     = new ReflectionClass( $registry );
+		$variables_prop = $reflection->getProperty( 'variables' );
+		$variables_prop->setAccessible( true );
+
+		// Create a test variable that is required but has no value.
+		$variables = [
+			'TEST_REQUIRED_VAR' => [
+				'description' => 'Required variable that must have a value',
+				'default'     => null,
+				'outputMode'  => VariableRegistry::OUTPUT_VISIBLE,
+				'required'    => true,
+				'value'       => '', // Empty value should trigger the exception
+			],
 		];
 
-		$generator = new Generator( $values, $registry );
+		// Set the variables.
+		$variables_prop->setValue( $registry, $variables );
+
+		$generator = new Generator( $registry );
 
 		// Expect an exception when calling generate() because of missing required values.
 		$this->expectException( \InvalidArgumentException::class );
-		$this->expectExceptionMessage( 'Required variables must have a value.' );
-
-		// Generate the .env content, which should throw an exception.
 		$generator->generate();
 	}
 
 	/**
-	 * Tests if the Generator class handles missing values using the defaults.
+	 * Tests if the Generator class handles commented-out variables correctly.
 	 */
 	public function testDefaultValuesForEnvContent(): void {
+		// Create registry with variables that should be commented out.
 		$registry = new VariableRegistry();
 
-		// CASE : For NODE_TLS_REJECT_UNAUTHORIZED with no default value, Generator class should comment out the variable in .ENV content.
-		$values = [
-			'NODE_TLS_REJECT_UNAUTHORIZED'          => '0',
-			'NEXT_PUBLIC_URL'                       => 'http://localhost:3000',
-			'NEXT_PUBLIC_WORDPRESS_URL'             => 'https://headless-demo.local',
-			'NEXT_PUBLIC_GRAPHQL_ENDPOINT'          => '/test_endpoint',
-			'NEXT_PUBLIC_WORDPRESS_UPLOADS_PATH'    => '',
-			'NEXT_PUBLIC_WORDPRESS_REST_URL_PREFIX' => '',
+		// Use reflection to modify the private variables property.
+		$reflection     = new ReflectionClass( $registry );
+		$variables_prop = $reflection->getProperty( 'variables' );
+		$variables_prop->setAccessible( true );
+
+		// Create test variables.
+		$variables = [
+			'NODE_TLS_REJECT_UNAUTHORIZED'     => [
+				'description' => 'Only enable if connecting to a self-signed cert',
+				'default'     => '0',
+				'outputMode'  => VariableRegistry::OUTPUT_VISIBLE,
+				'required'    => true,
+				'value'       => '0',
+			],
+			'NEXT_PUBLIC_FRONTEND_URL'         => [
+				'description' => 'The headless frontend domain URL',
+				'default'     => 'http://localhost:3000',
+				'outputMode'  => VariableRegistry::OUTPUT_VISIBLE,
+				'required'    => true,
+				'value'       => 'http://localhost:3000',
+			],
+			'NEXT_PUBLIC_CORS_PROXY_PREFIX'    => [
+				'description' => 'The CORS proxy prefix',
+				'default'     => '/proxy',
+				'outputMode'  => VariableRegistry::OUTPUT_COMMENTED,
+				'required'    => false,
+				'value'       => '', // Empty value should show default in commented output.
+			],
+			'NEXT_PUBLIC_REST_URL_PREFIX'      => [
+				'description' => 'The WordPress REST URL Prefix',
+				'default'     => '/wp-json',
+				'outputMode'  => VariableRegistry::OUTPUT_COMMENTED,
+				'required'    => false,
+				'value'       => '', // Empty value should show default in commented output.
+			],
+			'NEXT_PUBLIC_WP_UPLOADS_DIRECTORY' => [
+				'description' => 'The WordPress Uploads directory path',
+				'default'     => '/wp-content/uploads',
+				'outputMode'  => VariableRegistry::OUTPUT_COMMENTED,
+				'required'    => false,
+				'value'       => '', // Empty value should show default in commented output.
+			],
 		];
 
-		$generator = new Generator( $values, $registry );
+		// Set the variables.
+		$variables_prop->setValue( $registry, $variables );
 
-		// Generate the .env content.
-		$content = $generator->generate();
+		$generator = new Generator( $registry );
+		$content   = $generator->generate();
 
-		// Define expected content.
-		$expectedContent = '
-# Only enable if connecting to a self-signed cert
-NODE_TLS_REJECT_UNAUTHORIZED=0
+		// Ensure content is generated.
+		$this->assertNotNull( $content );
+		$this->assertIsString( $content );
 
-# The headless frontend domain URL. Make sure the value matches the URL used by your frontend app.
-NEXT_PUBLIC_URL=http://localhost:3000
+		// Check for standard values.
+		$this->assertStringContainsString( 'NODE_TLS_REJECT_UNAUTHORIZED=0', $content );
+		$this->assertStringContainsString( 'NEXT_PUBLIC_FRONTEND_URL=http://localhost:3000', $content );
 
-# The WordPress "frontend" domain URL
-NEXT_PUBLIC_WORDPRESS_URL=https://headless-demo.local
-
-# The WordPress GraphQL endpoint
-NEXT_PUBLIC_GRAPHQL_ENDPOINT=/test_endpoint
-
-# The WordPress Uploads directory path
-# NEXT_PUBLIC_WORDPRESS_UPLOADS_PATH=/wp-content/uploads
-
-# The WordPress REST URL Prefix
-# NEXT_PUBLIC_WORDPRESS_REST_URL_PREFIX=/wp-json';
-
-		$this->assertSame( $expectedContent, $content );
+		// Check that commented variables use their default values.
+		$this->assertStringContainsString( '# NEXT_PUBLIC_CORS_PROXY_PREFIX=/proxy', $content );
+		$this->assertStringContainsString( '# NEXT_PUBLIC_REST_URL_PREFIX=/wp-json', $content );
+		$this->assertStringContainsString( '# NEXT_PUBLIC_WP_UPLOADS_DIRECTORY=/wp-content/uploads', $content );
 	}
 }

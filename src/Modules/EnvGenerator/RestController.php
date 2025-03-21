@@ -36,30 +36,39 @@ class RestController extends AbstractRestAPI {
 	}
 
 	/**
-	 * This function is responsible for generating the REST controller for the EnvGenerator module.
+	 * Generate the .env content and return it via REST API.
 	 *
 	 * @param \WP_REST_Request<array{variables:array<string,mixed>[]}> $request The REST request object.
 	 *
 	 * @return \WP_REST_Response|\WP_Error The response object.
 	 */
 	public function get_item( $request ) {
+		try {
+			// Create registry and generator to get .env content.
+			$registry  = new VariableRegistry();
+			$generator = new Generator( $registry );
 
-		// Generate the .env content using the fetched variables.
-		$content = snapwp_helper_get_env_content();
+			$content = $generator->generate();
 
-		// Check if the content is an error.
-		if ( $content instanceof \WP_Error ) {
+			// Check if content was generated.
+			if ( empty( $content ) ) {
+				return new \WP_Error(
+					'env_content_generation_failed',
+					__( 'No .env content was generated.', 'snapwp-helper' ),
+					[ 'status' => 500 ]
+				);
+			}
+
+			// Return the generated content in the response.
+			$response = new \WP_REST_Response( [ 'content' => $content ], 200 );
+			return rest_ensure_response( $response );
+		} catch ( \Throwable $e ) {
 			return new \WP_Error(
 				'env_content_generation_failed',
-				$content->get_error_message(),
+				$e->getMessage(),
 				[ 'status' => 500 ]
 			);
 		}
-
-		// Return the generated content in the response.
-		$response = new \WP_REST_Response( [ 'content' => $content ], 200 );
-
-		return rest_ensure_response( $response );
 	}
 
 	/**
