@@ -107,7 +107,7 @@ jobs:
               uses: actions/checkout@v4
 
             - name: Setup PHP
-              uses: shivammathur/setup-php@9e72090525849c5e82e596468b86eb55e9cc5401  # 2.32.0@v2
+              uses: shivammathur/setup-php@9e72090525849c5e82e596468b86eb55e9cc5401 # 2.32.0@v2
               with:
                   php-version: '8.2'
                   coverage: none
@@ -115,7 +115,7 @@ jobs:
 
             # Install/cache composer dependencies
             - name: Install dependencies
-              uses: ramsey/composer-install@a2636af0004d1c0499ffca16ac0b4cc94df70565  # v3.1.0@v3
+              uses: ramsey/composer-install@a2636af0004d1c0499ffca16ac0b4cc94df70565 # v3.1.0@v3
               with:
                   composer-options: '--no-progress'
 
@@ -140,7 +140,7 @@ jobs:
               uses: actions/checkout@v4
 
             - name: Setup PHP
-              uses: shivammathur/setup-php@9e72090525849c5e82e596468b86eb55e9cc5401  # 2.32.0@v2
+              uses: shivammathur/setup-php@9e72090525849c5e82e596468b86eb55e9cc5401 # 2.32.0@v2
               with:
                   php-version: '8.2'
                   extensions: mbstring, intl
@@ -149,7 +149,7 @@ jobs:
 
             # Install/cache composer dependencies
             - name: Install dependencies
-              uses: ramsey/composer-install@a2636af0004d1c0499ffca16ac0b4cc94df70565  # v3.1.0@v3
+              uses: ramsey/composer-install@a2636af0004d1c0499ffca16ac0b4cc94df70565 # v3.1.0@v3
               with:
                   composer-options: '--no-progress'
 
@@ -203,7 +203,7 @@ jobs:
               uses: actions/checkout@v4
 
             - name: Install PHP
-              uses: shivammathur/setup-php@9e72090525849c5e82e596468b86eb55e9cc5401  # 2.32.0@v2
+              uses: shivammathur/setup-php@9e72090525849c5e82e596468b86eb55e9cc5401 # 2.32.0@v2
               with:
                   php-version: ${{ matrix.php }}
                   extensions: json, mbstring
@@ -211,7 +211,7 @@ jobs:
 
             # Install/cache composer dependencies
             - name: Install dependencies
-              uses: ramsey/composer-install@a2636af0004d1c0499ffca16ac0b4cc94df70565  # v3.1.0@v3
+              uses: ramsey/composer-install@a2636af0004d1c0499ffca16ac0b4cc94df70565 # v3.1.0@v3
 
             - name: Setup Node.js
               uses: actions/setup-node@v4
@@ -258,7 +258,7 @@ jobs:
 
             - name: Push coverage to Coveralls.io
               if: matrix.coverage == 1
-              uses: coverallsapp/github-action@648a8eb78e6d50909eff900e4ec85cab4524a45b  # v2.3.6
+              uses: coverallsapp/github-action@648a8eb78e6d50909eff900e4ec85cab4524a45b # v2.3.6
               with:
                   github-token: ${{ secrets.GITHUB_TOKEN }}
                   file: tests/_output/Integration-coverage.xml
@@ -267,7 +267,7 @@ jobs:
 
             - name: Push coverage to CodeClimate
               if: matrix.coverage == 1
-              uses: paambaati/codeclimate-action@f429536ee076d758a24705203199548125a28ca7  # v9.0.0
+              uses: paambaati/codeclimate-action@f429536ee076d758a24705203199548125a28ca7 # v9.0.0
               env:
                   CC_TEST_REPORTER_ID: d16e661bd765b428e1b7bde991152367616a6511fab735cbb459976ec54096a0
               with:
@@ -286,14 +286,14 @@ jobs:
               uses: actions/checkout@v4
 
             - name: Setup PHP
-              uses: shivammathur/setup-php@9e72090525849c5e82e596468b86eb55e9cc5401  # 2.32.0@v2
+              uses: shivammathur/setup-php@9e72090525849c5e82e596468b86eb55e9cc5401 # 2.32.0@v2
               with:
                   php-version: '8.2'
                   coverage: none
                   tools: composer
 
             - name: Install Composer dependencies
-              uses: ramsey/composer-install@a2636af0004d1c0499ffca16ac0b4cc94df70565  # v3.1.0@v3
+              uses: ramsey/composer-install@a2636af0004d1c0499ffca16ac0b4cc94df70565 # v3.1.0@v3
               with:
                   composer-options: '--no-progress'
 
@@ -357,7 +357,7 @@ jobs:
               uses: actions/checkout@v4
 
             - name: Setup PHP w/ Composer & WP-CLI
-              uses: shivammathur/setup-php@9e72090525849c5e82e596468b86eb55e9cc5401  # 2.32.0@v2
+              uses: shivammathur/setup-php@9e72090525849c5e82e596468b86eb55e9cc5401 # 2.32.0@v2
               with:
                   php-version: 8.2
                   extensions: mbstring, intl, bcmath, exif, gd, mysqli, opcache, zip, pdo_mysql
@@ -365,7 +365,7 @@ jobs:
                   tools: composer:v2, wp-cli
 
             - name: Install Composer dependencies
-              uses: ramsey/composer-install@a2636af0004d1c0499ffca16ac0b4cc94df70565  # v3.1.0@v3
+              uses: ramsey/composer-install@a2636af0004d1c0499ffca16ac0b4cc94df70565 # v3.1.0@v3
               with:
                   composer-options: '--no-progress'
 
@@ -405,7 +405,7 @@ jobs:
                   graphql-schema-linter /tmp/schema.graphql || true
 
             - name: Get Latest tag
-              uses: actions-ecosystem/action-get-latest-tag@b7c32daec3395a9616f88548363a42652b22d435  # v1.6.0
+              uses: actions-ecosystem/action-get-latest-tag@b7c32daec3395a9616f88548363a42652b22d435 # v1.6.0
               id: get-latest-tag
 
             - name: Test Schema for breaking changes

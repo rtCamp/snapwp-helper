@@ -11,6 +11,8 @@ namespace SnapWP\Helper\Modules;
 
 use SnapWP\Helper\Interfaces\Module;
 use SnapWP\Helper\Modules\Admin\Settings;
+use SnapWP\Helper\Modules\EnvGenerator\Generator;
+use SnapWP\Helper\Modules\EnvGenerator\VariableRegistry;
 use SnapWP\Helper\Modules\GraphQL\Data\IntrospectionToken;
 
 /**
@@ -87,46 +89,34 @@ class Admin implements Module {
 	public function render_menu(): void {
 		wp_enqueue_script( Assets::ADMIN_SCRIPT_HANDLE );
 
-		$variables = snapwp_helper_get_env_variables();
+		// Create registry to get environment variables.
+		$registry = new VariableRegistry();
 
-		// Display an error message if the variables could not be loaded.
-		if ( is_wp_error( $variables ) ) {
+		try {
+			$variables        = $registry->get_all_values();
+			$env_file_content = $this->generate_env_content( $registry );
+		} catch ( \Throwable $e ) {
+			// Display an error message if the variables could not be loaded.
 			wp_admin_notice(
 				sprintf(
 					// translators: %s is the error message.
 					__( 'Unable to load environment variables: %s', 'snapwp-helper' ),
-					$variables->get_error_message()
+					esc_html( $e->getMessage() )
 				),
 				[
 					'type' => 'error',
 				]
 			);
-		}
 
-		$env_file_content = snapwp_helper_get_env_content();
-
-		if ( is_wp_error( $env_file_content ) ) {
-			$error_message = sprintf(
-				// translators: %s is the error message.
-				__( 'Unable to generate the `.env` file content: %s', 'snapwp-helper' ),
-				$env_file_content->get_error_message()
-			);
-			wp_admin_notice(
-				$error_message,
-				[
-					'type' => 'error',
-				]
-			);
-
-			// translators: %s is the error message.
-			$env_file_content = sprintf( __( 'Error: %s', 'snapwp-helper' ), $error_message );
+			$variables        = [];
+			$env_file_content = '';
 		}
 
 		?>
 		<div class="wrap" id="snapwp-admin">
 			<h2><?php esc_html_e( 'SnapWP', 'snapwp-helper' ); ?></h2>
 
-			<?php if ( is_array( $variables ) ) : ?>
+			<?php if ( ! empty( $variables ) ) : ?>
 				<h3><?php esc_html_e( 'Environment Variables', 'snapwp-helper' ); ?></h3>
 				<p><?php esc_html_e( 'These `.env` variables are used by SnapWP\'s frontend to connect with your WordPress backend.', 'snapwp-helper', ); ?></p>
 				<p>
@@ -138,36 +128,8 @@ class Admin implements Module {
 					);
 					?>
 				</p>
-				<table class="wp-list-table widefat striped">
-					<thead>
-						<tr>
-							<th><?php esc_html_e( 'Variable', 'snapwp-helper' ); ?></th>
-							<th><?php esc_html_e( 'Value', 'snapwp-helper' ); ?></th>
-						</tr>
-					</thead>
-					<tbody>
-						<?php foreach ( $variables as $key => $value ) : ?>
-							<?php
-							if ( in_array( $key, [ 'NODE_TLS_REJECT_UNAUTHORIZED', 'NEXT_PUBLIC_URL' ], true ) ) {
-								continue; }
-							?>
-							<tr>
-								<td><?php echo esc_html( $key ); ?></td>
-								<td>
-									<?php echo wp_kses_post( sprintf( '<code>%s</code>', $value ) ); ?>
-
-									<?php if ( 'INTROSPECTION_TOKEN' === $key ) : ?>
-										<form method="POST">
-											<?php wp_nonce_field( 'regenerate_token_action', 'regenerate_token_nonce' ); ?>
-											<input type="submit" name="regenerate_token" class="button-primary" value="<?php esc_attr_e( 'Regenerate Token', 'snapwp-helper' ); ?>">
-										</form>
-										
-									<?php endif; ?>
-								</td>
-							</tr>
-						<?php endforeach; ?>
-					</tbody>
-				</table>
+				
+				<?php $this->render_variables_table( $registry, $variables ); ?>
 			<?php endif; ?>
 
 			<h3><?php esc_html_e( 'SnapWP Frontend Setup Guide', 'snapwp-helper' ); ?></h3>
@@ -238,7 +200,16 @@ class Admin implements Module {
 								?>
 							</p>
 						</li>
-						<li><?php esc_html_e( 'Visit the `NEXT_PUBLIC_URL` from `.env` (updated in Step 2), in your browser to see SnapWP in action!', 'snapwp-helper' ); ?></li>
+						<li>
+							<?php
+								printf(
+									// Translators: %s is the command, wrapped in code tags.
+									esc_html__( 'Visit the %1$s from %2$s (updated in Step 2), in your browser to see SnapWP in action!', 'snapwp-helper' ),
+									'<code>NEXT_PUBLIC_URL</code>',
+									'<code>.env</code>',
+								);
+							?>
+						</li>
 					</ol>
 				</li>
 			</ol>
@@ -253,6 +224,75 @@ class Admin implements Module {
 				?>
 			</p>
 		</div>
+		<?php
+	}
+
+	/**
+	 * Generate the environment file content.
+	 *
+	 * @param \SnapWP\Helper\Modules\EnvGenerator\VariableRegistry $registry The variable registry.
+	 * @return string The generated env file content.
+	 * @throws \Exception If content generation fails.
+	 */
+	private function generate_env_content( VariableRegistry $registry ): string {
+		$generator        = new Generator( $registry );
+		$env_file_content = $generator->generate();
+
+		if ( empty( $env_file_content ) ) {
+			throw new \Exception( esc_html__( 'No content generated.', 'snapwp-helper' ) );
+		}
+
+		return $env_file_content;
+	}
+
+	/**
+	 * Render the variables table.
+	 *
+	 * @param \SnapWP\Helper\Modules\EnvGenerator\VariableRegistry $registry The variable registry.
+	 * @param array<string,string>                                 $variables The variables to display.
+	 */
+	private function render_variables_table( VariableRegistry $registry, array $variables ): void {
+		?>
+		<table class="wp-list-table widefat striped">
+			<thead>
+				<tr>
+					<th><?php esc_html_e( 'Variable', 'snapwp-helper' ); ?></th>
+					<th><?php esc_html_e( 'Value', 'snapwp-helper' ); ?></th>
+				</tr>
+			</thead>
+			<tbody>
+				<?php foreach ( $variables as $key => $value ) : ?>
+					<?php
+					// Skip NODE_TLS_REJECT_UNAUTHORIZED and NEXT_PUBLIC_URL variables.
+					if ( in_array( $key, [ 'NODE_TLS_REJECT_UNAUTHORIZED', 'NEXT_PUBLIC_URL' ], true ) ) {
+						continue;
+					}
+
+					$output_mode      = $registry->get_output_mode( $key );
+					$is_using_default = $registry->is_using_default_value( $key );
+					?>
+					<tr>
+						<td><?php echo esc_html( $key ); ?></td>
+						<td>
+							<?php echo wp_kses_post( sprintf( '<code>%s</code>', $value ) ); ?>
+							
+							<?php if ( VariableRegistry::OUTPUT_HIDDEN === $output_mode ) : ?>
+								<span class="description"> <?php esc_html_e( '(unused)', 'snapwp-helper' ); ?></span>
+							<?php elseif ( $is_using_default ) : ?>
+								<span class="description"> <?php esc_html_e( '(using default)', 'snapwp-helper' ); ?></span>
+							<?php endif; ?>
+
+							<?php if ( 'INTROSPECTION_TOKEN' === $key ) : ?>
+								<form method="POST" style="margin-top: 5px;">
+									<?php wp_nonce_field( 'regenerate_token_action', 'regenerate_token_nonce' ); ?>
+									<input type="submit" name="regenerate_token" class="button-primary" value="<?php esc_attr_e( 'Regenerate Token', 'snapwp-helper' ); ?>">
+								</form>
+							<?php endif; ?>
+						</td>
+					</tr>
+				<?php endforeach; ?>
+			</tbody>
+		</table>
 		<?php
 	}
 

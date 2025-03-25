@@ -26,7 +26,7 @@ jobs:
               uses: actions/checkout@v4
 
             - name: Setup PHP w/ Composer & WP-CLI
-              uses: shivammathur/setup-php@9e72090525849c5e82e596468b86eb55e9cc5401  # 2.32.0@v2
+              uses: shivammathur/setup-php@9e72090525849c5e82e596468b86eb55e9cc5401 # 2.32.0@v2
               with:
                   php-version: 8.2
                   extensions: mbstring, intl, bcmath, exif, gd, mysqli, opcache, zip, pdo_mysql
@@ -34,7 +34,7 @@ jobs:
                   tools: composer:v2, wp-cli
 
             - name: Install Composer dependencies
-              uses: ramsey/composer-install@a2636af0004d1c0499ffca16ac0b4cc94df70565  # v3.1.0@v3
+              uses: ramsey/composer-install@a2636af0004d1c0499ffca16ac0b4cc94df70565 # v3.1.0@v3
               with:
                   composer-options: '--no-progress'
 
@@ -66,7 +66,7 @@ jobs:
                   wp graphql generate-static-schema --allow-root
 
             - name: Upload schema as release artifact
-              uses: softprops/action-gh-release@c95fe1489396fe8a9eb87c0abf8aa5b2ef267fda  # v2.2.1
+              uses: softprops/action-gh-release@c95fe1489396fe8a9eb87c0abf8aa5b2ef267fda # v2.2.1
               with:
                   files: /tmp/schema.graphql
               env:
