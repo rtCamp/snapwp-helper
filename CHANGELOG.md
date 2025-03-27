@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](./README.md#updating-and-versi
 - feat: Expose `generalSettings.siteIcon` field to the schema.
 - refactor!: Update EnvGenerator variables and handling.
 - dev: Deprecate the  `snapwp_helper_get_env_content()` and `snapwp_helper_get_env_variables()` functions, in favor of using the `VariableRegistry` and `Generator` classes directly.
+- chore: Fix readme.txt link syntax.
 
 ## [0.2.1] - 2025-03-10
 
