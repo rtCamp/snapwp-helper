@@ -37,7 +37,7 @@ Once you're ready to send a pull request, please check out our <a href="https://
 
 == Screenshots ==
 
-1. Plugin settings screen.
+1. Plugin settings screen. [View screenshot](https://github.com/rtCamp/snapwp-helper/blob/main/assets/screenshot-1.png)
 
 == Changelog ==
 
