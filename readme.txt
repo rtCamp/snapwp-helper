@@ -35,10 +35,6 @@ Want to contribute a new feature? Start a conversation by <a href="https://githu
 
 Once you're ready to send a pull request, please check out our <a href="https://github.com/rtCamp/snapwp-helper/blob/main/.github/CONTRIBUTING.md" target="_blank">Contributing Guidelines</a>.
 
-== Screenshots ==
-
-1. Plugin settings screen. [View screenshot](https://github.com/rtCamp/snapwp-helper/blob/main/assets/screenshot-1.png)
-
 == Changelog ==
 
 See the full list of changes in the <a href="https://github.com/rtCamp/snapwp-helper/blob/develop/CHANGELOG.md" target="_blank">repository Changelog</a>.
