@@ -180,15 +180,6 @@ class Admin implements Module {
 					<ol style="list-style-type: lower-roman;">
 						<li><?php esc_html_e( 'Navigate to the newly created app.', 'snapwp-helper' ); ?></li>
 						<li>
-							<?php
-								printf(
-									// Translators: %s is the command, wrapped in code tags.
-									esc_html__( 'Run %s', 'snapwp-helper' ),
-									'<code>npm install</code>',
-								);
-							?>
-						</li>
-						<li>
 							<p>
 								<?php
 									printf(
