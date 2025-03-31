@@ -4,14 +4,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](./README.md#updating-and-versioning).
 
-## [Unreleased]
+## [0.2.2] - 2025-03-31
 
-- tests: Use `IntegrationTestCase` for Integration tests.
+This _minor_ release adds support for the `generalSettings.siteIcon` field in the schema, and updates the EnvGenerator variables to reflect the latest requirements by the SnapWP Framework.
+
+**Note**: While there are _no breaking changes_ in this release, the generated `.env` file is only compatible with the latest version of the SnapWP Framework. If you are using an older version, you will need to set your `.env` variables manually.
+
 - feat: Expose `generalSettings.siteIcon` field to the schema.
-- refactor!: Update EnvGenerator variables and handling.
+- refactor: Update EnvGenerator variables and handling.
 - dev: Deprecate the  `snapwp_helper_get_env_content()` and `snapwp_helper_get_env_variables()` functions, in favor of using the `VariableRegistry` and `Generator` classes directly.
-- chore: Fix readme.txt link syntax.
 - chore: Update Composer / NPM dependencies to their latest (SemVer-compatible) versions.
+- chore: Fix readme.txt link syntax.
+- tests: Use `IntegrationTestCase` for Integration tests.
 - chore: Remove `npm install` from admin screen steps since it is no longer required.
 
 ## [0.2.1] - 2025-03-10
