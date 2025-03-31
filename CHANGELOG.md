@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](./README.md#updating-and-versi
 - dev: Deprecate the  `snapwp_helper_get_env_content()` and `snapwp_helper_get_env_variables()` functions, in favor of using the `VariableRegistry` and `Generator` classes directly.
 - chore: Fix readme.txt link syntax.
 - chore: Update Composer / NPM dependencies to their latest (SemVer-compatible) versions.
-- chore: Update snapwp-helper admin screen steps to reflect changes.
+- chore: Remove `npm install` from admin screen steps since it is no longer required.
 
 ## [0.2.1] - 2025-03-10
 
