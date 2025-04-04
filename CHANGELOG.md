@@ -16,6 +16,7 @@ This _minor_ release adds support for the `generalSettings.siteIcon` field in th
 - chore: Update Composer / NPM dependencies to their latest (SemVer-compatible) versions.
 - chore: Fix readme.txt link syntax.
 - tests: Use `IntegrationTestCase` for Integration tests.
+- chore: Remove `npm install` from admin screen steps since it is no longer required.
 
 ## [0.2.1] - 2025-03-10
 
