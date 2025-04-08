@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](./README.md#updating-and-versioning).
 
+## Unreleased
+
+This release will add a new GraphQL field to the schema to expose WordPress's image scaling behavior in Core Image blocks.
+
+- feat: Add `CoreImageAttributes.imageMaxWidth` field to expose `big_image_size_threshold` or `theme-defined wide size`.
+
 ## [0.2.2] - 2025-03-31
 
 This _minor_ release adds support for the `generalSettings.siteIcon` field in the schema, and updates the EnvGenerator variables to reflect the latest requirements by the SnapWP Framework.
