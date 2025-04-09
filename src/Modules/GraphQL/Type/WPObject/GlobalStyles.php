@@ -94,7 +94,7 @@ final class GlobalStyles extends AbstractObject {
 					return wp_get_global_stylesheet() ?: null;
 				},
 			],
-			'maxWidth' => [
+			'maxWidth'          => [
 				'type'        => 'String',
 				'description' => __( 'Maximum width of image based on theme settings or big image size threshold.', 'snapwp-helper' ),
 				'resolve'     => static function () {
