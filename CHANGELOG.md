@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](./README.md#updating-and-versioning).
 
+## Unreleased
+
+- feat: Expose `is404` field on `RenderedTemplate` GraphQL type and model.
+
 ## [0.2.2] - 2025-03-31
 
 This _minor_ release adds support for the `generalSettings.siteIcon` field in the schema, and updates the EnvGenerator variables to reflect the latest requirements by the SnapWP Framework.

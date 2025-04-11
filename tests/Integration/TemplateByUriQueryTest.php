@@ -111,6 +111,7 @@ class TemplateByUriQueryTest extends IntegrationTestCase {
 		return 'query testTemplateByUri( $uri: String! ) {
 			templateByUri(uri: $uri) {
 				bodyClasses
+				is404
 				connectedNode {
 					__typename
 					isPostsPage
@@ -173,6 +174,7 @@ class TemplateByUriQueryTest extends IntegrationTestCase {
 		$this->assertNotEmpty( $actual['data']['templateByUri'], 'templateByUri should return the rendered 404 template' );
 		$this->assertContains( 'error404', $actual['data']['templateByUri']['bodyClasses'], 'bodyClasses should contain the error404 class' );
 		$this->assertNull( $actual['data']['templateByUri']['connectedNode'], 'connectedNode should be null' );
+		$this->assertTrue( $actual['data']['templateByUri']['is404'], 'Should be a 404.' );
 
 		// 2. Test a good URI.
 		$post_link = get_permalink( $post_id );
@@ -228,6 +230,7 @@ class TemplateByUriQueryTest extends IntegrationTestCase {
 		$this->assertNotEmpty( $actual['data']['templateByUri'], 'templateByUri should return the rendered 404 template' );
 		$this->assertContains( 'error404', $actual['data']['templateByUri']['bodyClasses'], 'bodyClasses should contain the error404 class' );
 		$this->assertNull( $actual['data']['templateByUri']['connectedNode'], 'connectedNode should be null' );
+		$this->assertTrue( $actual['data']['templateByUri']['is404'], 'Should be a 404.' );
 
 		// 2. Test a valid URI for the parent page.
 		$parent_page_link = get_permalink( $parent_page_id );
@@ -301,6 +304,7 @@ class TemplateByUriQueryTest extends IntegrationTestCase {
 		$this->assertContains( 'error404', $actual['data']['templateByUri']['bodyClasses'], 'bodyClasses should contain the error404 class' );
 		$this->assertNotEmpty( $actual['data']['templateByUri'], 'templateByUri should return the rendered 404 template' );
 		$this->assertNull( $actual['data']['templateByUri']['connectedNode'], 'connectedNode should be null' );
+		$this->assertTrue( $actual['data']['templateByUri']['is404'], 'Should be a 404.' );
 
 		// Test a good URI.
 		$cpt_link = get_permalink( $cpt_id );
@@ -347,6 +351,7 @@ class TemplateByUriQueryTest extends IntegrationTestCase {
 		$this->assertNotEmpty( $actual['data']['templateByUri'], 'templateByUri should return the rendered 404 template' );
 		$this->assertContains( 'error404', $actual['data']['templateByUri']['bodyClasses'], 'bodyClasses should contain the error404 class' );
 		$this->assertNull( $actual['data']['templateByUri']['connectedNode'], 'connectedNode should be null' );
+		$this->assertTrue( $actual['data']['templateByUri']['is404'], 'Should be a 404.' );
 
 		// Test a good URI.
 		$category_link = get_term_link( $category_id );
@@ -392,6 +397,7 @@ class TemplateByUriQueryTest extends IntegrationTestCase {
 		$this->assertNotEmpty( $actual['data']['templateByUri'], 'templateByUri should return the rendered 404 template' );
 		$this->assertContains( 'error404', $actual['data']['templateByUri']['bodyClasses'], 'bodyClasses should contain the error404 class' );
 		$this->assertNull( $actual['data']['templateByUri']['connectedNode'], 'connectedNode should be null' );
+		$this->assertTrue( $actual['data']['templateByUri']['is404'], 'Should be a 404.' );
 
 		// Test a good URI.
 		$tag_link = get_tag_link( $tag_id );
@@ -436,6 +442,7 @@ class TemplateByUriQueryTest extends IntegrationTestCase {
 		$this->assertNotEmpty( $actual['data']['templateByUri'], 'templateByUri should return the rendered 404 template' );
 		$this->assertContains( 'error404', $actual['data']['templateByUri']['bodyClasses'], 'bodyClasses should contain the error404 class' );
 		$this->assertNull( $actual['data']['templateByUri']['connectedNode'], 'connectedNode should be null' );
+		$this->assertTrue( $actual['data']['templateByUri']['is404'], 'Should be a 404.' );
 
 		// Test a good URI.
 		$term_link = get_term_link( $term_id );
@@ -514,6 +521,7 @@ class TemplateByUriQueryTest extends IntegrationTestCase {
 		$this->assertNull( $actual['data']['templateByUri']['connectedNode'], 'connectedNode should be null' );
 		$this->assertNotEmpty( $actual['data']['templateByUri'], 'templateByUri should return the rendered 404 template' );
 		$this->assertContains( 'error404', $actual['data']['templateByUri']['bodyClasses'], 'bodyClasses should contain the error404 class' );
+		$this->assertTrue( $actual['data']['templateByUri']['is404'], 'Should be a 404.' );
 
 		// Test a good URI.
 		$archive_link = get_post_type_archive_link( 'non_hierarchical_cpt' );
@@ -567,6 +575,7 @@ class TemplateByUriQueryTest extends IntegrationTestCase {
 		$this->assertNotEmpty( $actual['data']['templateByUri'], 'templateByUri should return the rendered 404 template' );
 		$this->assertContains( 'error404', $actual['data']['templateByUri']['bodyClasses'], 'bodyClasses should contain the error404 class' );
 		$this->assertNull( $actual['data']['templateByUri']['connectedNode'], 'connectedNode should be null' );
+		$this->assertTrue( $actual['data']['templateByUri']['is404'], 'Should be a 404.' );
 
 		// Test a good URI for the parent post archive.
 		$archive_link = get_post_type_archive_link( 'hierarchical_cpt' );
@@ -618,6 +627,7 @@ class TemplateByUriQueryTest extends IntegrationTestCase {
 		$this->assertNotEmpty( $actual['data']['templateByUri'], 'templateByUri should return the rendered 404 template' );
 		$this->assertContains( 'error404', $actual['data']['templateByUri']['bodyClasses'], 'bodyClasses should contain the error404 class' );
 		$this->assertNull( $actual['data']['templateByUri']['connectedNode'], 'connectedNode should be null' );
+		$this->assertTrue( $actual['data']['templateByUri']['is404'], 'Should be a 404.' );
 
 		// Test invalid archive URIs.
 		$invalid_uris = [
@@ -733,6 +743,7 @@ class TemplateByUriQueryTest extends IntegrationTestCase {
 		$this->assertArrayNotHasKey( 'errors', $actual );
 		$this->assertNotEmpty( $actual['data']['templateByUri'], 'templateByUri should return the rendered date archive template' );
 		$this->assertContains( 'date', $actual['data']['templateByUri']['bodyClasses'], 'bodyClasses should contain the date class' );
+		$this->assertFalse( $actual['data']['templateByUri']['is404'], 'Should not be a 404.' );
 	}
 
 	/**
@@ -767,6 +778,7 @@ class TemplateByUriQueryTest extends IntegrationTestCase {
 		$this->assertNotEmpty( $actual['data']['templateByUri'], 'templateByUri should return the rendered 404 template' );
 		$this->assertContains( 'error404', $actual['data']['templateByUri']['bodyClasses'], 'bodyClasses should contain the error404 class' );
 		$this->assertNull( $actual['data']['templateByUri']['connectedNode'], 'connectedNode should be null' );
+		$this->assertTrue( $actual['data']['templateByUri']['is404'], 'Should be a 404.' );
 	}
 
 	/**
@@ -978,6 +990,7 @@ class TemplateByUriQueryTest extends IntegrationTestCase {
 		$this->assertEquals( 'Page', $actual['data']['templateByUri']['connectedNode']['__typename'], 'connectedNode should be a Page' );
 		$this->assertEquals( $front_page_id, $actual['data']['templateByUri']['connectedNode']['databaseId'], 'connectedNode should have the correct databaseId' );
 		$this->assertEquals( 'Front Page Test', $actual['data']['templateByUri']['connectedNode']['title'], 'connectedNode should have the correct title' );
+		$this->assertFalse( $actual['data']['templateByUri']['is404'], 'Should not be a 404.' );
 
 		// Test posts archive URI.
 		$posts_page_uri = wp_make_link_relative( get_permalink( $posts_page_id ) );
@@ -1037,6 +1050,7 @@ class TemplateByUriQueryTest extends IntegrationTestCase {
 		$this->assertContains( 'blog', $actual['data']['templateByUri']['bodyClasses'], 'bodyClasses should contain the blog class' );
 		$this->assertEquals( 'ContentType', $actual['data']['templateByUri']['connectedNode']['__typename'], 'connectedNode should be a PostsPage' );
 		$this->assertTrue( $actual['data']['templateByUri']['connectedNode']['isPostsPage'], 'connectedNode should be a posts page' );
+		$this->assertFalse( $actual['data']['templateByUri']['is404'], 'Should not be a 404.' );
 
 		// Clean up: Restore the original options.
 		update_option( 'page_on_front', $original_page_on_front );
