@@ -74,6 +74,13 @@ final class RenderedTemplate extends AbstractObject implements TypeWithConnectio
 					return ! empty( $source->uri ) ? $context->node_resolver->resolve_uri( $source->uri ) : null;
 				},
 			],
+			'is404'         => [
+				'type'        => 'Boolean',
+				'description' => __( 'Whether the template is a 404 page.', 'snapwp-helper' ),
+				'resolve'     => static function () {
+					return is_404();
+				},
+			],
 		];
 	}
 
