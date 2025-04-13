@@ -142,6 +142,9 @@ class RenderedTemplate extends Model {
 					return $queue;
 				},
 				'uri'                        => fn (): ?string => ! empty( $this->data['uri'] ) ? $this->data['uri'] : null,
+				'is404'                      => static function (): bool {
+					return is_404();
+				},
 			];
 		}
 	}
