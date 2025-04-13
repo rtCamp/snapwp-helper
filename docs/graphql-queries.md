@@ -4,9 +4,14 @@ This document outlines the GraphQL queries available in the SnapWP Helper plugin
 
 ## Table of Contents
 
-- [Querying `RenderedTemplate` data with `templateByUri`](#querying-renderedtemplate-data-with-templatebyuri)
-- [Querying `globalStyles` data](#querying-globalstyles-data)
-- [Additional GraphQL fields](#additional-graphql-fields)
+- [GraphQL Queries](#graphql-queries)
+  - [Table of Contents](#table-of-contents)
+  - [Querying `RenderedTemplate` data with `templateByUri`](#querying-renderedtemplate-data-with-templatebyuri)
+    - [Query Structure](#query-structure)
+  - [Querying `globalStyles` data](#querying-globalstyles-data)
+    - [Query Structure](#query-structure-1)
+  - [Additional GraphQL fields](#additional-graphql-fields)
+    - [`generalSettings.siteIcon: MediaItem`](#generalsettingssiteicon-mediaitem)
 
 ## Querying `RenderedTemplate` data with `templateByUri`
 
@@ -66,6 +71,7 @@ The `RootQuery.globalStyles` field is used to fetch the global styles data (`Glo
 ```graphql
 query GetGlobalStyles {
   globalStyles {
+    bigImageSizeThreshold # The maximum size (in PX) of an image as set by the `big_image_size_threshold` WordPress filter.
     customCss         # The Global custom CSS defined in the theme or theme.json
     fontFaces {       # The data for the font faces
       ...FontFaceFrag

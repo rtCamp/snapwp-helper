@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](./README.md#updating-and-versi
 
 ## Unreleased
 
-- feat: Add `CoreImageAttributes.imageMaxWidth` field to expose `big_image_size_threshold` or `theme-defined wide size`.
+- feat: Expose `GlobalStyles.bigImageSizeThreshold` field to the GraphQL schema.
 
 ## [0.2.2] - 2025-03-31
 
