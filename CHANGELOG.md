@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](./README.md#updating-and-versi
 ## Unreleased
 
 - feat: Expose `is404` field on `RenderedTemplate` GraphQL type and model.
+- feat: Expose `GlobalStyles.bigImageSizeThreshold` field to the GraphQL schema.
 
 ## [0.2.2] - 2025-03-31
 

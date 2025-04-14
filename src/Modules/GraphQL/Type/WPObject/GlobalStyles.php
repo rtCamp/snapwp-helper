@@ -36,7 +36,16 @@ final class GlobalStyles extends AbstractObject {
 	 */
 	public function get_fields(): array {
 		return [
-			'customCss'         => [
+			'bigImageSizeThreshold' => [
+				'type'        => 'Int',
+				'description' => __( 'Maximum width or height (in PX) of an image as set by the `big_image_size_threshold` WordPress filter. Used by SnapWP as the default max image size.', 'snapwp-helper' ),
+				'resolve'     => static function () {
+					$threshold = apply_filters( 'big_image_size_threshold', 2560, [ 0,0 ], '', 0 ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- WP core hook.
+
+					return ! empty( $threshold ) ? (int) $threshold : null;
+				},
+			],
+			'customCss'             => [
 				'type'        => 'String',
 				'description' => __( 'The Global custom css defined in the theme or theme.json.', 'snapwp-helper' ),
 				'resolve'     => static function () {
@@ -48,7 +57,7 @@ final class GlobalStyles extends AbstractObject {
 					return $custom_css ?: null;
 				},
 			],
-			'fontFaces'         => [
+			'fontFaces'             => [
 				'type'        => [ 'list_of' => FontFace::get_type_name() ],
 				'description' => __( 'The font faces.', 'snapwp-helper' ),
 				'resolve'     => static function () {
@@ -76,7 +85,7 @@ final class GlobalStyles extends AbstractObject {
 					);
 				},
 			],
-			'renderedFontFaces' => [
+			'renderedFontFaces'     => [
 				'type'        => 'String',
 				'description' => __( 'The rendered @font-face style.', 'snapwp-helper' ),
 				'resolve'     => static function () {
@@ -87,7 +96,7 @@ final class GlobalStyles extends AbstractObject {
 					return ob_get_clean();
 				},
 			],
-			'stylesheet'        => [
+			'stylesheet'            => [
 				'type'        => 'String',
 				'description' => __( 'The Global Stylesheet css.', 'snapwp-helper' ),
 				'resolve'     => static function () {

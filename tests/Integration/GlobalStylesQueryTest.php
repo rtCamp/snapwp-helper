@@ -17,6 +17,7 @@ class GlobalStylesQueryTest extends IntegrationTestCase {
 	public function testGlobalStylesQuery(): void {
 		$query = 'query testGlobalStyles {
 			globalStyles {
+				bigImageSizeThreshold
 				customCss
 				renderedFontFaces
 				stylesheet
@@ -34,6 +35,7 @@ class GlobalStylesQueryTest extends IntegrationTestCase {
 				$this->expectedObject(
 					'globalStyles',
 					[
+						$this->expectedField( 'customCss', self::NOT_FALSY ),
 						$this->expectedField( 'customCss', self::NOT_FALSY ),
 						$this->expectedField( 'renderedFontFaces', self::NOT_FALSY ),
 						$this->expectedField( 'stylesheet', self::NOT_FALSY ),
@@ -91,5 +93,59 @@ class GlobalStylesQueryTest extends IntegrationTestCase {
 				$this->assertEquals( $value, $actual['data']['globalStyles']['fontFaces'][ $i ][ $actual_key ] );
 			}
 		}
+	}
+
+	public function testBigImageSizeThreshold(): void {
+		$query = 'query testBigImageSizeThreshold {
+			globalStyles {
+				bigImageSizeThreshold
+			}
+		}';
+
+		$actual = $this->graphql( compact( 'query' ) );
+
+		// Check if the query was successful.
+		$this->assertArrayNotHasKey( 'errors', $actual );
+
+		$this->assertQuerySuccessful(
+			$actual,
+			[
+				$this->expectedObject(
+					'globalStyles',
+					[
+						$this->expectedField( 'bigImageSizeThreshold', 2560 ),
+					]
+				),
+			]
+		);
+
+		// Override the value using add_filter.
+		add_filter(
+			'big_image_size_threshold',
+			static function () {
+				return 2048;
+			}
+		);
+
+		$actual = $this->graphql( compact( 'query' ) );
+
+		// Check if the query was successful.
+		$this->assertArrayNotHasKey( 'errors', $actual );
+
+		// Validate that the overridden value is returned.
+		$this->assertQuerySuccessful(
+			$actual,
+			[
+				$this->expectedObject(
+					'globalStyles',
+					[
+						$this->expectedField( 'bigImageSizeThreshold', 2048 ),
+					]
+				),
+			]
+		);
+
+		// Cleanup: Remove all the filters.
+		remove_all_filters( 'big_image_size_threshold' );
 	}
 }
