@@ -144,5 +144,8 @@ class GlobalStylesQueryTest extends IntegrationTestCase {
 				),
 			]
 		);
+
+		// Cleanup: Remove all the filters.
+		remove_all_filters( 'big_image_size_threshold' );
 	}
 }
