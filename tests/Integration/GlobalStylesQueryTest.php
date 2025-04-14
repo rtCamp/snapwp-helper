@@ -118,5 +118,31 @@ class GlobalStylesQueryTest extends IntegrationTestCase {
 				),
 			]
 		);
+
+		// Override the value using add_filter.
+		add_filter(
+			'big_image_size_threshold',
+			static function () {
+				return 2048;
+			}
+		);
+
+		$actual = $this->graphql( compact( 'query' ) );
+
+		// Check if the query was successful.
+		$this->assertArrayNotHasKey( 'errors', $actual );
+
+		// Validate that the overridden value is returned.
+		$this->assertQuerySuccessful(
+			$actual,
+			[
+				$this->expectedObject(
+					'globalStyles',
+					[
+						$this->expectedField( 'bigImageSizeThreshold', 2048 ),
+					]
+				),
+			]
+		);
 	}
 }
