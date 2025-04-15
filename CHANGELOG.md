@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](./README.md#updating-and-versi
 
 ## Unreleased
 
+- fix: Avoid translation calls before `init` action.
 - feat: Expose `is404` field on `RenderedTemplate` GraphQL type and model.
 - feat: Expose `GlobalStyles.bigImageSizeThreshold` field to the GraphQL schema.
 

@@ -90,7 +90,7 @@ class GraphQL implements Module {
 
 		return [
 			'slug'           => 'wp-graphql',
-			'name'           => __( 'WPGraphQL', 'snapwp-helper' ),
+			'name'           => 'WPGraphQL',
 			'check_callback' => static function () use ( $minimum_version ) {
 				// WPGraphQL must be active.
 				if ( ! class_exists( 'WPGraphQL' ) || ! defined( 'WPGRAPHQL_VERSION' ) ) {
@@ -127,7 +127,7 @@ class GraphQL implements Module {
 
 		return [
 			'slug'           => 'wp-graphql-content-blocks',
-			'name'           => __( 'WPGraphQL Content Blocks', 'snapwp-helper' ),
+			'name'           => 'WPGraphQL Content Blocks',
 			'check_callback' => static function () use ( $minimum_version ) {
 				// WPGraphQL Content Blocks must be active.
 				if ( ! class_exists( 'WPGraphQLContentBlocks' ) || ! defined( 'WPGRAPHQL_CONTENT_BLOCKS_VERSION' ) ) {
