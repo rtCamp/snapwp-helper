@@ -192,7 +192,7 @@ jobs:
         strategy:
             matrix:
                 php: ['8.2', '8.1']
-                wordpress: ['6.8']
+                wordpress: ['6.8', '6.7']
                 include:
                     - php: '8.2'
                       wordpress: '6.8'
