@@ -6,9 +6,10 @@ and this project adheres to [Semantic Versioning](./README.md#updating-and-versi
 
 ## Unreleased
 
-- fix: Avoid translation calls before `init` action.
 - feat: Expose `is404` field on `RenderedTemplate` GraphQL type and model.
 - feat: Expose `GlobalStyles.bigImageSizeThreshold` field to the GraphQL schema.
+- fix: Avoid translation calls before `init` action.
+- chore: Test compatibility with WordPress v6.8.
 
 ## [0.2.2] - 2025-03-31
 
