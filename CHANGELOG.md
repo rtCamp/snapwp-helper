@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](./README.md#updating-and-versi
 - fix: Avoid translation calls before `init` action.
 - feat: Expose `is404` field on `RenderedTemplate` GraphQL type and model.
 - feat: Expose `GlobalStyles.bigImageSizeThreshold` field to the GraphQL schema.
+- chore: Update Composer and NPM dev-dependencies to their latest (SemVer-compatible) versions.
 
 ## [0.2.2] - 2025-03-31
 
