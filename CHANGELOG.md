@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](./README.md#updating-and-versi
 - feat: Expose `GlobalStyles.bigImageSizeThreshold` field to the GraphQL schema.
 - fix: Avoid translation calls before `init` action.
 - chore: Test compatibility with WordPress v6.8.
+- chore: Update Composer and NPM dev-dependencies to their latest (SemVer-compatible) versions.
 
 ## [0.2.2] - 2025-03-31
 
