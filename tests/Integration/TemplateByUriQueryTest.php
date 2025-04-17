@@ -91,6 +91,30 @@ class TemplateByUriQueryTest extends IntegrationTestCase {
 				'role' => 'administrator',
 			]
 		);
+
+		/**
+		 * This is necessary to prevent CorePostAuthorName from throwing an error on CI due to missing `$context`.
+		 *
+		 * @see https://github.com/WordPress/gutenberg/blob/9122cc34fb1d972cdfc59614bf6f140a9b6f7d94/packages/block-library/src/post-author-name/index.php#L29
+		 *
+		 * @todo Confirm this is an issue with CI and not the plugin.
+		 */
+		add_filter(
+			'render_block_context',
+			static function ( $context, $parsed_block ) {
+				if ( ! isset( $parsed_block['blockName'] ) || 'core/post-author-name' !== $parsed_block['blockName'] ) {
+					return $context;
+				}
+
+				if ( ! isset( $context['postType'] ) ) {
+					$context['postType'] = null;
+				}
+
+				return $context;
+			},
+			10,
+			2
+		);
 	}
 
 	/**
@@ -861,6 +885,19 @@ class TemplateByUriQueryTest extends IntegrationTestCase {
 	 * @todo: Fix the issue where `connectedNode` is null.
 	 */
 	public function testUnauthenticatedAuthorByUri(): void {
+		add_filter(
+			'render_block_context',
+			static function ( $context ) {
+				codecept_debug( '=====FILTER=====' );
+				codecept_debug( $context );
+				global $post;
+
+				codecept_debug( $post );
+				return $context;
+			},
+			99
+		);
+
 		// Create a user with no posts.
 		$subscriber = $this->factory->user->create(
 			[
