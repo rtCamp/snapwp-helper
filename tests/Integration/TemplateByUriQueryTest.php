@@ -91,6 +91,26 @@ class TemplateByUriQueryTest extends IntegrationTestCase {
 				'role' => 'administrator',
 			]
 		);
+
+		/**
+		 * @todo Remove this when https://github.com/WordPress/gutenberg/issues/69948 is released in WordPress core.
+		 */
+		add_filter(
+			'render_block_context',
+			static function ( $context, $parsed_block ) {
+				if ( ! isset( $parsed_block['blockName'] ) || 'core/post-author-name' !== $parsed_block['blockName'] ) {
+					return $context;
+				}
+
+				if ( ! isset( $context['postType'] ) ) {
+					$context['postType'] = null;
+				}
+
+				return $context;
+			},
+			10,
+			2
+		);
 	}
 
 	/**
