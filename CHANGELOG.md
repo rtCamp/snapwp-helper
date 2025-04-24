@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](./README.md#updating-and-versi
 
 ## Unreleased
 
+-
+
+## [0.2.3] - 2025-04-24
+
+This _minor_ release exposes new fields to the GraphQL schema, such as whether a template `is404`. We also fixed a compatibility issue with WordPress v6.8 and i18n support.
+
 - feat: Expose `is404` field on `RenderedTemplate` GraphQL type and model.
 - feat: Expose `GlobalStyles.bigImageSizeThreshold` field to the GraphQL schema.
 - fix: Avoid translation calls before `init` action.
