@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<ruleset  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="WPGraphQL_Login" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/squizlabs/PHP_CodeSniffer/master/phpcs.xsd">
+<ruleset  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="SnapWP" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/squizlabs/PHP_CodeSniffer/master/phpcs.xsd">
 	<description>Sniffs for SnapWP Helper </description>
 
 	<!-- What to scan: include any root-level PHP files, and the /src folder -->
@@ -43,7 +43,11 @@
 
 	<!-- Rules: WPGraphQL Coding Standards -->
 	<!-- https://github.com/AxeWP/WPGraphQL-Coding-Standards/WPGraphQL/ruleset.xml -->
-	<rule ref="WPGraphQL" />
+	<rule ref="WPGraphQL">
+		<!-- Deprecated: @todo remove in PHPCS 4.0 -->
+		<exclude name="WordPressVIPMinimum.JS" />
+		<exclude name="Generic.Functions.CallTimePassByReference" />
+	</rule>
 	<rule ref="WordPress-Docs" />
 
 	<!-- Individual rule configuration -->
@@ -66,7 +70,11 @@
 	<rule ref="WordPress.NamingConventions.PrefixAllGlobals">
 		<properties>
 			<!-- Value: replace the function, class, and variable prefixes used. Separate multiple prefixes with a comma. -->
-			<property name="prefixes" type="array" value="SnapWP\Helper, snapwp_helper, SNAPWP_HELPER" />
+			<property name="prefixes" type="array">
+				<element value="SnapWP\Helper" />
+				<element value="snapwp_helper" />
+				<element value="SNAPWP_HELPER" />
+			</property>
 		</properties>
 	</rule>
 	 <rule ref="WordPress.NamingConventions.ValidHookName">
@@ -78,7 +86,9 @@
 	<rule ref="WordPress.WP.I18n">
 		<properties>
 			<!-- Value: replace the text domain used. -->
-			<property name="text_domain" type="array" value="snapwp-helper"/>
+			<property name="text_domain" type="array">
+				<element value="snapwp-helper" />
+			</property>
 		</properties>
 	</rule>
 </ruleset>

@@ -45,9 +45,9 @@ class GeneratorTest extends IntegrationTestCase {
 		$variables['NODE_TLS_REJECT_UNAUTHORIZED']['value']     = '5';
 		$variables['NEXT_PUBLIC_FRONTEND_URL']['value']         = 'http://localhost:3000';
 		$variables['NEXT_PUBLIC_WP_HOME_URL']['value']          = 'https://headless-demo.local';
-		$variables['NEXT_PUBLIC_GRAPHQL_ENDPOINT']['value']     = '/test_endpoint';
-		$variables['NEXT_PUBLIC_WP_UPLOADS_DIRECTORY']['value'] = 'uploads';
-		$variables['NEXT_PUBLIC_REST_URL_PREFIX']['value']      = 'api';
+		$variables['GRAPHQL_ENDPOINT']['value']     = '/test_endpoint';
+		$variables['WP_UPLOADS_DIRECTORY']['value'] = 'uploads';
+		$variables['REST_URL_PREFIX']['value']      = 'api';
 		$variables['INTROSPECTION_TOKEN']['value']              = '0123456789';
 
 		// Update the registry.
@@ -65,7 +65,7 @@ class GeneratorTest extends IntegrationTestCase {
 		$this->assertStringContainsString( 'NODE_TLS_REJECT_UNAUTHORIZED=5', $content );
 		$this->assertStringContainsString( 'NEXT_PUBLIC_FRONTEND_URL=http://localhost:3000', $content );
 		$this->assertStringContainsString( 'NEXT_PUBLIC_WP_HOME_URL=https://headless-demo.local', $content );
-		$this->assertStringContainsString( 'NEXT_PUBLIC_GRAPHQL_ENDPOINT=/test_endpoint', $content );
+		$this->assertStringContainsString( 'GRAPHQL_ENDPOINT=/test_endpoint', $content );
 		$this->assertStringContainsString( 'INTROSPECTION_TOKEN=0123456789', $content );
 	}
 
@@ -130,21 +130,21 @@ class GeneratorTest extends IntegrationTestCase {
 				'required'    => true,
 				'value'       => 'http://localhost:3000',
 			],
-			'NEXT_PUBLIC_CORS_PROXY_PREFIX'    => [
+			'CORS_PROXY_PREFIX'    => [
 				'description' => 'The CORS proxy prefix',
 				'default'     => '/proxy',
 				'outputMode'  => VariableRegistry::OUTPUT_COMMENTED,
 				'required'    => false,
 				'value'       => '', // Empty value should show default in commented output.
 			],
-			'NEXT_PUBLIC_REST_URL_PREFIX'      => [
+			'REST_URL_PREFIX'      => [
 				'description' => 'The WordPress REST URL Prefix',
 				'default'     => '/wp-json',
 				'outputMode'  => VariableRegistry::OUTPUT_COMMENTED,
 				'required'    => false,
 				'value'       => '', // Empty value should show default in commented output.
 			],
-			'NEXT_PUBLIC_WP_UPLOADS_DIRECTORY' => [
+			'WP_UPLOADS_DIRECTORY' => [
 				'description' => 'The WordPress Uploads directory path',
 				'default'     => '/wp-content/uploads',
 				'outputMode'  => VariableRegistry::OUTPUT_COMMENTED,
@@ -168,8 +168,8 @@ class GeneratorTest extends IntegrationTestCase {
 		$this->assertStringContainsString( 'NEXT_PUBLIC_FRONTEND_URL=http://localhost:3000', $content );
 
 		// Check that commented variables use their default values.
-		$this->assertStringContainsString( '# NEXT_PUBLIC_CORS_PROXY_PREFIX=/proxy', $content );
-		$this->assertStringContainsString( '# NEXT_PUBLIC_REST_URL_PREFIX=/wp-json', $content );
-		$this->assertStringContainsString( '# NEXT_PUBLIC_WP_UPLOADS_DIRECTORY=/wp-content/uploads', $content );
+		$this->assertStringContainsString( '# CORS_PROXY_PREFIX=/proxy', $content );
+		$this->assertStringContainsString( '# REST_URL_PREFIX=/wp-json', $content );
+		$this->assertStringContainsString( '# WP_UPLOADS_DIRECTORY=/wp-content/uploads', $content );
 	}
 }

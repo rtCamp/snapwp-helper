@@ -59,7 +59,7 @@ class VariableRegistry {
 	 */
 	private static function get_default_variables(): array {
 		return [
-			'NODE_TLS_REJECT_UNAUTHORIZED'     => [
+			'NODE_TLS_REJECT_UNAUTHORIZED' => [
 				'description' => 'Enable if connecting to a self-signed cert.',
 				'default'     => '0',
 				'outputMode'  => self::OUTPUT_VISIBLE,
@@ -71,65 +71,65 @@ class VariableRegistry {
 					return strpos( $frontend_url, 'https://' ) === 0 ? '1' : '0';
 				},
 			],
-			'NEXT_PUBLIC_FRONTEND_URL'         => [
+			'NEXT_PUBLIC_FRONTEND_URL'     => [
 				'description' => 'The URL of the Next.js "headless" frontend.',
 				'default'     => 'http://localhost:3000',
 				'outputMode'  => self::OUTPUT_VISIBLE,
 				'required'    => true,
 				'value'       => 'http://localhost:3000', // @todo Allow this to be stored and reused.
 			],
-			'NEXT_PUBLIC_WP_HOME_URL'          => [
+			'NEXT_PUBLIC_WP_HOME_URL'      => [
 				'description' => 'The traditional WordPress frontend domain URL. E.g. https://my-headless-site.local',
 				'default'     => null,
 				'outputMode'  => self::OUTPUT_VISIBLE,
 				'required'    => true,
 				'value'       => static fn (): string => untrailingslashit( get_home_url() ),
 			],
-			'NEXT_PUBLIC_WP_SITE_URL'          => [
+			'WP_SITE_URL'                  => [
 				'description' => 'The WordPress "backend" Site Address. Uncomment if different than `NEXT_PUBLIC_WP_HOME_URL`. E.g. https://my-headless-site.local/wp/',
 				'default'     => null,
 				'outputMode'  => static function ( self $registry ): string {
 					$home_url = $registry->get_value( 'NEXT_PUBLIC_WP_HOME_URL' );
-					$value    = $registry->get_value( 'NEXT_PUBLIC_WP_SITE_URL' );
+					$value    = $registry->get_value( 'WP_SITE_URL' );
 
 					// If the value is the same as the home URL, hide it.
 					return $value === $home_url ? self::OUTPUT_HIDDEN : self::OUTPUT_VISIBLE;
 				},
-				'required'    => static fn ( self $registry ): bool => $registry->get_value( 'NEXT_PUBLIC_WP_HOME_URL' ) !== $registry->get_value( 'NEXT_PUBLIC_WP_SITE_URL' ),
+				'required'    => static fn ( self $registry ): bool => $registry->get_value( 'NEXT_PUBLIC_WP_HOME_URL' ) !== $registry->get_value( 'WP_SITE_URL' ),
 				'value'       => static fn (): string => untrailingslashit( get_site_url() ),
 			],
-			'NEXT_PUBLIC_GRAPHQL_ENDPOINT'     => [
+			'GRAPHQL_ENDPOINT'             => [
 				'description' => 'The WordPress GraphQL endpoint.',
 				'default'     => 'index.php?graphql',
 				'outputMode'  => self::OUTPUT_VISIBLE,
 				'required'    => true,
 				'value'       => static fn (): ?string => function_exists( 'graphql_get_endpoint' ) ? graphql_get_endpoint() : null,
 			],
-			'NEXT_PUBLIC_REST_URL_PREFIX'      => [
+			'REST_URL_PREFIX'              => [
 				'description' => 'The WordPress REST API URL prefix.',
 				'default'     => '/wp-json',
-				'outputMode'  => static fn ( self $registry ): string => $registry->hide_if_default( 'NEXT_PUBLIC_REST_URL_PREFIX' ),
-				'required'    => static fn ( self $registry ): bool => $registry->require_if_not_default( 'NEXT_PUBLIC_REST_URL_PREFIX' ),
+				'outputMode'  => static fn ( self $registry ): string => $registry->hide_if_default( 'REST_URL_PREFIX' ),
+				'required'    => static fn ( self $registry ): bool => $registry->require_if_not_default( 'REST_URL_PREFIX' ),
 				'value'       => static fn (): string => '/' . rest_get_url_prefix(),
 			],
-			'NEXT_PUBLIC_WP_UPLOADS_DIRECTORY' => [
+			'WP_UPLOADS_DIRECTORY'         => [
 				'description' => 'The relative path to the WordPress uploads directory.',
 				'default'     => '/wp-content/uploads',
-				'outputMode'  => static fn ( self $registry ): string => $registry->hide_if_default( 'NEXT_PUBLIC_WP_UPLOADS_DIRECTORY' ),
-				'required'    => static fn ( self $registry ): bool => $registry->require_if_not_default( 'NEXT_PUBLIC_WP_UPLOADS_DIRECTORY' ),
+				'outputMode'  => static fn ( self $registry ): string => $registry->hide_if_default( 'WP_UPLOADS_DIRECTORY' ),
+				'required'    => static fn ( self $registry ): bool => $registry->require_if_not_default( 'WP_UPLOADS_DIRECTORY' ),
 				'value'       => static function (): string {
 					$upload_dir = wp_get_upload_dir();
 					return '/' . ltrim( str_replace( ABSPATH, '', $upload_dir['basedir'] ), '/' );
 				},
 			],
-			'NEXT_PUBLIC_CORS_PROXY_PREFIX'    => [
+			'CORS_PROXY_PREFIX'            => [
 				'description' => 'The CORS proxy prefix to use when bypassing CORS restrictions from WordPress server. If unset, no proxy will be used.',
 				'default'     => '/proxy',
 				'outputMode'  => self::OUTPUT_COMMENTED,
 				'required'    => false,
 				'value'       => '',
 			],
-			'INTROSPECTION_TOKEN'              => [
+			'INTROSPECTION_TOKEN'          => [
 				'description' => 'Token used for authenticating GraphQL introspection queries.',
 				'default'     => null,
 				'outputMode'  => self::OUTPUT_VISIBLE,

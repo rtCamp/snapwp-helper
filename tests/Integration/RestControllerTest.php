@@ -99,14 +99,14 @@ class RestControllerTest extends IntegrationTestCase {
 
 		// Check if GraphQL endpoint is present
 		$graphql_endpoint = function_exists( 'graphql_get_endpoint' ) ? graphql_get_endpoint() : 'graphql';
-		$this->assertStringContainsString( 'NEXT_PUBLIC_GRAPHQL_ENDPOINT=' . $graphql_endpoint, $content );
+		$this->assertStringContainsString( 'GRAPHQL_ENDPOINT=' . $graphql_endpoint, $content );
 
 		// Check for introspection token
 		$token = IntrospectionToken::get_token();
 		$this->assertStringContainsString( 'INTROSPECTION_TOKEN=' . $token, $content );
 
 		// Check commented variable format
-		$this->assertStringContainsString( '# NEXT_PUBLIC_CORS_PROXY_PREFIX=/proxy', $content );
+		$this->assertStringContainsString( '# CORS_PROXY_PREFIX=/proxy', $content );
 
 		// Clean up.
 		wp_delete_user( $admin_id, true );
