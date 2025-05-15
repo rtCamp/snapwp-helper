@@ -6,7 +6,17 @@ and this project adheres to [Semantic Versioning](./README.md#updating-and-versi
 
 ## Unreleased
 
--
+- 
+
+## [0.2.4] - 2025-05-15
+
+This _minor_ release adds compatibility for the latest versions of SnapWP, WordPress, and WPGraphQL.
+
+- dev: Use "private" Config API variables for environment generation.
+- fix: Update references from `NEXT_PUBLIC_URL` to `NEXT_PUBLIC_FRONTEND_URL`.
+- chore: Update Composer and NPM dev-dependencies to their latest (SemVer-compatible) versions.
+- chore: Update PHPCS ruleset for PHPCS v3.3 compatibility.
+- chore: Test compatibility with WordPress v6.8.1 and WPGraphQL v2.3.0.
 
 ## [0.2.3] - 2025-04-24
 

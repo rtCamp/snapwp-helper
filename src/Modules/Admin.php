@@ -163,7 +163,7 @@ class Admin implements Module {
 						printf(
 							// translators: %s is the command, wrapped in code tags.
 							esc_html__( 'Then update the %s variable with the URL for your headless frontend.', 'snapwp-helper' ),
-							'<code>NEXT_PUBLIC_URL</code>'
+							'<code>NEXT_PUBLIC_FRONTEND_URL</code>'
 						);
 						?>
 					</p>
@@ -196,7 +196,7 @@ class Admin implements Module {
 								printf(
 									// Translators: %s is the command, wrapped in code tags.
 									esc_html__( 'Visit the %1$s from %2$s (updated in Step 2), in your browser to see SnapWP in action!', 'snapwp-helper' ),
-									'<code>NEXT_PUBLIC_URL</code>',
+									'<code>NEXT_PUBLIC_FRONTEND_URL</code>',
 									'<code>.env</code>',
 								);
 							?>
@@ -255,7 +255,7 @@ class Admin implements Module {
 				<?php foreach ( $variables as $key => $value ) : ?>
 					<?php
 					// Skip NODE_TLS_REJECT_UNAUTHORIZED and NEXT_PUBLIC_URL variables.
-					if ( in_array( $key, [ 'NODE_TLS_REJECT_UNAUTHORIZED', 'NEXT_PUBLIC_URL' ], true ) ) {
+					if ( in_array( $key, [ 'NODE_TLS_REJECT_UNAUTHORIZED', 'NEXT_PUBLIC_FRONTEND_URL' ], true ) ) {
 						continue;
 					}
 
