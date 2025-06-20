@@ -5,6 +5,8 @@ on:
             - develop
     workflow_dispatch:
 name: Deploying Headless Server
+permissions:
+    contents: read
 env:
     # Please keep in install-links to avoid npm install errors on the server
     build-command: npm i --include-dev --install-links && npm run build:dist
