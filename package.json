@@ -17,7 +17,6 @@
 	"overrides": {
 		"@babel/runtime": "^7.26.10",
 		"webpack-dev-server": "^5.2.1",
-		"glob": "^10.4.5",
 		"rimraf": "^5.0.10"
 	},
 	"files": [
