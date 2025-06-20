@@ -11,7 +11,7 @@ namespace SnapWP\Helper\Tests\Integration;
 
 use SnapWP\Helper\Modules\PluginUpdater\UpdateChecker;
 use SnapWP\Helper\Tests\TestCase\IntegrationTestCase;
-use YahnisElsts\PluginUpdateChecker\v5p5\Plugin\Update;
+use YahnisElsts\PluginUpdateChecker\v5p6\Plugin\Update;
 
 /**
  * Tests the Update Checker class.

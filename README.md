@@ -12,7 +12,7 @@ SnapWP Helper is a WordPress plugin that provides the necessary functionality to
 
 - **PHP** 7.4+
 - **WordPress** 6.7+
-- **[WPGraphQL](https://github.com/wp-graphql/wp-graphql/releases)** 1.28.0+
+- **[WPGraphQL](https://github.com/wp-graphql/wp-graphql/releases)** 2.3.3+
 - **[WPGraphQL Content Blocks](https://github.com/wpengine/wp-graphql-content-blocks/releases)** 4.6.0+
 
 ## Quick Install
