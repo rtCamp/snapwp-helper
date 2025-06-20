@@ -29,7 +29,7 @@ final class GeneralSettings extends AbstractFields {
 		return [
 			'siteIcon' => [
 				'type'        => 'MediaItem',
-				'description' => __( 'Site Icon', 'snapwp-helper' ),
+				'description' => static fn () => __( 'Site Icon', 'snapwp-helper' ),
 				'resolve'     => static function ( $_source, $_args, AppContext $context ) {
 					$site_icon_id = (int) get_option( 'site_icon' );
 

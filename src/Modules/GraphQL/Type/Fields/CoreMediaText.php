@@ -29,7 +29,7 @@ final class CoreMediaText extends AbstractFields {
 		return [
 			'mediaDetails' => [
 				'type'        => 'MediaDetails',
-				'description' => sprintf(
+				'description' => static fn () => sprintf(
 					// translators: %s is the block type name.
 					__( 'Media Details of the %s Block Type', 'snapwp-helper' ),
 					self::get_type_name(),

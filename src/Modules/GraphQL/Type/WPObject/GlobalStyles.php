@@ -38,7 +38,7 @@ final class GlobalStyles extends AbstractObject {
 		return [
 			'bigImageSizeThreshold' => [
 				'type'        => 'Int',
-				'description' => __( 'Maximum width or height (in PX) of an image as set by the `big_image_size_threshold` WordPress filter. Used by SnapWP as the default max image size.', 'snapwp-helper' ),
+				'description' => static fn () => __( 'Maximum width or height (in PX) of an image as set by the `big_image_size_threshold` WordPress filter. Used by SnapWP as the default max image size.', 'snapwp-helper' ),
 				'resolve'     => static function () {
 					$threshold = apply_filters( 'big_image_size_threshold', 2560, [ 0,0 ], '', 0 ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- WP core hook.
 
@@ -47,7 +47,7 @@ final class GlobalStyles extends AbstractObject {
 			],
 			'customCss'             => [
 				'type'        => 'String',
-				'description' => __( 'The Global custom css defined in the theme or theme.json.', 'snapwp-helper' ),
+				'description' => static fn () => __( 'The Global custom css defined in the theme or theme.json.', 'snapwp-helper' ),
 				'resolve'     => static function () {
 					// Don't enqueue Customizer's custom CSS separately.
 					remove_action( 'wp_head', 'wp_custom_css_cb', 101 );
@@ -59,7 +59,7 @@ final class GlobalStyles extends AbstractObject {
 			],
 			'fontFaces'             => [
 				'type'        => [ 'list_of' => FontFace::get_type_name() ],
-				'description' => __( 'The font faces.', 'snapwp-helper' ),
+				'description' => static fn () => __( 'The font faces.', 'snapwp-helper' ),
 				'resolve'     => static function () {
 					$fonts = \WP_Font_Face_Resolver::get_fonts_from_theme_json();
 
@@ -87,7 +87,7 @@ final class GlobalStyles extends AbstractObject {
 			],
 			'renderedFontFaces'     => [
 				'type'        => 'String',
-				'description' => __( 'The rendered @font-face style.', 'snapwp-helper' ),
+				'description' => static fn () => __( 'The rendered @font-face style.', 'snapwp-helper' ),
 				'resolve'     => static function () {
 					ob_start();
 
@@ -98,7 +98,7 @@ final class GlobalStyles extends AbstractObject {
 			],
 			'stylesheet'            => [
 				'type'        => 'String',
-				'description' => __( 'The Global Stylesheet css.', 'snapwp-helper' ),
+				'description' => static fn () => __( 'The Global Stylesheet css.', 'snapwp-helper' ),
 				'resolve'     => static function () {
 					return wp_get_global_stylesheet() ?: null;
 				},

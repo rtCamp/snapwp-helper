@@ -18,7 +18,7 @@ abstract class AbstractEnum extends AbstractType {
 	/**
 	 * Gets the Enum values configuration array.
 	 *
-	 * @return array<string,array{description:string,value:mixed,deprecationReason?:string}>
+	 * @return array<string,array{description:callable():string,value:mixed,deprecationReason?:callable():string}>
 	 */
 	abstract protected function get_values(): array;
 
@@ -35,7 +35,7 @@ abstract class AbstractEnum extends AbstractType {
 	 * @return array{
 	 *   description: callable(): string,
 	 *   eagerlyLoadType: bool,
-	 *   values: array<string,array{description:string,value:mixed,deprecationReason?:string}>,
+	 *   values: array<string,array{description:callable():string,value:mixed,deprecationReason?:callable():string}>,
 	 *  ...<string,mixed>
 	 * }
 	 */
