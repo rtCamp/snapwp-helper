@@ -6,10 +6,14 @@ and this project adheres to [Semantic Versioning](./README.md#updating-and-versi
 
 ## Unreleased
 
-- chore: Update NPM and Composer dependencies to their latest (SemVer-compatible) versions.
-- chore: Remove unnecessary Composer dev-dependencies.
+## [0.3.0] - 2025-06-20
+
+This _major_ release bumps the minimum required WPGraphQL version to v2.3.3, allowing the plugin to benefit from the latest performance improvements.
+
 - feat!: Bump minimum required WPGraphQL version to 2.3.3.
 - dev: Use callables for GraphQL descriptions.
+- chore: Update NPM and Composer dependencies to their latest (SemVer-compatible) versions.
+- chore: Remove unnecessary Composer dev-dependencies.
 
 ## [0.2.4] - 2025-05-15
 

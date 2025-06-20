@@ -7,7 +7,7 @@
  * Author: rtCamp
  * Author URI: https://github.com/rtCamp
  * Update URI: https://github.com/rtCamp/snapwp-helper
- * Version: 0.2.4
+ * Version: 0.3.0
  * Text Domain: snapwp-helper
  * Domain Path: /languages
  * Requires at least: 6.7
@@ -45,17 +45,13 @@ function constants(): void {
 	if ( ! defined( 'SNAPWP_HELPER_VERSION' ) ) {
 		/**
 		 * The plugin version.
-		 *
-		 * @const string
 		 */
-		define( 'SNAPWP_HELPER_VERSION', '0.2.4' );
+		define( 'SNAPWP_HELPER_VERSION', '0.3.0' );
 	}
 
 	if ( ! defined( 'SNAPWP_HELPER_PLUGIN_DIR' ) ) {
 		/**
 		 * The plugin directory path.
-		 *
-		 * @const string
 		 */
 		define( 'SNAPWP_HELPER_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 	}
@@ -63,8 +59,6 @@ function constants(): void {
 	if ( ! defined( 'SNAPWP_HELPER_PLUGIN_URL' ) ) {
 		/**
 		 * The plugin directory URL.
-		 *
-		 * @const string
 		 */
 		define( 'SNAPWP_HELPER_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 	}
