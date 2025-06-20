@@ -48,17 +48,4 @@ class DisableIntrospectionRule extends ValidationRulesDisableIntrospection {
 		// Check if the provided token matches the one stored in the database.
 		return ! hash_equals( $introspection_token_header, $introspection_token );
 	}
-
-	/**
-	 * Mocks the parent `should_be_enabled()` in case we're using an old version of WPGraphQL.
-	 *
-	 * @see https://github.com/wp-graphql/wp-graphql/blob/aedd4f6abab185974ce512b5dc56f2a766b41618/src/Server/ValidationRules/DisableIntrospection.php#L23
-	 */
-	private function local_should_be_enabled(): bool {
-		if ( ! get_current_user_id() && ! \WPGraphQL::debug() && 'off' === get_graphql_setting( 'public_introspection_enabled', 'off' ) ) {
-			return true;
-		}
-
-		return false;
-	}
 }

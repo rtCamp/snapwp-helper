@@ -21,15 +21,10 @@ use WPGraphQL\Model\Model;
  * @property ?string $uri The URI of the block template.
  * @property array<mixed> $enqueuedScriptsQueue The queue of enqueued scripts.
  * @property array<mixed> $enqueuedStylesheetsQueue The queue of enqueued stylesheets.
+ *
+ * @extends \WPGraphQL\Model\Model<array{uri:string,content:?string}>
  */
 class RenderedTemplate extends Model {
-	/**
-	 * {@inheritDoc}
-	 *
-	 * @var array{uri:string,content:?string}
-	 */
-	protected $data;
-
 	/**
 	 * Store parsed blocks.
 	 *

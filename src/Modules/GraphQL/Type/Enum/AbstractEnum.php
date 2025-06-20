@@ -31,6 +31,13 @@ abstract class AbstractEnum extends AbstractType {
 
 	/**
 	 * {@inheritDoc}
+	 *
+	 * @return array{
+	 *   description: callable(): string,
+	 *   eagerlyLoadType: bool,
+	 *   values: array<string,array{description:string,value:mixed,deprecationReason?:string}>,
+	 *  ...<string,mixed>
+	 * }
 	 */
 	protected function get_type_config(): array {
 		$config = parent::get_type_config();

@@ -37,6 +37,7 @@ final class GeneralSettings extends AbstractFields {
 						return null;
 					}
 
+					// @phpstan-ignore method.notFound ( @todo remove this when stubs are fixed )
 					return $context->get_loader( 'post' )->load_deferred( $site_icon_id );
 				},
 			],

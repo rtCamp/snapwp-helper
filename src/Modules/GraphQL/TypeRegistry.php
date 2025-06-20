@@ -16,7 +16,6 @@ use SnapWP\Helper\Modules\GraphQL\Type\Enum;
 use SnapWP\Helper\Modules\GraphQL\Type\Fields;
 use SnapWP\Helper\Modules\GraphQL\Type\WPObject;
 use SnapWP\Helper\Traits\Singleton;
-use WPGraphQL\AppContext;
 
 /**
  * Class - TypeRegistry
@@ -36,7 +35,7 @@ final class TypeRegistry implements Registrable {
 	 */
 	public function register_hooks(): void {
 		add_action( get_graphql_register_action(), [ $this, 'init' ] );
-		
+
 		add_filter( 'graphql_data_loader_classes', [ $this, 'register_data_loader_classes' ], 10 );
 	}
 

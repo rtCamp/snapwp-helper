@@ -57,16 +57,22 @@ final class RenderedTemplate extends AbstractObject implements TypeWithConnectio
 
 					// Handle WP_Post object.
 					if ( $queried instanceof \WP_Post ) {
+						// @phpstan-ignore method.notFound ( @todo remove this when stubs are fixed )
 						return $context->get_loader( 'post' )->load_deferred( $queried->ID );
 					} elseif ( $queried instanceof \WP_Term ) {
+						// @phpstan-ignore method.notFound ( @todo remove this when stubs are fixed )
 						return $context->get_loader( 'term' )->load_deferred( $queried->term_id );
 					} elseif ( $queried instanceof \WP_User ) {
+						// @phpstan-ignore method.notFound ( @todo remove this when stubs are fixed )
 						return $context->get_loader( 'user' )->load_deferred( $queried->ID );
 					} elseif ( $queried instanceof \WP_Comment ) {
+						// @phpstan-ignore method.notFound ( @todo remove this when stubs are fixed )
 						return $context->get_loader( 'comment' )->load_deferred( $queried->comment_ID );
 					} elseif ( $queried instanceof \WP_Taxonomy ) {
+						// @phpstan-ignore method.notFound ( @todo remove this when stubs are fixed )
 						return $context->get_loader( 'taxonomy' )->load_deferred( $queried->name );
 					} elseif ( $queried instanceof \WP_Post_Type ) {
+						// @phpstan-ignore method.notFound ( @todo remove this when stubs are fixed )
 						return $context->get_loader( 'post_type' )->load_deferred( $queried->name );
 					}
 

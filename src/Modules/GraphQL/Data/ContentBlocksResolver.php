@@ -18,9 +18,9 @@ final class ContentBlocksResolver {
 	/**
 	 * Retrieves a list of content blocks
 	 *
-	 * @param \WPGraphQL\Model\Model|array<string,mixed> $node The node we are resolving.
-	 * @param array<string,mixed>                        $args GraphQL query args to pass to the connection resolver.
-	 * @param string[]                                   $allowed_block_names The list of allowed block names to filter.
+	 * @param \WPGraphQL\Model\Model<mixed>|array<string,mixed> $node The node we are resolving.
+	 * @param array<string,mixed>                               $args GraphQL query args to pass to the connection resolver.
+	 * @param string[]                                          $allowed_block_names The list of allowed block names to filter.
 	 *
 	 * @return array<string,mixed> The resolved parsed blocks.
 	 */

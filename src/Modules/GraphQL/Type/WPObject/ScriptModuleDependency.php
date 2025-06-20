@@ -49,6 +49,8 @@ final class ScriptModuleDependency extends AbstractObject {
 				'description' => __( 'The script module.', 'snapwp-helper' ),
 				'resolve'     => static function ( $source, $args, AppContext $context ) {
 					$script_module_loader = $context->get_loader( 'script_module' );
+
+					// @phpstan-ignore method.notFound ( @todo remove this when stubs are fixed )
 					return $script_module_loader->load_deferred( $source['id'] );
 				},
 			],
