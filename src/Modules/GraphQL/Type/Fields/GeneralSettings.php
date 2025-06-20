@@ -29,7 +29,7 @@ final class GeneralSettings extends AbstractFields {
 		return [
 			'siteIcon' => [
 				'type'        => 'MediaItem',
-				'description' => __( 'Site Icon', 'snapwp-helper' ),
+				'description' => static fn () => __( 'Site Icon', 'snapwp-helper' ),
 				'resolve'     => static function ( $_source, $_args, AppContext $context ) {
 					$site_icon_id = (int) get_option( 'site_icon' );
 
@@ -37,6 +37,7 @@ final class GeneralSettings extends AbstractFields {
 						return null;
 					}
 
+					// @phpstan-ignore method.notFound ( @todo remove this when stubs are fixed )
 					return $context->get_loader( 'post' )->load_deferred( $site_icon_id );
 				},
 			],

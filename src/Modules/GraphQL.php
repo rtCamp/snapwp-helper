@@ -86,7 +86,7 @@ class GraphQL implements Module {
 	 * @return array{slug:string,name:string,check_callback:callable():(true|\WP_Error)}
 	 */
 	protected function get_wpgraphql_dependency_args(): array {
-		$minimum_version = '1.28.0';
+		$minimum_version = '2.3.3';
 
 		return [
 			'slug'           => 'wp-graphql',

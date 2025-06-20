@@ -33,17 +33,17 @@ final class RootQuery extends AbstractFields {
 		return [
 			'globalStyles'  => [
 				'type'        => GlobalStyles::get_type_name(),
-				'description' => __( 'The FSE template.', 'snapwp-helper' ),
+				'description' => static fn () => __( 'The FSE template.', 'snapwp-helper' ),
 				// The fields are resolved in the object itself.
 				'resolve'     => static fn () => [],
 			],
 			'templateByUri' => [
 				'type'        => RenderedTemplate::get_type_name(),
-				'description' => __( 'Fetches an object given its Unique Resource Identifier', 'snapwp-helper' ),
+				'description' => static fn () => __( 'Fetches an object given its Unique Resource Identifier', 'snapwp-helper' ),
 				'args'        => [
 					'uri' => [
 						'type'        => [ 'non_null' => 'String' ],
-						'description' => __( 'Unique Resource Identifier in the form of a path or permalink for the WordPress frontend. Ex: "/hello-world"', 'snapwp-helper' ),
+						'description' => static fn () => __( 'Unique Resource Identifier in the form of a path or permalink for the WordPress frontend. Ex: "/hello-world"', 'snapwp-helper' ),
 					],
 				],
 				'resolve'     => static function ( $_root, array $args, AppContext $context ) {

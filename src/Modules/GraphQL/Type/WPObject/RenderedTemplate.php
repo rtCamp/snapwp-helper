@@ -43,30 +43,36 @@ final class RenderedTemplate extends AbstractObject implements TypeWithConnectio
 		return [
 			'content'       => [
 				'type'        => 'String',
-				'description' => __( 'The content for the template. This is the serialized block markup and HTML.', 'snapwp-helper' ),
+				'description' => static fn () => __( 'The content for the template. This is the serialized block markup and HTML.', 'snapwp-helper' ),
 			],
 			'bodyClasses'   => [
 				'type'        => [ 'list_of' => 'String' ],
-				'description' => __( 'The css classes for the HTML `<body>` tag.', 'snapwp-helper' ),
+				'description' => static fn () => __( 'The css classes for the HTML `<body>` tag.', 'snapwp-helper' ),
 			],
 			'connectedNode' => [
 				'type'        => 'UniformResourceIdentifiable',
-				'description' => __( 'The `nodeByUri` object for the given URI.', 'snapwp-helper' ),
+				'description' => static fn () => __( 'The `nodeByUri` object for the given URI.', 'snapwp-helper' ),
 				'resolve'     => static function ( $source, array $args, AppContext $context ) {
 					$queried = get_queried_object();
 
 					// Handle WP_Post object.
 					if ( $queried instanceof \WP_Post ) {
+						// @phpstan-ignore method.notFound ( @todo remove this when stubs are fixed )
 						return $context->get_loader( 'post' )->load_deferred( $queried->ID );
 					} elseif ( $queried instanceof \WP_Term ) {
+						// @phpstan-ignore method.notFound ( @todo remove this when stubs are fixed )
 						return $context->get_loader( 'term' )->load_deferred( $queried->term_id );
 					} elseif ( $queried instanceof \WP_User ) {
+						// @phpstan-ignore method.notFound ( @todo remove this when stubs are fixed )
 						return $context->get_loader( 'user' )->load_deferred( $queried->ID );
 					} elseif ( $queried instanceof \WP_Comment ) {
+						// @phpstan-ignore method.notFound ( @todo remove this when stubs are fixed )
 						return $context->get_loader( 'comment' )->load_deferred( $queried->comment_ID );
 					} elseif ( $queried instanceof \WP_Taxonomy ) {
+						// @phpstan-ignore method.notFound ( @todo remove this when stubs are fixed )
 						return $context->get_loader( 'taxonomy' )->load_deferred( $queried->name );
 					} elseif ( $queried instanceof \WP_Post_Type ) {
+						// @phpstan-ignore method.notFound ( @todo remove this when stubs are fixed )
 						return $context->get_loader( 'post_type' )->load_deferred( $queried->name );
 					}
 
@@ -76,7 +82,7 @@ final class RenderedTemplate extends AbstractObject implements TypeWithConnectio
 			],
 			'is404'         => [
 				'type'        => 'Boolean',
-				'description' => __( 'Whether the template is a 404 page.', 'snapwp-helper' ),
+				'description' => static fn () => __( 'Whether the template is a 404 page.', 'snapwp-helper' ),
 				'resolve'     => static function () {
 					return is_404();
 				},
@@ -101,7 +107,7 @@ final class RenderedTemplate extends AbstractObject implements TypeWithConnectio
 		return [
 			'enqueuedScripts'       => [
 				'toType'      => 'EnqueuedScript',
-				'description' => __( 'The scripts enqueued for the template.', 'snapwp-helper' ),
+				'description' => static fn () => __( 'The scripts enqueued for the template.', 'snapwp-helper' ),
 				'resolve'     => static function ( $source, $args, $context, $info ) {
 					$resolver = new EnqueuedScriptsConnectionResolver( $source, $args, $context, $info );
 
@@ -110,7 +116,7 @@ final class RenderedTemplate extends AbstractObject implements TypeWithConnectio
 			],
 			'enqueuedScriptModules' => [
 				'toType'      => ScriptModule::get_type_name(),
-				'description' => __( 'The script modules enqueued for the template.', 'snapwp-helper' ),
+				'description' => static fn () => __( 'The script modules enqueued for the template.', 'snapwp-helper' ),
 				'resolve'     => static function ( $source, $args, $context, $info ) {
 					$resolver = new ScriptModulesConnectionResolver( $source, $args, $context, $info );
 
@@ -119,7 +125,7 @@ final class RenderedTemplate extends AbstractObject implements TypeWithConnectio
 			],
 			'enqueuedStylesheets'   => [
 				'toType'      => 'EnqueuedStylesheet',
-				'description' => __( 'The stylesheets enqueued for the template.', 'snapwp-helper' ),
+				'description' => static fn () => __( 'The stylesheets enqueued for the template.', 'snapwp-helper' ),
 				'resolve'     => static function ( $source, $args, $context, $info ) {
 					$resolver = new EnqueuedStylesheetConnectionResolver( $source, $args, $context, $info );
 					return $resolver->get_connection();

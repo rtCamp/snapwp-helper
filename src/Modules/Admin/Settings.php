@@ -61,7 +61,7 @@ class Settings implements Registrable {
 				'show_in_rest'      => [
 					'schema' => [
 						'type'        => 'string',
-						'description' => __( 'The URL used for the headless frontend', 'snapwp-helper' ),
+						'description' => static fn () => __( 'The URL used for the headless frontend', 'snapwp-helper' ),
 						'default'     => false,
 						'format'      => 'uri',
 					],

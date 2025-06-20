@@ -27,8 +27,7 @@ class DisableIntrospectionRule extends ValidationRulesDisableIntrospection {
 	 */
 	public function should_be_enabled(): bool {
 		// Check the original conditions first.
-		// @todo Remove the conditional once we only support WPGraphQL 2.0.0+.
-		$is_rule_enabled = version_compare( WPGRAPHQL_VERSION, '2.0.0', '<' ) ? $this->local_should_be_enabled() : parent::should_be_enabled();
+		$is_rule_enabled = parent::should_be_enabled();
 
 		// Get the authorization header.
 		$introspection_token_header = isset( $_SERVER['HTTP_AUTHORIZATION'] ) ? sanitize_text_field( $_SERVER['HTTP_AUTHORIZATION'] ) : '';
@@ -48,31 +47,5 @@ class DisableIntrospectionRule extends ValidationRulesDisableIntrospection {
 
 		// Check if the provided token matches the one stored in the database.
 		return ! hash_equals( $introspection_token_header, $introspection_token );
-	}
-
-	/**
-	 * {@inheritDoc}
-	 *
-	 * Overloaded to use our `should_be_enabled()` on older versions of WPGraphQL.
-	 */
-	public function isEnabled(): bool {
-		if ( version_compare( WPGRAPHQL_VERSION, '2.0.0', '<' ) ) {
-			return $this->should_be_enabled();
-		}
-
-		return parent::isEnabled();
-	}
-
-	/**
-	 * Mocks the parent `should_be_enabled()` in case we're using an old version of WPGraphQL.
-	 *
-	 * @see https://github.com/wp-graphql/wp-graphql/blob/aedd4f6abab185974ce512b5dc56f2a766b41618/src/Server/ValidationRules/DisableIntrospection.php#L23
-	 */
-	private function local_should_be_enabled(): bool {
-		if ( ! get_current_user_id() && ! \WPGraphQL::debug() && 'off' === get_graphql_setting( 'public_introspection_enabled', 'off' ) ) {
-			return true;
-		}
-
-		return false;
 	}
 }

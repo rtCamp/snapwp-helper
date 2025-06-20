@@ -68,8 +68,8 @@ final class SchemaFilters implements Registrable {
 	/**
 	 * Gets the content from the model for parsing by WPGraphQL ContentBlocks.
 	 *
-	 * @param string                 $content The content to parse.
-	 * @param \WPGraphQL\Model\Model $model   The model to get content from.
+	 * @param string                                            $content The content to parse.
+	 * @param \WPGraphQL\Model\Model<mixed>|array<string,mixed> $model   The model to get content from.
 	 *
 	 * @return string The content to parse.
 	 */

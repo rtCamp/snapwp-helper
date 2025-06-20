@@ -13,7 +13,7 @@ use WPGraphQL\Model\Model;
 /**
  * Class - ScriptModule
  *
- * @phpstan-import-type ScriptModuleData from \SnapWP\Helper\Modules\GraphQL\Utils\ScriptModuleUtils
+ * @phpcs:disable SlevomatCodingStandard.Namespaces.FullyQualifiedClassNameInAnnotation
  *
  * @property string $id The Global ID of the script module.
  * @property string $handle The handle of the script module.
@@ -21,15 +21,14 @@ use WPGraphQL\Model\Model;
  * @property ?string $src The source URL of the script module.
  * @property ?string $version The version of the script module.
  * @property ?array{id:string,import?:string} $dependencies The dependencies of the script module.
+ *
+ * @phpstan-import-type ScriptModuleData from \SnapWP\Helper\Modules\GraphQL\Utils\ScriptModuleUtils
+ *
+ * @extends \WPGraphQL\Model\Model<ScriptModuleData>
+ *
+ * @phpcs:enable SlevomatCodingStandard.Namespaces.FullyQualifiedClassNameInAnnotation
  */
 class ScriptModule extends Model {
-	/**
-	 * {@inheritDoc}
-	 *
-	 * @var ScriptModuleData
-	 */
-	protected $data;
-
 	/**
 	 * Constructor.
 	 *

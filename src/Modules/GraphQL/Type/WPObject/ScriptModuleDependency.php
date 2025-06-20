@@ -39,16 +39,18 @@ final class ScriptModuleDependency extends AbstractObject {
 		return [
 			'importType'            => [
 				'type'        => ScriptModuleImportTypeEnum::get_type_name(),
-				'description' => __( 'The import type for the dependency. Either `static` or `dynamic`.', 'snapwp-helper' ),
+				'description' => static fn () => __( 'The import type for the dependency. Either `static` or `dynamic`.', 'snapwp-helper' ),
 				'resolve'     => static function ( $source ) {
 					return $source['import'] ?? 'static';
 				},
 			],
 			'connectedScriptModule' => [
 				'type'        => ScriptModule::get_type_name(),
-				'description' => __( 'The script module.', 'snapwp-helper' ),
+				'description' => static fn () => __( 'The script module.', 'snapwp-helper' ),
 				'resolve'     => static function ( $source, $args, AppContext $context ) {
 					$script_module_loader = $context->get_loader( 'script_module' );
+
+					// @phpstan-ignore method.notFound ( @todo remove this when stubs are fixed )
 					return $script_module_loader->load_deferred( $source['id'] );
 				},
 			],

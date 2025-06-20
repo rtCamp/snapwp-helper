@@ -39,12 +39,12 @@ final class ScriptModuleImportTypeEnum extends AbstractEnum {
 			'DYNAMIC' => [
 				'name'        => 'DYNAMIC',
 				'value'       => 'dynamic',
-				'description' => __( 'Dynamic import.', 'snapwp-helper' ),
+				'description' => static fn () => __( 'Dynamic import.', 'snapwp-helper' ),
 			],
 			'STATIC'  => [
 				'name'        => 'STATIC',
 				'value'       => 'static',
-				'description' => __( 'Static import.', 'snapwp-helper' ),
+				'description' => static fn () => __( 'Static import.', 'snapwp-helper' ),
 			],
 		];
 	}

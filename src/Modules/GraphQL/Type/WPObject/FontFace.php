@@ -36,63 +36,63 @@ final class FontFace extends AbstractObject {
 		return [
 			'ascentOverride'        => [
 				'type'        => 'String',
-				'description' => __( 'The ascent override for the font face.', 'snapwp-helper' ),
+				'description' => static fn () => __( 'The ascent override for the font face.', 'snapwp-helper' ),
 			],
 			'descentOverride'       => [
 				'type'        => 'String',
-				'description' => __( 'The descent override for the font face.', 'snapwp-helper' ),
+				'description' => static fn () => __( 'The descent override for the font face.', 'snapwp-helper' ),
 			],
 			'fontDisplay'           => [
 				'type'        => 'String',
-				'description' => __( 'The font display for the font face.', 'snapwp-helper' ),
+				'description' => static fn () => __( 'The font display for the font face.', 'snapwp-helper' ),
 			],
 			'fontFamily'            => [
 				'type'        => 'String',
-				'description' => __( 'The font family for the font face.', 'snapwp-helper' ),
+				'description' => static fn () => __( 'The font family for the font face.', 'snapwp-helper' ),
 			],
 			'fontFeatureSettings'   => [
 				'type'        => 'String',
-				'description' => __( 'The font feature settings for the font face.', 'snapwp-helper' ),
+				'description' => static fn () => __( 'The font feature settings for the font face.', 'snapwp-helper' ),
 			],
 			'fontStretch'           => [
 				'type'        => 'String',
-				'description' => __( 'The font stretch for the font face.', 'snapwp-helper' ),
+				'description' => static fn () => __( 'The font stretch for the font face.', 'snapwp-helper' ),
 			],
 			'fontStyle'             => [
 				'type'        => 'String',
-				'description' => __( 'The font style for the font face.', 'snapwp-helper' ),
+				'description' => static fn () => __( 'The font style for the font face.', 'snapwp-helper' ),
 			],
 			'fontVariant'           => [
 				'type'        => 'String',
-				'description' => __( 'The font variant for the font face.', 'snapwp-helper' ),
+				'description' => static fn () => __( 'The font variant for the font face.', 'snapwp-helper' ),
 			],
 			'fontVariationSettings' => [
 				'type'        => 'String',
-				'description' => __( 'The font variation settings for the font face.', 'snapwp-helper' ),
+				'description' => static fn () => __( 'The font variation settings for the font face.', 'snapwp-helper' ),
 			],
 			'fontWeight'            => [
 				'type'        => 'String',
-				'description' => __( 'The font weight for the font face.', 'snapwp-helper' ),
+				'description' => static fn () => __( 'The font weight for the font face.', 'snapwp-helper' ),
 			],
 			'lineGapOverride'       => [
 				'type'        => 'String',
-				'description' => __( 'The line gap override for the font face.', 'snapwp-helper' ),
+				'description' => static fn () => __( 'The line gap override for the font face.', 'snapwp-helper' ),
 			],
 			'sizeAdjust'            => [
 				'type'        => 'String',
-				'description' => __( 'The size adjust for the font face.', 'snapwp-helper' ),
+				'description' => static fn () => __( 'The size adjust for the font face.', 'snapwp-helper' ),
 			],
 			'src'                   => [
 				'type'        => [ 'list_of' => 'String' ],
-				'description' => __( 'The URL(s) to each resource containing the font data.', 'snapwp-helper' ),
+				'description' => static fn () => __( 'The URL(s) to each resource containing the font data.', 'snapwp-helper' ),
 			],
 			'unicodeRange'          => [
 				'type'        => 'String',
-				'description' => __( 'The unicode range for the font face.', 'snapwp-helper' ),
+				'description' => static fn () => __( 'The unicode range for the font face.', 'snapwp-helper' ),
 			],
 			'css'                   => [
 				'type'        => 'String',
-				'description' => __( 'The resolved CSS rule for the font face.', 'snapwp-helper' ),
+				'description' => static fn () => __( 'The resolved CSS rule for the font face.', 'snapwp-helper' ),
 			],
 		];
 	}

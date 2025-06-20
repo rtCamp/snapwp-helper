@@ -16,7 +16,6 @@ use SnapWP\Helper\Modules\GraphQL\Type\Enum;
 use SnapWP\Helper\Modules\GraphQL\Type\Fields;
 use SnapWP\Helper\Modules\GraphQL\Type\WPObject;
 use SnapWP\Helper\Traits\Singleton;
-use WPGraphQL\AppContext;
 
 /**
  * Class - TypeRegistry
@@ -36,7 +35,8 @@ final class TypeRegistry implements Registrable {
 	 */
 	public function register_hooks(): void {
 		add_action( get_graphql_register_action(), [ $this, 'init' ] );
-		add_filter( 'graphql_data_loaders', [ $this, 'register_data_loaders' ], 10, 2 );
+
+		add_filter( 'graphql_data_loader_classes', [ $this, 'register_data_loader_classes' ], 10 );
 	}
 
 	/**
@@ -72,13 +72,12 @@ final class TypeRegistry implements Registrable {
 	/**
 	 * Registers custom data loaders.
 	 *
-	 * @param array<string,\WPGraphQL\Data\Loader\AbstractDataLoader> $data_loaders The data loaders.
-	 * @param \WPGraphQL\AppContext                                   $context      The AppContext object.
+	 * @param array<string,class-string<\WPGraphQL\Data\Loader\AbstractDataLoader>> $data_loaders The data loader classes accessible in the AppContext
 	 *
-	 * @return array<string,\WPGraphQL\Data\Loader\AbstractDataLoader>
+	 * @return array<string,class-string<\WPGraphQL\Data\Loader\AbstractDataLoader>>
 	 */
-	public function register_data_loaders( array $data_loaders, AppContext $context ): array {
-		$data_loaders['script_module'] = new Data\Loader\ScriptModuleLoader( $context );
+	public function register_data_loader_classes( array $data_loaders ): array {
+		$data_loaders['script_module'] = Data\Loader\ScriptModuleLoader::class;
 
 		return $data_loaders;
 	}
@@ -108,7 +107,6 @@ final class TypeRegistry implements Registrable {
 	private function enums(): array {
 		// Enums to register.
 		$classes_to_register = [
-			Enum\ScriptLoadingGroupLocationEnum::class,
 			Enum\ScriptModuleImportTypeEnum::class,
 		];
 
@@ -190,7 +188,6 @@ final class TypeRegistry implements Registrable {
 	private function fields(): array {
 		$classes_to_register = [
 			Fields\RootQuery::class,
-			Fields\EnqueuedScript::class,
 			Fields\GeneralSettings::class,
 			Fields\CoreCover::class,
 			Fields\CoreMediaText::class,

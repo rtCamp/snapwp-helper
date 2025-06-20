@@ -28,11 +28,15 @@ abstract class AbstractType implements GraphQLType {
 	/**
 	 * Gets the $config array used to register the type to WPGraphQL.
 	 *
-	 * @return array<string,mixed>
+	 * @return array{
+	 *   description: callable(): string,
+	 *   eagerlyLoadType: bool,
+	 *  ...<string,mixed>
+	 * }
 	 */
 	protected function get_type_config(): array {
 		return [
-			'description'     => $this->get_description(),
+			'description'     => fn () => $this->get_description(),
 			'eagerlyLoadType' => $this->should_load_eagerly(),
 		];
 	}

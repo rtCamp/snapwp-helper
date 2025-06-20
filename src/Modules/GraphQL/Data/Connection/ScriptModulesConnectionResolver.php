@@ -66,8 +66,6 @@ class ScriptModulesConnectionResolver extends AbstractConnectionResolver {
 
 	/**
 	 * {@inheritDoc}
-	 *
-	 * @param \WPGraphQL\Model\Model $model The model to validate.
 	 */
 	protected function is_valid_model( $model ) {
 		return isset( $model->handle );
