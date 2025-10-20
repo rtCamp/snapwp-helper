@@ -3,7 +3,7 @@
 	"private": true,
 	"author": "rtCamp",
 	"devDependencies": {
-		"@playwright/test": "^1.53.1",
+		"@playwright/test": "^1.56.1",
 		"@types/node": "^20.19.1",
 		"@wordpress/babel-preset-default": "^8.25.0",
 		"@wordpress/e2e-test-utils-playwright": "^1.25.0",
