@@ -24,6 +24,9 @@ RUN apt-get update && \
     mariadb-client \
     net-tools
 
+# Disable SSL for MariaDB client
+RUN echo '[client]\nskip-ssl' > /etc/mysql/conf.d/disable_ssl.cnf
+
 # Needed for Codeception WPDB test integration.
 RUN docker-php-ext-install pdo pdo_mysql
 
