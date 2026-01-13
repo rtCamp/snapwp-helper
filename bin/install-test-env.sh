@@ -134,7 +134,7 @@ mkdir -p "$(dirname "$SQLDUMP")"
 if [ ! -f "$SQLDUMP" ]; then
 	echo -e "$(status_message "Exporting test database dump...")"
 
-	wp db export "$SQLDUMP" --allow-root --ssl=false
+	wp db export "$SQLDUMP" --allow-root
 fi
 
 # Proof it all worked.
