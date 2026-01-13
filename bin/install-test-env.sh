@@ -27,7 +27,7 @@ cd "$WORDPRESS_ROOT_DIR" || { echo "Failed to enter directory: $WORDPRESS_ROOT_D
 # dirty up the tests.
 if [ "$1" == '--reset-site' ]; then
 	echo -e "$(status_message "Resetting test database...")"
-	wp db reset --yes --quiet --allow-root --ssl=false
+	wp db reset --yes --quiet --allow-root --defaults
 fi
 
 if [[ -f "wp-load.php" ]]; then
@@ -134,7 +134,7 @@ mkdir -p "$(dirname "$SQLDUMP")"
 if [ ! -f "$SQLDUMP" ]; then
 	echo -e "$(status_message "Exporting test database dump...")"
 
-	wp db export "$SQLDUMP" --allow-root --skip-ssl
+	wp db export "$SQLDUMP" --allow-root --defaults
 fi
 
 # Proof it all worked.
