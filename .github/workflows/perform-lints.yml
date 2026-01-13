@@ -174,7 +174,7 @@ jobs:
             - name: Setup Node.js
               uses: actions/setup-node@v4
               with:
-                  node-version: .nvmrc
+                  node-version: 22
 
             - name: Install Node.js dependencies
               run: npm ci
@@ -216,7 +216,7 @@ jobs:
             - name: Setup Node.js
               uses: actions/setup-node@v4
               with:
-                  node-version: .nvmrc
+                  node-version: 22
 
             - name: Install Node.js dependencies
               run: npm ci
@@ -300,7 +300,7 @@ jobs:
             - name: Setup Node.js
               uses: actions/setup-node@v4
               with:
-                  node-version: .nvmrc
+                  node-version: 22
 
             - name: Install Node.js dependencies
               run: npm ci
@@ -372,7 +372,7 @@ jobs:
             - name: Setup Node.js
               uses: actions/setup-node@v4
               with:
-                  node-version: .nvmrc
+                  node-version: 22
 
             - name: Setup GraphQL Schema Linter
               run: npm install -g graphql-schema-linter@^3.0 graphql@^16

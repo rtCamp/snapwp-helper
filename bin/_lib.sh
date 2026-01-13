@@ -57,7 +57,7 @@ install_db() {
 		return 0
 	fi
 
-	local EXTRA=" --host=$WORDPRESS_DB_HOST"
+	local EXTRA=" --host=$WORDPRESS_DB_HOST --skip-ssl"
 
 	if [ -n "$WORDPRESS_DB_PORT" ]; then
 		EXTRA="$EXTRA --port=$WORDPRESS_DB_PORT"
