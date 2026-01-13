@@ -73,7 +73,7 @@
 			"php ./vendor/bin/phpcbf"
 		],
 		"phpstan": [
-			"vendor/bin/phpstan analyze --ansi --memory-limit=1G"
+			"vendor/bin/phpstan analyze --ansi --memory-limit=2G"
 		],
 		"post-install-cmd": [
 			"npm ci --no-progress --no-audit --silent --no-fund",
