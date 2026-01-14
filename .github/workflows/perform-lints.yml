@@ -325,7 +325,7 @@ jobs:
 
             - name: Upload tests artifacts
               if: ${{ failure() }}
-              uses: actions/upload-artifact@v4
+              uses: actions/upload-artifact@v6
               with:
                   name: artifact
                   path: tests/_output/artifacts
