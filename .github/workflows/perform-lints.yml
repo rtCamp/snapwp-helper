@@ -35,14 +35,14 @@ jobs:
             - name: Checkout including last 2 commits
               # Fetch last 2 commits if it's not a PR, so that we can determine the list of modified files.
               if: ${{ github.base_ref == null }}
-              uses: actions/checkout@v4
+              uses: actions/checkout@v6
               with:
                   fetch-depth: 2
 
             - name: Checkout
               # Do usual checkout if it's a PR.
               if: ${{ github.base_ref != null }}
-              uses: actions/checkout@v4
+              uses: actions/checkout@v6
 
             - name: Fetch base branch
               # Only fetch base ref if it's a PR.
@@ -104,7 +104,7 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - name: Checkout
-              uses: actions/checkout@v4
+              uses: actions/checkout@v6
 
             - name: Setup PHP
               uses: shivammathur/setup-php@9e72090525849c5e82e596468b86eb55e9cc5401 # 2.32.0@v2
@@ -137,7 +137,7 @@ jobs:
                 options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
         steps:
             - name: Checkout
-              uses: actions/checkout@v4
+              uses: actions/checkout@v6
 
             - name: Setup PHP
               uses: shivammathur/setup-php@9e72090525849c5e82e596468b86eb55e9cc5401 # 2.32.0@v2
@@ -169,7 +169,7 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - name: Checkout
-              uses: actions/checkout@v4
+              uses: actions/checkout@v6
 
             - name: Setup Node.js
               uses: actions/setup-node@v4
@@ -200,7 +200,7 @@ jobs:
             fail-fast: false
         steps:
             - name: Checkout
-              uses: actions/checkout@v4
+              uses: actions/checkout@v6
 
             - name: Install PHP
               uses: shivammathur/setup-php@9e72090525849c5e82e596468b86eb55e9cc5401 # 2.32.0@v2
@@ -283,7 +283,7 @@ jobs:
         timeout-minutes: 10
         steps:
             - name: Checkout
-              uses: actions/checkout@v4
+              uses: actions/checkout@v6
 
             - name: Setup PHP
               uses: shivammathur/setup-php@9e72090525849c5e82e596468b86eb55e9cc5401 # 2.32.0@v2
@@ -354,7 +354,7 @@ jobs:
                 options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
         steps:
             - name: Checkout
-              uses: actions/checkout@v4
+              uses: actions/checkout@v6
 
             - name: Setup PHP w/ Composer & WP-CLI
               uses: shivammathur/setup-php@9e72090525849c5e82e596468b86eb55e9cc5401 # 2.32.0@v2
