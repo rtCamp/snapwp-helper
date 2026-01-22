@@ -8,7 +8,7 @@
 		"@wordpress/babel-preset-default": "^8.38.0",
 		"@wordpress/e2e-test-utils-playwright": "^1.38.0",
 		"@wordpress/eslint-plugin": "^23.0.0",
-		"@wordpress/env": "^10.37.0",
+		"@wordpress/env": "^10.38.0",
 		"@wordpress/i18n": "^6.11.0",
 		"@wordpress/scripts": "^31.3.0",
 		"cross-env": "10.1.0",
