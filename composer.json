@@ -27,7 +27,6 @@
 		"codeception/module-cli": "^1.0",
 		"codeception/util-universalframework": "^1.0",
 		"lucatume/wp-browser": "^3.1",
-		"phpcompatibility/php-compatibility": "dev-develop as 9.99.99",
 		"phpstan/extension-installer": "^1.1",
 		"phpstan/phpstan": "^2.0.0",
 		"phpstan/phpstan-deprecation-rules": "^2.0",
