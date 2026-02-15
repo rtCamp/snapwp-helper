@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](./README.md#updating-and-versi
 
 ## Unreleased
 
+## [0.3.1] - 2026-02-15
+
+This _patch_ release bumps the package dependencies to their latest (SemVer-compatible) versions.
+
+- chore: Update Composer and NPM dependencies to their latest (SemVer-compatible) versions.
+- chore: Bump tested up to headers to WordPress v6.9.1 and WPGraphQL v2.9.0.
+
 ## [0.3.0] - 2025-06-20
 
 This _major_ release bumps the minimum required WPGraphQL version to v2.3.3, allowing the plugin to benefit from the latest performance improvements.

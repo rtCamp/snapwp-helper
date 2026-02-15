@@ -7,14 +7,14 @@
  * Author: rtCamp
  * Author URI: https://github.com/rtCamp
  * Update URI: https://github.com/rtCamp/snapwp-helper
- * Version: 0.3.0
+ * Version: 0.3.1
  * Text Domain: snapwp-helper
  * Domain Path: /languages
  * Requires at least: 6.7
- * Tested up to: 6.8.1
+ * Tested up to: 6.9.1
  * Requires PHP: 7.4
  * WPGraphQL requires at least: 2.3.0
- * WPGraphQL tested up to: 2.3.3
+ * WPGraphQL tested up to: 2.9.0
  * License: GPL-3
  * License URI: https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -46,7 +46,7 @@ function constants(): void {
 		/**
 		 * The plugin version.
 		 */
-		define( 'SNAPWP_HELPER_VERSION', '0.3.0' );
+		define( 'SNAPWP_HELPER_VERSION', '0.3.1' );
 	}
 
 	if ( ! defined( 'SNAPWP_HELPER_PLUGIN_DIR' ) ) {
