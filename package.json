@@ -4,12 +4,12 @@
 	"author": "rtCamp",
 	"devDependencies": {
 		"@playwright/test": "^1.58.2",
-		"@wordpress/babel-preset-default": "^8.40.0",
-		"@wordpress/e2e-test-utils-playwright": "^1.40.0",
-		"@wordpress/eslint-plugin": "^24.2.0",
+		"@wordpress/babel-preset-default": "^8.41.0",
+		"@wordpress/e2e-test-utils-playwright": "^1.41.0",
+		"@wordpress/eslint-plugin": "^24.3.0",
 		"@wordpress/env": "^10.39.0",
-		"@wordpress/i18n": "^6.13.0",
-		"@wordpress/scripts": "^31.5.0",
+		"@wordpress/i18n": "^6.14.0",
+		"@wordpress/scripts": "^31.6.0",
 		"cross-env": "10.1.0",
 		"npm-run-all": "^4.1.5"
 	},
