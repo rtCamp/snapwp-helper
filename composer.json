@@ -17,7 +17,7 @@
 	],
 	"require": {
 		"php": ">=7.4",
-		"yahnis-elsts/plugin-update-checker": "^5.4"
+		"yahnis-elsts/plugin-update-checker": "~5.6.0"
 	},
 	"require-dev": {
 		"axepress/wp-graphql-cs": "^2.0.0",
@@ -73,13 +73,6 @@
 		],
 		"phpstan": [
 			"vendor/bin/phpstan analyze --ansi --memory-limit=2G"
-		],
-		"post-install-cmd": [
-			"npm ci --no-progress --no-audit --silent --no-fund",
-			"npm run build:js"
-		],
-		"post-update-cmd": [
-			"@post-install-cmd"
 		]
 	}
 }
